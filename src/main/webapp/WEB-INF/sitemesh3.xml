@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sitemesh>
+	<content-processor>
+		<tag-rule-bundle class="org.sitemesh.content.tagrules.html.DivExtractingTagRuleBundle" />
+	</content-processor>
+	
+	<!-- 업무 -->
+	<mapping path="/work/*.poo" decorator="/jsp/decorators/workDecorator.jsp" />
+	<mapping path="/main/*.poo" decorator="/jsp/decorators/mainDecorator.jsp" />
+	
+    <!-- 제외 -->
+    <!-- <mapping path="/unitstudy/view.donga" exclude="true" /> -->
+</sitemesh>

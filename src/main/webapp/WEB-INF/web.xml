@@ -33,6 +33,16 @@
 	</filter-mapping>
 	<!-- /Character encoding : UTF-8 -->
 
+	<!-- sitemesh -->
+	<filter>
+	    <filter-name>sitemesh</filter-name>
+	    <filter-class>org.sitemesh.config.ConfigurableSiteMeshFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemesh</filter-name>
+	    <url-pattern>*.poo</url-pattern>
+	</filter-mapping>
+
 	<!-- Processes application requests -->
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
