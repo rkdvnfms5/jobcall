@@ -7,7 +7,7 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 		<class>com.poozim.jobcall.model.Work</class>
 		
 		<properties>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->
 			
 			<property name="hibernate.show_sql" value="true"/>
 			<property name="hibernate.c3p0.min_size" value="5"/>

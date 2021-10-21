@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.service.WorkService;
@@ -28,7 +29,7 @@ public class WorkController {
 		return "/main/main";
 	}
 	
-	@RequestMapping(value = "/get.poo")
+	@RequestMapping(value = "/get.poo", method = RequestMethod.GET)
 	public String getWorkList(HttpServletRequest request, HttpServletResponse response, Model model) {
 		List<Work> workList = workService.getWorkList();
 		System.out.println(workList);
