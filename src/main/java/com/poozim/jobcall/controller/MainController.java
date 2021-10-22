@@ -16,8 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MainController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String main(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String root(HttpServletRequest request, HttpServletResponse response, Model model) {
 		
+		return "redirect:/main.poo";
+	}
+	
+	@RequestMapping(value = "/main.poo", method = RequestMethod.GET)
+	public String main(HttpServletRequest request, HttpServletResponse response, Model model) {
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@ddd");
 		return "/main/main";
 	}
 }

@@ -5,6 +5,14 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 	<persistence-unit name="jobcall">
 		<class>com.poozim.jobcall.model.Work</class>
+		<class>com.poozim.jobcall.model.WorkBoard</class>
+		<class>com.poozim.jobcall.model.WorkBoardFile</class>
+		<class>com.poozim.jobcall.model.WorkGroup</class>
+		<class>com.poozim.jobcall.model.Member</class>
+		<class>com.poozim.jobcall.model.Comment</class>
+		<class>com.poozim.jobcall.model.CommentFile</class>
+		<class>com.poozim.jobcall.model.FavoritLog</class>
+		<class>com.poozim.jobcall.model.StatusLog</class>
 		
 		<properties>
 			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->

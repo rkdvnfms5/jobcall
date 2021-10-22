@@ -147,18 +147,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.5.5</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis-spring</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson.version}</version>
@@ -207,11 +195,11 @@
 		</dependency>
 		
 		<!-- oci -->
-		<dependency>
+		<!-- <dependency>
 		    <groupId>com.oracle.oci.sdk</groupId>
 		    <artifactId>oci-java-sdk-objectstorage-generated</artifactId>
 		    <version>2.7.2</version>
-	  	</dependency>
+	  	</dependency> -->
 	</dependencies>
     <build>
         <plugins>
