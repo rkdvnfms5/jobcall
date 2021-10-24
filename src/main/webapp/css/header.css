@@ -1,7 +1,15 @@
 @charset "UTF-8";
 
-.main-header {width: 100%; padding: 30px 10px 24px; background-color: white; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2); transition:background-color 0.2s;}
+.main-header {padding: 30px 10px 24px; background-color: white; box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2); transition:background-color 0.2s;}
 .main-header.contrast {background-color: transparent; box-shadow: none;}
-.main-header .header-contents {margin: 0 auto; max-width: 1040px; width: 100%;}
+.main-header .header-contents {margin: 0 auto; max-width: 1040px; width: 100%; height: 36px;}
+.main-header .header-contents .header-logo {float: left;}
+.main-header .header-contents .header-nav {float: right; line-height: 2.6;}
+.main-header .header-contents .header-nav ul li a {padding: 9px 15px 8px; text-align: center; font-size: 16px; line-height: 19px; font-weight: 500; color: #757575; text-decoration: none; transition : color 0.2s;}
+.main-header .header-contents .header-nav ul li.btn-signup a {max-width: 92px; box-sizing: border-box; border-radius: 50px; border: solid 1px #5491f5; font-size: 14px; line-height: 17px; font-weight: 600; color: #5491f5; }
+.main-header .header-contents .header-nav ul li.btn-signup {margin-left: 25px}
+.main-header .header-contents .header-nav ul li.btn-signup + li.btn-signup {margin-left: 9px}
+.main-header .header-contents .header-nav ul li.btn-signup + li.btn-signup a {color: white; background-color: #5491f5; }
+
 
 

@@ -18,6 +18,7 @@ import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.service.SignService;
 
 @Controller
+@RequestMapping("/sign")
 public class SignController {
 	
 	@Autowired
@@ -26,7 +27,7 @@ public class SignController {
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String goSignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
 		
-		return "/sign/insert";
+		return "/sign/signup";
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)

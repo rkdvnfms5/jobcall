@@ -22,14 +22,14 @@ public class WorkController {
 	@Autowired
 	private WorkService workService;
 	
-	@RequestMapping(value = "/view/{code}.poo")
+	@RequestMapping(value = "/view/{code}")
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("code") String code) {
 		
 		return "/main/main";
 	}
 	
-	@RequestMapping(value = "/get.poo", method = RequestMethod.GET)
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
 	public String getWorkList(HttpServletRequest request, HttpServletResponse response, Model model) {
 		List<Work> workList = workService.getWorkList();
 		System.out.println(workList);

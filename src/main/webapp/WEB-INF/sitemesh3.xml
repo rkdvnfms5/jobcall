@@ -7,7 +7,8 @@
 	
 	<!-- 업무 -->
 	<mapping path="/work/*" decorator="/jsp/decorators/workDecorator.jsp" />
-	<mapping path="/main.poo" decorator="/jsp/decorators/mainDecorator.jsp" />
+	<mapping path="/main" decorator="/jsp/decorators/mainDecorator.jsp" />
+	<mapping path="/sign/*" decorator="/jsp/decorators/mainDecorator.jsp" />
 	
     <!-- 제외 -->
     <!-- <mapping path="/unitstudy/view.donga" exclude="true" /> -->

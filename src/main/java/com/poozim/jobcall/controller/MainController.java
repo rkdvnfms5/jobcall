@@ -18,12 +18,11 @@ public class MainController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String root(HttpServletRequest request, HttpServletResponse response, Model model) {
 		
-		return "redirect:/main.poo";
+		return "redirect:/main";
 	}
 	
-	@RequestMapping(value = "/main.poo", method = RequestMethod.GET)
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model) {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@ddd");
 		return "/main/main";
 	}
 }
