@@ -13,5 +13,25 @@
 .main-headline .btn-area .headline-signup:hover {background-color: #f45000; border-color: #f45000;}
 
 
+.sign-contents {margin: 0; padding-top: 120px;}
+.sign-contents .sign-container {margin: 0 auto; width: 600px; box-sizing: border-box; text-align: center; border-radius: 8px; padding: 50px; border: 1px solid #3a6ac8; background-color: white;}
 
+#signupForm fieldset {position: relative; text-align: left;}
+#signupForm .group-label {font-size: 18px; font-weight: 500; margin-bottom: 10px; color: #222222;}
+#signupForm .group-label:nth-child(n+2) {margin-top: 30px;}
+#signupForm .field-input label {position: absolute; top: 20px; left: 20px; font-size: 15px; color: #444444;}
+#signupForm .field-input input {width: 100%; height: 60px; padding: 22px 21px 21px 120px; border: 1px solid #e2e2e2; box-sizing: border-box; font-size: 14px;}
+#signupForm .field-input .btn {position: absolute; top: 10px; right: 10px; box-sizing: border-box; padding: 11px 10px 10px; width: 110px; border: 1px solid #e2e2e2; line-height: 17px; font-size: 14px; color: #888888; height: unset; cursor: pointer;}
+
+#signupForm fieldset.field-agree-all {padding: 16px 0; border-bottom: 1px solid #e2e2e2;}
+#signupForm fieldset.field-agree-all input {background-color: #ffffff;}
+#signupForm fieldset .label-text {font-size: 16px; color: #333333; vertical-align: top;}
+.sign-container input[type=checkbox] {position: relative; width: 28px; height: 28px; margin-right: 12px; border: 0;}
+/* .sign-container input[type=checkbox]:after {text-indent: 3px; content: '\e5ca'; font-size: 20px; line-height: 24px; color: #dddddd; display: inline-block; width: 100%; height: 100%; box-sizing: border-box; position: absolute; top: 0; left: 0; border: 1px solid #dddddd;} */
+
+.sign-container .submit-btn {width: 100%; box-sizing: border-box; height: 60px; background-color: #4778d9; border: none; box-shadow: inset 0 0 0 1px #3f6dca; font-size: 16px; font-weight: 400; cursor: pointer; color: #ffffff;}
+.sign-container .submit-btn:disabled {color: rgba(255, 255, 255, 0.5);}
+
+#signupForm fieldset.field-agreements {padding: 22px 0;}
+#signupForm fieldset.field-agreements li{position: relative; line-height: 24px; margin-bottom: 15px;}
 
