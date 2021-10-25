@@ -23,6 +23,19 @@
 	
 	<context:component-scan base-package="com.poozim.jobcall" />
 	
-	
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<exclude-mapping path="/css/**"/>
+			<exclude-mapping path="/fonts/**"/>
+			<exclude-mapping path="/images/**"/>
+			<exclude-mapping path="/scripts/**"/>
+			<exclude-mapping path="*.jsp"/>
+			<exclude-mapping path="*.js"/>
+			<exclude-mapping path="*.html"/>
+			<exclude-mapping path="*.css"/>
+			<beans:bean id="DefaultInterceptor" class="com.poozim.jobcall.interceptor.DefaultInterceptor" />
+		</interceptor>
+	</interceptors>
 	
 </beans:beans>

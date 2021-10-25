@@ -2,6 +2,7 @@ package com.poozim.jobcall.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.Data;
 @Entity
 public class Member {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int seq;
 	int work_seq;
 	String id;

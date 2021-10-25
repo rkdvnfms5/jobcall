@@ -23,6 +23,7 @@ public class MainController {
 	
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model) {
+		System.out.println("메에에에에인");
 		return "/main/main";
 	}
 }

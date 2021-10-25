@@ -3,6 +3,7 @@ package com.poozim.jobcall.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +23,11 @@ public class SignService {
 	
 	@Transactional
 	public int signupWork(Work work, Member member) {
-		int res = 0;
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		member.setPassword(passwordEncoder.encode(member.getPassword()));
 		
-		work = wokrRepository.save(work);
+		int res = 0;
+		res = wokrRepository.savesibal(work);
 		member = memberRepository.save(member);
 		
 		if(work.getSeq() > 0 && member.getSeq() > 0) {

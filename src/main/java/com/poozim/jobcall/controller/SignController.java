@@ -33,6 +33,21 @@ public class SignController {
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertSignUp(HttpServletRequest request, HttpServletResponse response, Model model, Work work) {
 		Member member = new Member();
+		
+		//test
+		work.setMember_seq(1);
+		work.setTitle("테스트");
+		work.setEmail("test@test.com");
+		work.setRegister("test");
+		
+		member.setWork_seq(2);
+		member.setId("testId");
+		member.setPassword("TestPassword");
+		member.setName("testname");
+		member.setDepartment("test Depart");
+		member.setUseyn("Y");
+		member.setAuth("admin");
+		
 		int res = signService.signupWork(work, member);
 		return "/sign/insert";
 	}
