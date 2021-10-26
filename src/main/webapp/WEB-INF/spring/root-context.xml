@@ -5,8 +5,36 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
+	<!-- properties 파일 사용 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+			    <value>classpath:/datasource.properties</value>
+			</list>
+		</property>
+	</bean>
+	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
 
 	<bean id="jsonView"	class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+       <property name="host" value="${smtp_host}" />
+       <property name="port" value="${smtp_port}" />
+       <property name="username" value="${smtp_id}"/> 
+       <property name="password" value="${smtp_password}"/> 
+       <property name="defaultEncoding" value="utf-8" />
+       
+       <property name="javaMailProperties"> 
+	       <props> 
+	       		<prop key="mail.smtp.starttls.enable">true</prop>
+			      <prop key="mail.smtp.auth">true</prop>
+			      <prop key="mail.smtps.ssl.checkserveridentity">true</prop>
+			      <prop key="mail.smtps.ssl.trust">*</prop>
+			      <prop key="mail.debug">true</prop>
+			      <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+	       </props> 
+       </property>
+    </bean>
 </beans>

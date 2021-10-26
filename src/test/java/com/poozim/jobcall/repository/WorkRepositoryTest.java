@@ -27,9 +27,9 @@ public class WorkRepositoryTest {
 		work.setEmail("test@test.com");
 		work.setRegister("test");
 		
-		work = wr.save(work);
+		int res = wr.saveJpql(work);
 		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@");
-		System.out.println(work.getSeq());
+		System.out.println(res);
 		//fail("Not yet implemented");
 	}
 

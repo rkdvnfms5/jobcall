@@ -11,7 +11,7 @@
 	<div class="sign-contents">
 		<div class="sign-container">
 			<div class="">
-				<form action="" id="signupForm">
+				<form action="/sign/signup" id="signupForm" method="post" onsubmit="checkSignup();">
 					<fieldset>
 						<h3 class="group-label">업무 프로젝트 정보</h3>
 						<fieldset class="field-input">
@@ -27,7 +27,7 @@
 								이메일
 							</label>
 							<input type="text" id="sign-email" name="email" placeholder="업무용 이메일 입력"/>	
-							<input type="button" class="btn" id="authcode-btn" value="인증코드 발송">					
+							<input type="button" class="btn" id="authcode-btn" value="인증코드 발송" onclick="sendAuthCode();">					
 						</fieldset>
 						<fieldset class="field-input">
 							<label for="sign-authcode">
@@ -36,6 +36,7 @@
 							<input type="text" id="sign-authcode" placeholder="인증코드 6자리 입력"/>		
 							<input type="button" class="btn" id="authconfirm-btn" value="인증 확인">					
 						</fieldset>
+						<input type="hidden" id="authYN" value="Y">
 						
 						<h3 class="group-label">아이디 만들기</h3>
 						<fieldset class="field-input">
@@ -57,6 +58,21 @@
 							<input type="password" id="sign-password-re" placeholder="비밀번호 재입력"/>		
 						</fieldset>
 						
+						<h3 class="group-label"></h3>
+						<fieldset class="field-input">
+							<label for="sign-name">
+								이름
+							</label>
+							<input type="text" id="sign-name" name="name" placeholder="이름 입력"/>		
+						</fieldset>
+						<fieldset class="field-input">
+							<label for="sign-department">
+								소속
+							</label>
+							<input type="text" id="sign-department" name="department" placeholder="팀 혹은 부서 소속 입력"/>		
+						</fieldset>
+						
+						<h3 class="group-label"></h3>
 						<fieldset class="field-agree-all">
 							<input type="checkbox" id="agree-all">
 							<label class="label-text" for="agree-all">모든 항목에 동의</label>
@@ -72,15 +88,15 @@
 									<input type="checkbox" id="agree-privacy-nec">
 									<label class="label-text" for="agree-privacy-nec">개인정보 수집이용 동의(필수)</label>
 								</li>
-								<li>
+								<!-- <li>
 									<input type="checkbox" id="agree-privacy-opt">
 									<label class="label-text" for="agree-privacy-opt">개인정보 수집이용 동의(선택)</label>
-								</li>
+								</li> -->
 							</ul>
 						</fieldset>
 						
 						<fieldset class="field-submit">
-							<input type="submit" class="submit-btn" value="개설하기">
+							<input type="submit" id="sign-submit" class="submit-btn" value="개설하기" disabled>
 						</fieldset>
 					</fieldset>
 					
@@ -89,5 +105,22 @@
 		</div>
 	</div>
 </div>
+<script>
+$(document).ready(function(){
+	$("#signupForm fieldset[class^='field']").on('focusout', function(){
+		var check = checkSignup();
+		if(check){
+			$("#sign-submit").attr("disabled", false);
+		}
+	})
+	
+	$("#signupForm input").on('change', function(){
+		var check = checkSignup();
+		if(check){
+			$("#sign-submit").attr("disabled", false);
+		}
+	})
+});
+</script>
 </body>
 </html>

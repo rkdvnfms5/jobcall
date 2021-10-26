@@ -8,6 +8,7 @@
 <%@ include file="/jsp/include/common_header.jsp"%>
 <link rel="stylesheet" href="/css/header.css"/>
 <link rel="stylesheet" href="/css/main.css"/>
+<script type="text/javascript" src="/scripts/sign.js" ></script>
 <sitemesh:write property='head' />
 </head>
 <body>

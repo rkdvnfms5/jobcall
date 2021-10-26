@@ -18,6 +18,7 @@ public class Member {
 	String password;
 	String name;
 	String department;
+	String email;
 	String useyn;
 	String auth;
 	String regdate;

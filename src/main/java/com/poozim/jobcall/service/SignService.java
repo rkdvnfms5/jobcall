@@ -27,8 +27,10 @@ public class SignService {
 		member.setPassword(passwordEncoder.encode(member.getPassword()));
 		
 		int res = 0;
-		res = wokrRepository.savesibal(work);
 		member = memberRepository.save(member);
+		
+		work.setMember_seq(member.getSeq());
+		work = wokrRepository.save(work);
 		
 		if(work.getSeq() > 0 && member.getSeq() > 0) {
 			res = 1;

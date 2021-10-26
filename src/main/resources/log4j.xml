@@ -32,6 +32,15 @@
 		<level value="info" />
 	</logger>
 
+	<!-- jpa log -->
+	<logger name="org.hibernate.type.descriptor.sql.BasicBinder">
+		<level value="TRACE" />
+	</logger>
+	
+	<logger name="org.hibernate.SQL">
+		<level value="debug" />
+	</logger>
+	
 	<!-- Root Logger -->
 	<root>
 		<priority value="warn" />
