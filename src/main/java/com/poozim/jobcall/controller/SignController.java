@@ -1,5 +1,6 @@
 package com.poozim.jobcall.controller;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -22,6 +23,7 @@ import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.service.SignService;
 import com.poozim.jobcall.util.MailUtil;
+import com.poozim.jobcall.util.PropertiesUil;
 
 @Controller
 @RequestMapping("/sign")
@@ -61,7 +63,7 @@ public class SignController {
 	}
 	
 	@RequestMapping(value = "/get_auth", method = RequestMethod.POST)
-	public View sendAuthCode(HttpServletRequest request, HttpServletResponse response, Model model) {
+	public View sendAuthCode(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
 		String title = "잡콜이야 인증코드 입니다.";
 		String from = "rkdvnfms5@naver.com";
 		String text = "인증코드 : " + getAuthCode();
