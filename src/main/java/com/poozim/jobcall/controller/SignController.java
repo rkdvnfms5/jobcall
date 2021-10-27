@@ -8,6 +8,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,15 +16,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.service.MemberService;
 import com.poozim.jobcall.service.SignService;
+import com.poozim.jobcall.service.WorkService;
+import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.MailUtil;
 import com.poozim.jobcall.util.PropertiesUil;
+import com.poozim.jobcall.util.TimeUtil;
 
 @Controller
 @RequestMapping("/sign")
@@ -33,44 +39,108 @@ public class SignController {
 	private SignService signService;
 	
 	@Autowired
+	private WorkService workService;
+	
+	@Autowired
+	private MemberService memberService;
+	
+	@Autowired
 	private View jsonView;
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String goSignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
-		
+		HttpSession session = request.getSession();
+		session.setAttribute("authYN", "N");
+		session.setAttribute("duplYN", "N");
 		return "/sign/signup";
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public String insertSignUp(HttpServletRequest request, HttpServletResponse response, Model model, Work work) {
-		String id = ServletRequestUtils.getStringParameter(request, "id", "");
-		String password = ServletRequestUtils.getStringParameter(request, "password", "");
-		String name = ServletRequestUtils.getStringParameter(request, "name", "");
-		String department = ServletRequestUtils.getStringParameter(request, "department", "");
+		String authYN = ServletRequestUtils.getStringParameter(request, "authYN", "N");
+		String duplYN = ServletRequestUtils.getStringParameter(request, "duplYN", "N");
+		HttpSession session = request.getSession();
 		
-		Member member = new Member();
-		member.setId(id);
-		member.setPassword(password);
-		member.setName(name);
-		member.setDepartment(department);
-		member.setAuth("master");
-		member.setEmail(work.getEmail());
-		
-		work.setRegister(name);
-		
-		int res = signService.signupWork(work, member);
-		return "/sign/insert";
+		if(session.getAttribute("authYN").toString().equals("Y") && authYN.equals("Y") && session.getAttribute("duplYN").toString().equals("Y") && duplYN.equals("Y")) {
+			String id = ServletRequestUtils.getStringParameter(request, "id", "");
+			String password = ServletRequestUtils.getStringParameter(request, "password", "");
+			String name = ServletRequestUtils.getStringParameter(request, "name", "");
+			String department = ServletRequestUtils.getStringParameter(request, "department", "");
+			String regdate = TimeUtil.getDateTime();
+			
+			Member member = new Member();
+			member.setId(id);
+			member.setPassword(password);
+			member.setName(name);
+			member.setDepartment(department);
+			member.setAuth("master");
+			member.setEmail(work.getEmail());
+			member.setUseyn("Y");
+			member.setRegdate(regdate);
+			
+			work.setRegister(name);
+			work.setUseyn("Y");
+			work.setRegdate(regdate);
+			
+			System.out.println(work);
+			int res = signService.signupWork(work, member);
+		} else if(session.getAttribute("duplYN").toString().equals("N") || duplYN.equals("N")) {
+			model.addAttribute("msg", "아이디 중복검사가 필요합니다.");
+			return "/util/alert";
+		} else {
+			model.addAttribute("msg", "이메일 인증이 필요합니다.");
+			return "/util/alert";
+		}
+		return "redirect:/work/" + work.getSeq() + "/home";
 	}
 	
 	@RequestMapping(value = "/get_auth", method = RequestMethod.POST)
 	public View sendAuthCode(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
+		String email = ServletRequestUtils.getStringParameter(request, "email", "");
+		
+		String authcode = getAuthCode();
 		String title = "잡콜이야 인증코드 입니다.";
 		String from = "rkdvnfms5@naver.com";
-		String text = "인증코드 : " + getAuthCode();
-		String to = "rkdvnfms5@naver.com";
+		String text = "인증코드 : " + authcode;
+		String to = email;
 		String cc = "";
 		
 		MailUtil.mailSend(title, from, text, to, cc);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("authcode", authcode);
+		session.setAttribute("authYN", "N");
+		
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/check_auth", method = RequestMethod.POST)
+	public View checkAuthCode(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
+		String value = ServletRequestUtils.getStringParameter(request, "value", "");
+		
+		HttpSession session = request.getSession();
+		String authcode = session.getAttribute("authcode").toString();
+		
+		if(authcode.equals(value)) {
+			session.setAttribute("authYN", "Y");
+			model.addAttribute("res", 1);
+		} else {
+			session.setAttribute("authYN", "N");
+			model.addAttribute("res", 0);
+		}
+		
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/check_dupl", method = RequestMethod.POST)
+	public View checkDuplicationId(HttpServletRequest request, HttpServletResponse response, Model model, Member member) throws IOException {
+		member = memberService.getMemberById(member);
+		System.out.println(member);
+		if(member != null && member.getSeq() > 0) {
+			model.addAttribute("count", 1);
+		} else {
+			model.addAttribute("count", 0);
+		}
 		return jsonView;
 	}
 	
@@ -84,5 +154,72 @@ public class SignController {
 		}
 		
 		return code.toString();
+	}
+	
+	@RequestMapping(value = "/attend/{seq}", method = RequestMethod.GET)
+	public String goAttend(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("seq") int seq) {
+		HttpSession session = request.getSession();
+		session.setAttribute("authYN", "N");
+		session.setAttribute("duplYN", "N");
+		
+		Work work = workService.getWorkOne(seq);
+		
+		if(work == null || work.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당하는 잡콜센터가 존재하지 않습니다.");
+			return "/util/alert";
+		}
+		
+		return "/sign/attend";
+	}
+	
+	@RequestMapping(value = "/attend/{seq}", method = RequestMethod.POST)
+	public String insertMember(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@PathVariable("seq") int seq, Member member) {
+		String code = ServletRequestUtils.getStringParameter(request, "code", "N");
+		String authYN = ServletRequestUtils.getStringParameter(request, "authYN", "N");
+		String duplYN = ServletRequestUtils.getStringParameter(request, "duplYN", "N");
+		HttpSession session = request.getSession();
+		
+		Work work = workService.getWorkByCode(code);
+		if(work == null || work.getSeq() == 0) {
+			model.addAttribute("msg", "참여코드가 올바르지 않습니다.");
+			return "/util/alert";
+		}
+		
+		if(session.getAttribute("authYN").toString().equals("Y") && authYN.equals("Y") && session.getAttribute("duplYN").toString().equals("Y") && duplYN.equals("Y")) {
+			String regdate = TimeUtil.getDateTime();
+			
+			member.setAuth("member");
+			member.setUseyn("Y");
+			member.setRegdate(regdate);
+			
+			member = memberService.insertMember(member);
+			
+			LoginUtil.setLoginSession(request, response, member);
+		} else if(session.getAttribute("duplYN").toString().equals("N") || duplYN.equals("N")) {
+			model.addAttribute("msg", "아이디 중복검사가 필요합니다.");
+			return "/util/alert";
+		} else {
+			model.addAttribute("msg", "이메일 인증이 필요합니다.");
+			return "/util/alert";
+		}
+		
+		
+		
+		return "redirect:/work/" + seq + "/home";
+	}
+	
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String goLogin(HttpServletRequest request, HttpServletResponse response, Model model) {
+		
+		return "/sign/login";
+	}
+	
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String doLogin(HttpServletRequest request, HttpServletResponse response, Model model,
+			Member member) {
+		
+		return "/sign/login";
 	}
 }

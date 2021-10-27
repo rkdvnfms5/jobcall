@@ -7,11 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import lombok.Data;
 
 @Data
 @Entity	//
-@Table(name="Work")	// 테이블 명과 클래스 명이 다른 경우 사용
+//@Table(name="Work")	// 테이블 명과 클래스 명이 다른 경우 사용
 public class Work {
 	@Id	// 고유 값인듯
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //auto increament 되는 값

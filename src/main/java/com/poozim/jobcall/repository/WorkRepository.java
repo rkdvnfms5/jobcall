@@ -10,17 +10,22 @@ import com.poozim.jobcall.model.Work;
 
 public interface WorkRepository extends JpaRepository<Work, Integer>{
 
-/*	@Query(value = "INSERT INTO Work (member_seq, title, code, email, useyn, register, regdate) VALUES (#{member_seq}, #{title}, getWorkCode(#{title}), #{email}, 'Y', #{register}, NOW())", 
-			nativeQuery = true) */
+	@Modifying
+	@Transactional
+	@Query(value = "INSERT INTO Work (member_seq, title, code, email, useyn, register, regdate) "
+			+ "VALUES (:#{#work.member_seq}, :#{#work.title}, getWorkCode(:#{#work.title}), :#{#work.email}, 'Y', :#{#work.register}, NOW())", 
+			nativeQuery = true)
+	public int insertWork(@Param("work") Work work);
 	
 	@Modifying
 	@Transactional
-	@Query(value = "INSERT INTO Work (member_seq, title, code, email, useyn, register, regdate) VALUES (:#{#work.member_seq}, :#{#work.title}, getWorkCode(:#{#work.title}), :#{#work.email}, 'Y', :#{#work.register}, NOW())", 
+	@Query(value = "UPDATE Work "
+			+ "SET code = getWorkCode(:#{#work.title}) "
+			+ "WHERE seq = :#{#work.seq}", 
 			nativeQuery = true)
-	public int saveJpql(@Param("work") Work work);
+	public int setWorkCode(@Param("work") Work work);
 	
 	@Transactional
-	@Query(value = "INSERT INTO Work (member_seq, title, code, email, useyn, register, regdate) VALUES (:#{#work.member_seq}, :#{#work.title}, getWorkCode(:#{#work.title}), :#{#work.email}, 'Y', :#{#work.register}, NOW())", 
-			nativeQuery = true)
-	public Work save (Work work);
+	@Query(value = "SELECT w FROM Work w WHERE code LIKE :#{#code} AND useyn = 'Y'")
+	public Work getWorkOneByCode(@Param("code") String code);
 }

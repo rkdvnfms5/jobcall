@@ -12,9 +12,17 @@ import com.poozim.jobcall.repository.WorkRepository;
 public class WorkService {
 
 	@Autowired
-	private WorkRepository wokrRepository;
+	private WorkRepository workRepository;
 	
 	public List<Work> getWorkList() {
-		return wokrRepository.findAll();
+		return workRepository.findAll();
+	}
+	
+	public Work getWorkOne(int seq) {
+		return workRepository.findById(seq).get();
+	}
+	
+	public Work getWorkByCode(String code) {
+		return workRepository.getWorkOneByCode(code);
 	}
 }

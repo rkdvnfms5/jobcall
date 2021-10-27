@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.service.MemberService;
 import com.poozim.jobcall.service.WorkService;
+import com.poozim.jobcall.util.LoginUtil;
 
 @Controller
 @RequestMapping("/work")
@@ -22,17 +25,38 @@ public class WorkController {
 	@Autowired
 	private WorkService workService;
 	
-	@RequestMapping(value = "/view/{code}")
+	@Autowired
+	private MemberService memberService;
+	
+	@RequestMapping(value = "/{seq}/home")
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model,
-			@PathVariable("code") String code) {
+			@PathVariable("seq") int seq) {
+		/*
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return "/util/alert";
+		}
+		*/
 		
-		return "/main/main";
+		Work work = workService.getWorkOne(seq);
+		
+		Member loginMember = LoginUtil.getLoginMember(request, response);
+		Member member = memberService.getMemberOne(loginMember.getSeq());
+		
+		/*
+		if(member.getWork_seq() != work.getSeq() || !member.getUseyn().equals("Y")) {
+			model.addAttribute("msg", "초대된 멤버가 아닙니다.");
+			return "/util/alert";
+		}
+		*/
+		
+		if(work.getUseyn().equals("Y")) {
+			model.addAttribute("Work", work);
+			return "/work/view";
+		} else {
+			model.addAttribute("msg", "해당 잡콜센터가 존재하지 않습니다.");
+			return "/util/alert";
+		}
 	}
 	
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public String getWorkList(HttpServletRequest request, HttpServletResponse response, Model model) {
-		List<Work> workList = workService.getWorkList();
-		System.out.println(workList);
-		return "/main/main";
-	}
 }

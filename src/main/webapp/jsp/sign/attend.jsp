@@ -11,14 +11,14 @@
 	<div class="sign-contents">
 		<div class="sign-container">
 			<div class="">
-				<form action="/sign/signup" id="signupForm" method="post">
+				<form action="/sign/attend" id="signupForm" method="post">
 					<fieldset>
-						<h3 class="group-label">업무 프로젝트 정보</h3>
+						<h3 class="group-label">프로젝트 참여</h3>
 						<fieldset class="field-input">
 							<label for="sign-title">
-								프로젝트명
+								참여 코드
 							</label>
-							<input type="text" id="sign-title" name="title" maxlength="15" placeholder="회사명 또는 프로젝트명을 15자 이내로 입력"/>						
+							<input type="text" id="sign-title" name="code" maxlength="6" placeholder="프로젝트 참여 코드 입력"/>						
 						</fieldset>
 						
 						<h3 class="group-label">이메일 인증</h3>
@@ -103,7 +103,7 @@
 						</fieldset>
 						
 						<fieldset class="field-submit">
-							<input type="submit" id="sign-submit" class="submit-btn" value="개설하기" disabled>
+							<input type="submit" id="sign-submit" class="submit-btn" value="참여하기" disabled>
 						</fieldset>
 					</fieldset>
 					

@@ -19,10 +19,6 @@ function checkSignup() {
 		return false;
 	}
 	
-	if($("#duplYN").val() != 'Y'){
-		return false;
-	}
-	
 	if($("#sign-password").val() == ''){
 		return false;
 	}
@@ -86,16 +82,12 @@ function sendAuthCode(){
 		dataType : "json",
 		success : function(res){
 			alert("발송되었습니다.");
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nmessage : " + request.responseText + "\nerror : " + error);
 		}
 	})
 }
 
 function checkAuthCode(){
 	var authcode = $("#sign-authcode").val();
-	
 	$.ajax({
 		url : "/sign/check_auth",
 		method : "post",
@@ -103,69 +95,17 @@ function checkAuthCode(){
 		dataType : "json",
 		success : function(res){
 			if(res.res == 1){
-				$("#field-auth").removeClass("field-error");
-				$("#auth-msg").removeClass("error-msg");
-				
 				$("#field-auth").addClass("field-success");
 				$("#auth-msg").addClass("success-msg");
 				$("#auth-msg").html("인증되었습니다.");
 				$("#authYN").val("Y");
 			} else {
-				$("#field-auth").removeClass("field-success");
-				$("#auth-msg").removeClass("success-msg");
-				
 				$("#field-auth").addClass("field-error");
 				$("#auth-msg").addClass("error-msg");
 				$("#auth-msg").html("인증코드가 다릅니다.");
 				$("#authYN").val("N");
 			}
 			$("#auth-msg").show();
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nmessage : " + request.responseText + "\nerror : " + error);
-		}
-	})
-}
-
-function checkDuplication(){
-	var id = $("#sign-id").val();
-	
-	if(id == ""){
-		$("#field-id").addClass("field-error");
-		$("#dupl-msg").addClass("error-msg");
-		$("#dupl-msg").html("아이디를 입력하세요.");
-		$("#duplYN").val("N");
-		$("#dupl-msg").show();
-		return;
-	}
-	
-	$.ajax({
-		url : "/sign/check_dupl",
-		method : "post",
-		data : {id : id},
-		dataType : "json",
-		success : function(res){
-			if(res.count == 0){
-				$("#field-id").removeClass("field-error");
-				$("#dupl-msg").removeClass("error-msg");
-				
-				$("#field-id").addClass("field-success");
-				$("#dupl-msg").addClass("success-msg");
-				$("#dupl-msg").html("사용 가능한 아이디입니다.");
-				$("#duplYN").val("Y");
-			} else {
-				$("#field-id").removeClass("field-success");
-				$("#dupl-msg").removeClass("success-msg");
-				
-				$("#field-id").addClass("field-error");
-				$("#dupl-msg").addClass("error-msg");
-				$("#dupl-msg").html("이미 존재하는 아이디입니다.");
-				$("#duplYN").val("N");
-			}
-			$("#dupl-msg").show();
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nmessage : " + request.responseText + "\nerror : " + error);
 		}
 	})
 }
