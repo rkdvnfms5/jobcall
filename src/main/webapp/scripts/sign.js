@@ -78,7 +78,12 @@ function validateEmail(){
 }
 
 function sendAuthCode(){
+	if(!validateEmail()){
+		return;
+	}
+	
 	var email = $("#sign-email").val();
+	
 	$.ajax({
 		url : "/sign/get_auth",
 		method : "post",

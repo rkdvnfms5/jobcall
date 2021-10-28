@@ -11,7 +11,7 @@
 	<div class="sign-contents">
 		<div class="sign-container">
 			<div class="">
-				<form action="/sign/attend/${Work.seq}" id="signupForm" method="post">
+				<form action="" id="signupForm" method="post">
 					<fieldset>
 						<h3 class="group-label">프로젝트 참여</h3>
 						<fieldset class="field-input">

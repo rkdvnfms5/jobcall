@@ -23,6 +23,8 @@ public class LoginUtil {
 	
 	public static Member getLoginMember(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
+		System.out.println("@@@@@@@@@@@@@@@@@@@");
+		System.out.println((Member)session.getAttribute("member"));
 		return (Member)session.getAttribute("member");
 	}
 }

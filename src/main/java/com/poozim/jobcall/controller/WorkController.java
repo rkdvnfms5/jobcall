@@ -31,24 +31,23 @@ public class WorkController {
 	@RequestMapping(value = "/{seq}/home")
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("seq") int seq) {
-		/*
+		
 		if(!LoginUtil.getLoginCheck(request, response)) {
 			model.addAttribute("msg", "로그인이 필요합니다.");
 			return "/util/alert";
 		}
-		*/
+		
 		
 		Work work = workService.getWorkOne(seq);
 		
-		Member loginMember = LoginUtil.getLoginMember(request, response);
-		Member member = memberService.getMemberOne(loginMember.getSeq());
+		Member member = LoginUtil.getLoginMember(request, response);
 		
-		/*
+		
 		if(member.getWork_seq() != work.getSeq() || !member.getUseyn().equals("Y")) {
 			model.addAttribute("msg", "초대된 멤버가 아닙니다.");
 			return "/util/alert";
 		}
-		*/
+		
 		
 		if(work.getUseyn().equals("Y")) {
 			model.addAttribute("Work", work);

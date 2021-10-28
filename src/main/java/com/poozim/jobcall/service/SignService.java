@@ -9,35 +9,65 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.MemberRepository;
+import com.poozim.jobcall.repository.WorkGroupMemberRepository;
+import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
+import com.poozim.jobcall.util.TimeUtil;
 
 @Service
 public class SignService {
 
 	@Autowired
-	private WorkRepository wokrRepository;
+	private WorkRepository workRepository;
 	
 	@Autowired
 	private MemberRepository memberRepository;
 	
+	@Autowired
+	private WorkGroupRepository workGroupRepository;
+	
+	@Autowired
+	private WorkGroupMemberRepository workGroupMemberRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryEncoder;
+	
 	@Transactional
 	public int signupWork(Work work, Member member) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		member.setPassword(passwordEncoder.encode(member.getPassword()));
+		member.setPassword(bcryEncoder.encode(member.getPassword()));
 		
-		int res = 0;
+		//멤버 생성
 		member = memberRepository.save(member);
 		
+		//업무 생성
 		work.setMember_seq(member.getSeq());
-		work = wokrRepository.save(work);
+		work = workRepository.save(work);
 		member.setWork_seq(work.getSeq());
 		
-		wokrRepository.setWorkCode(work);
+		workRepository.setWorkCode(work);
 		
-		if(work.getSeq() > 0 && member.getSeq() > 0) {
-			res = 1;
-		}
-		return res;
+		//기본 그룹 생성
+		WorkGroup workGroup = new WorkGroup();
+		workGroup.setMember_seq(member.getSeq());
+		workGroup.setWork_seq(work.getSeq());
+		workGroup.setName("기본 그룹");
+		workGroup.setAccess("public");
+		workGroup.setRegister(member.getId());
+		workGroup.setRegdate(work.getRegdate());
+		
+		workGroup = workGroupRepository.save(workGroup);
+		
+		//기본 그룹에 참여
+		WorkGroupMember workGroupMember = new WorkGroupMember();
+		workGroupMember.setGroup_seq(workGroup.getSeq());
+		workGroupMember.setMember_seq(member.getSeq());
+		workGroupMember.setRegdate(work.getRegdate());
+		
+		workGroupMember = workGroupMemberRepository.save(workGroupMember);
+		
+		return 1;
 	}
 }

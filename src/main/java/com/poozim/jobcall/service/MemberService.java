@@ -17,13 +17,15 @@ public class MemberService {
 	@Autowired
 	private MemberRepository memberRepository;
 	
+	@Autowired
+	private BCryptPasswordEncoder bcryEncoder;
+	
 	public Member getMemberOne(int seq) {
 		return memberRepository.findById(seq).get();
 	}
 	
 	public Member insertMember(Member member) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		member.setPassword(passwordEncoder.encode(member.getPassword()));
+		member.setPassword(bcryEncoder.encode(member.getPassword()));
 		
 		return memberRepository.save(member);
 	}

@@ -47,6 +47,9 @@ public class SignController {
 	@Autowired
 	private View jsonView;
 	
+	@Autowired
+	private BCryptPasswordEncoder bcryEncoder;
+	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public String goSignUp(HttpServletRequest request, HttpServletResponse response, Model model) {
 		HttpSession session = request.getSession();
@@ -78,12 +81,15 @@ public class SignController {
 			member.setUseyn("Y");
 			member.setRegdate(regdate);
 			
-			work.setRegister(name);
+			work.setRegister(id);
 			work.setUseyn("Y");
 			work.setRegdate(regdate);
 			
-			System.out.println(work);
 			int res = signService.signupWork(work, member);
+			
+			if(res > 0) {
+				LoginUtil.setLoginSession(request, response, member);
+			}
 		} else if(session.getAttribute("duplYN").toString().equals("N") || duplYN.equals("N")) {
 			model.addAttribute("msg", "아이디 중복검사가 필요합니다.");
 			return "/util/alert";
@@ -91,6 +97,7 @@ public class SignController {
 			model.addAttribute("msg", "이메일 인증이 필요합니다.");
 			return "/util/alert";
 		}
+		
 		return "redirect:/work/" + work.getSeq() + "/home";
 	}
 	
@@ -135,10 +142,14 @@ public class SignController {
 	@RequestMapping(value = "/check_dupl", method = RequestMethod.POST)
 	public View checkDuplicationId(HttpServletRequest request, HttpServletResponse response, Model model, Member member) throws IOException {
 		member = memberService.getMemberById(member);
-		System.out.println(member);
+		
+		HttpSession session = request.getSession();
+		
 		if(member != null && member.getSeq() > 0) {
+			session.setAttribute("duplYN", "N");
 			model.addAttribute("count", 1);
 		} else {
+			session.setAttribute("duplYN", "Y");
 			model.addAttribute("count", 0);
 		}
 		return jsonView;
@@ -169,7 +180,7 @@ public class SignController {
 			model.addAttribute("msg", "해당하는 잡콜센터가 존재하지 않습니다.");
 			return "/util/alert";
 		}
-		
+		model.addAttribute("Work", work);
 		return "/sign/attend";
 	}
 	
@@ -193,6 +204,7 @@ public class SignController {
 			member.setAuth("member");
 			member.setUseyn("Y");
 			member.setRegdate(regdate);
+			member.setWork_seq(work.getSeq());
 			
 			member = memberService.insertMember(member);
 			
@@ -219,7 +231,24 @@ public class SignController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String doLogin(HttpServletRequest request, HttpServletResponse response, Model model,
 			Member member) {
+		String password = ServletRequestUtils.getStringParameter(request, "password", "");
 		
-		return "/sign/login";
+		member = memberService.getMemberById(member);
+		
+		boolean passwordYN = bcryEncoder.matches(password, member.getPassword());
+		
+		if(member == null || member.getSeq() == 0 || member.getUseyn().equals("N")) {
+			model.addAttribute("msg", "존재하지 않는 아이디입니다.");
+			return "/util/alert";
+		}
+		
+		if(!passwordYN) {
+			model.addAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
+			return "/util/alert";
+		} 
+		
+		LoginUtil.setLoginSession(request, response, member);
+		
+		return "redirect:/work/" + member.getWork_seq() + "/home";
 	}
 }

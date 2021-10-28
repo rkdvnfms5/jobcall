@@ -7,13 +7,13 @@
 		<nav class="header-nav">
 			<ul>
 				<li>
-					<a>서비스 소개</a>
+					<a onclick="alert('준비중입니다.')">서비스 소개</a>
 				</li>
 				<li>
-					<a>도움말</a>
+					<a onclick="alert('준비중입니다.')">도움말</a>
 				</li>
 				<li class="btn-signup">
-					<a>로그인</a>
+					<a href="/sign/login">로그인</a>
 				</li>
 				<li class="btn-signup">
 					<a href="/sign/signup">잡콜센터 개설</a>
