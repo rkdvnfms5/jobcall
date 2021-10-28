@@ -2,7 +2,7 @@
 <header class="main-header">
 	<div class="header-contents">
 		<h2 class="header-logo">
-			잡콜이야
+			<a href="/main">잡콜이야</a>
 		</h2>
 		<nav class="header-nav">
 			<ul>

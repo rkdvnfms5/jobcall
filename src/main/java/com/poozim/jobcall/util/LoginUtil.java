@@ -11,6 +11,7 @@ public class LoginUtil {
 	public static void setLoginSession(HttpServletRequest request, HttpServletResponse response, Member member) {
 		HttpSession session = request.getSession();
 		session.setAttribute("member", member);
+		session.setAttribute("loginCheck", true);
 	}
 	
 	public static boolean getLoginCheck(HttpServletRequest request, HttpServletResponse response) {
