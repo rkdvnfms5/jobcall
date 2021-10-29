@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.model.WorkCategory;
+import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.service.MemberService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
@@ -38,7 +40,9 @@ public class WorkController {
 		}
 		
 		
+		//get Work
 		Work work = workService.getWorkOne(seq);
+		model.addAttribute("Work", work);
 		
 		Member member = LoginUtil.getLoginMember(request, response);
 		
@@ -48,14 +52,29 @@ public class WorkController {
 			return "/util/alert";
 		}
 		
-		
-		if(work.getUseyn().equals("Y")) {
-			model.addAttribute("Work", work);
-			return "/work/view";
-		} else {
+		if(work.getUseyn().equals("N")) {
 			model.addAttribute("msg", "해당 잡콜센터가 존재하지 않습니다.");
 			return "/util/alert";
 		}
+		
+		//get Work Group
+		WorkGroup workGroup = new WorkGroup();
+		workGroup.setMember_seq(member.getSeq());
+		workGroup.setWork_seq(work.getSeq());
+		List<WorkGroup> workGroupList = workService.getWorkGroupList(workGroup);
+		model.addAttribute("WorkGroupList", workGroupList);
+		
+		//get Work Category
+		List<WorkCategory> workCategoryList = workService.getWorkCategoryList(work.getSeq());
+		model.addAttribute("WorkCategoryList", workCategoryList);
+		
+		//get Work Boards
+		
+		
+		//get Work Members
+		
+		
+		return "/work/view";
 	}
 	
 }

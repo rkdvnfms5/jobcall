@@ -7,7 +7,9 @@
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
 	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
@@ -23,6 +25,7 @@
 		</property>
 	</bean>
 	
+	<!-- JPA DB Setting -->
 	<bean id="jobcallDataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="${JOBCALL_URL}" />
@@ -50,8 +53,50 @@
 	
 	<jpa:repositories base-package="com.poozim.jobcall.repository" />
 	
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+	<bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<!-- END JPA DB Setting -->
+	
+	<!-- Mybatis DB Setting -->
+	<bean id="mybatisJobcallDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="${JOBCALL_URL}" />
+		<property name="username" value="${POOZIM_USER}" />
+		<property name="password" value="${POOZIM_PASSWORD}" />
+		<property name="maxActive" value="10" />
+		<property name="maxIdle" value="5" />
+		<property name="maxWait" value="10000" />
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testWhileIdle" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="7200000" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="60" />
+		<property name="logAbandoned" value="true" />
+	</bean>
+	
+	<bean id="sqlSessionFactoryJobcall" name="sqlSessionFactoryJobcall" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="jobcallDataSource" />
+		<property name="typeAliasesPackage" value="com.poozim.jobcall.model" />
+		<property name="mapperLocations" value="classpath*:com/poozim/jobcall/*.xml" />
+	</bean>
+	
+	<bean id="mybatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="mybatisJobcallDataSource" />
+	</bean>
+	
+	<mybatis-spring:scan base-package="com.poozim.jobcall.mapper"/>
+	<!-- END Mybatis DB Setting -->
+	
+	<!-- transaction manager setting -->
+	<bean id="transactionManager" class="org.springframework.data.transaction.ChainedTransactionManager">
+		<constructor-arg>
+			<list>
+				<ref bean="mybatisTransactionManager"/>
+				<ref bean="jpaTransactionManager"/>
+			</list>
+		</constructor-arg>
 	</bean>
 	
 	<tx:annotation-driven transaction-manager="transactionManager" />

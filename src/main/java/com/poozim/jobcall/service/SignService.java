@@ -9,9 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.model.WorkCategory;
+import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.MemberRepository;
+import com.poozim.jobcall.repository.WorkCategoryGroupRepository;
+import com.poozim.jobcall.repository.WorkCategoryRepository;
 import com.poozim.jobcall.repository.WorkGroupMemberRepository;
 import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
@@ -31,6 +35,12 @@ public class SignService {
 	
 	@Autowired
 	private WorkGroupMemberRepository workGroupMemberRepository;
+	
+	@Autowired
+	private WorkCategoryRepository workCategoryRepository;
+	
+	@Autowired
+	private WorkCategoryGroupRepository WorkCategoryGroupRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder bcryEncoder;
@@ -57,6 +67,7 @@ public class SignService {
 		workGroup.setAccess("public");
 		workGroup.setRegister(member.getId());
 		workGroup.setRegdate(work.getRegdate());
+		workGroup.setUseyn("Y");
 		
 		workGroup = workGroupRepository.save(workGroup);
 		
@@ -67,6 +78,24 @@ public class SignService {
 		workGroupMember.setRegdate(work.getRegdate());
 		
 		workGroupMember = workGroupMemberRepository.save(workGroupMember);
+		
+		//기본 카테고리 생성
+		WorkCategory workCategory = new WorkCategory();
+		workCategory.setWork_seq(work.getSeq());
+		workCategory.setMember_seq(member.getSeq());
+		workCategory.setTitle("미분류 그룹");
+		workCategory.setDefaultyn("Y");
+		workCategory.setRegdate(work.getRegdate());
+		
+		workCategory = workCategoryRepository.save(workCategory);
+		
+		//기본 카테고리에 기본 그룹 추가
+		WorkCategoryGroup wcg = new WorkCategoryGroup();
+		wcg.setGroup_seq(workGroup.getSeq());
+		wcg.setCategory_seq(workCategory.getSeq());
+		wcg.setMember_seq(member.getSeq());
+		
+		WorkCategoryGroupRepository.save(wcg);
 		
 		return 1;
 	}

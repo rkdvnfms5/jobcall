@@ -5,5 +5,7 @@ import java.util.List;
 import com.poozim.jobcall.model.WorkGroup;
 
 public interface WorkGroupRepositoryCustom{
-	public List<WorkGroup> getWorkGroupList(WorkGroup workGroup);
+	public List<WorkGroup> getWorkGroupList(int workseq, int memberseq);
+	
+	public int getWorkGroupMemberCnt(WorkGroup workGroup);
 }

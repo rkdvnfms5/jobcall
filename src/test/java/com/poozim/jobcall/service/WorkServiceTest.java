@@ -5,7 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.repository.WorkBoardFileRepository;
@@ -34,10 +36,16 @@ public class WorkServiceTest {
 	@Autowired
 	private WorkBoardFileRepository workBoardFileRepository;
 	
+	@Autowired
+	private WorkMapper workMapper;
+	
 	@Test
+	@Transactional
 	public void Test() {
-		WorkGroup workGroup = new WorkGroup();
-		workGroup.setWork_seq(6);
-		System.out.println(workGroupRepository.getWorkGroupList(workGroup));
+		//Mybatis Mapper
+		System.out.println(workMapper.getWorkGroupList(new WorkGroup()));
+		
+		//JPA Repository
+		System.out.println(workGroupRepository.getWorkGroupList(10, 1));
 	}
 }

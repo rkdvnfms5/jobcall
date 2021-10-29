@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poozim.jobcall.mapper.WorkMapper">
+	<select id="getWorkGroupList" parameterType="WorkGroup" resultType="WorkGroup">
+		SELECT wg.*, 
+		(SELECT category_seq FROM WorkCategoryGroup wcg WHERE wcg.group_seq = wg.seq AND wcg.member_seq = #{member_seq}) as category_seq
+		FROM WorkGroup wg
+		WHERE wg.useyn = 'Y'
+		AND wg.work_seq = #{work_seq}
+		AND 
+		(	
+			wg.access like 'public'
+			OR	
+			(wg.access like 'private' AND wg.seq IN (SELECT group_seq FROM WorkGroupMember WHERE member_seq = #{member_seq}))
+		)
+	</select>
+</mapper>

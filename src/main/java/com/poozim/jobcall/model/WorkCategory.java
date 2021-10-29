@@ -4,25 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class WorkGroup {
+public class WorkCategory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int seq;
-	int member_seq;
 	int work_seq;
-	String name;
-	String content;
-	String access;
-	String useyn;
-	String register;
+	int member_seq;
+	String title;
+	String defaultyn;
 	String regdate;
-	
-	@Transient
-	int category_seq;
 }
