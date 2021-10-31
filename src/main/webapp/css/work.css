@@ -1,43 +1,99 @@
 @charset "UTF-8";
 
-.main-contents {margin: 0; padding: 0;}
-.main-headline {text-align: center; background-image: url('/images/main-bg-01.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover; 
-				height: 740px; width: auto; }
+body {background-color: #f5f5f5;}
 
-.main-headline .cover { padding: 150px 5% 90px; height:500px; background-image: linear-gradient(287deg, #1c7dff, #57a2ff); opacity: 0.7; color: white; font-size: 20px; font-weight: 500; }
-.main-headline .title {font-size: 50px;}
-.main-headline .title .title-strong {color: #f45000; font-size: 60px;}
-.main-headline .desc {margin-top: 50px; font-weight: 500; line-height: 30px;}
-.main-headline .btn-area {margin-top: 90px; color: white;}
-.main-headline .btn-area .headline-signup {font-size: 40px; border: 4px solid white; border-radius: 40px; box-sizing: border-box; padding: 17px 23px 16px; color: white;}
-.main-headline .btn-area .headline-signup:hover {background-color: #f45000; border-color: #f45000;}
+.transparent {background-color: transparent;}
+
+.work-contents {width: 88%; position: relative; z-index: 0;}
+.work-basic-layout {width: 990px; margin: 101px auto 0; padding: 0 15px;}
+.work-basic-layout .work-basic-layout-lnb {float: left; width: 26%;}
+
+.navbar {width: auto; height: 100%; padding-right: 20px; box-sizing: border-box;}
+.navbar-myprofile {margin-bottom: 10px; border: 1px solid #dcdfe4; border-radius: 2px; background-color: white;}
+.navbar-myprofile .navbar-myprofile-wrap {position: relative;}
+.navbar-myprofile .navbar-myprofile-wrap .navbar-myprofile-image {position: absolute; top: 19px; left: 14px;}
+.navbar-myprofile .navbar-myprofile-wrap .navbar-myprofile-image .navbar-myprofile-avatar{display: block; margin: 0 auto;}
+.avatar {display: inline-block; position: relative; border-radius: 50%; background-color: #ebebeb; background-origin: padding-box; background-position: 50% 50%; background-size: cover; box-shadow: inset 0 0 1px rgb(0,0,0,0.2); vertical-align: top;}
+
+.navbar-myprofile .navbar-myprofile-wrap .navbar-myprofile-name {padding: 30px 0 23px 79px; line-height: 18px; max-width: 116px;}
+.navbar-myprofile a {display: block;}
+.navbar-myprofile .navbar-myprofile-wrap .navbar-myprofile-name .navbar-myprofile-id {font-weight: bold; font-size: 15px; color: #202239; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.navbar-myprofile .navbar-myprofile-wrap .navbar-myprofile-name .navbar-myprofile-nickname {font-size: 13px; color: #202239; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.navbar-myprofile .navbar-myprofile-wrap .navbar-myprofile-name .navbar-myprofile-nickname a {color: #9c9c9c; text-decoration: underline !important;}
+
+.navbar-mylist {overflow: hidden; width: 100%; border-top: 1px solid #ecedef;}
+.navbar-mylist li {float: left; width: 25%; height: 63px; text-align: center;}
+.navbar-mylist li:first-child a {border-left: 0 none;}
+.navbar-mylist li a {display: block; overflow: hidden; height: 100%; border-left: 1px solid #ecedef; font-size: 11px; color: #888888;}
+.navbar-mylist li .mylist-item-text {display: block;}
+
+.navbar-member-buttons {overflow: hidden; margin-bottom: 10px; border: 1px solid #dcdfe4; border-radius: 2px; background-color: white;}
+.navbar-member-buttons.transparent li{clear:both; float:inherit;}
+.navbar-member-buttons li:first-child {border-right: none;}
+.navbar-member-buttons li {width: 100%; height: 44px; line-height: 45px; text-align: center; float: left; box-sizing: border-box;}
+.navbar-member-buttons li a {display: block; padding-right: 2px; font-size: 14px; color: #5a86dd;}
 
 
-.sign-contents {margin: 0; padding-top: 120px;}
-.sign-contents .sign-container {margin: 0 auto; width: 600px; box-sizing: border-box; text-align: center; border-radius: 8px; padding: 50px; border: 1px solid #3a6ac8; background-color: white;}
+.navbar-member-buttons.navbar-member-buttons-dual li:first-child {border-right: 1px solid #ecedef; }
+.navbar-member-buttons.navbar-member-buttons-dual li {width: 50%;}
+.navbar-member-buttons.navbar-member-buttons-dual li:last-child {display: block;}
 
-#signupForm fieldset {position: relative; text-align: left;}
-#signupForm .group-label {font-size: 18px; font-weight: 500; margin-bottom: 10px; color: #222222;}
-#signupForm .group-label:nth-child(n+2) {margin-top: 30px;}
-#signupForm .field-input label {position: absolute; top: 20px; left: 20px; font-size: 15px; color: #444444;}
-#signupForm .field-input input {width: 100%; height: 60px; padding: 22px 21px 21px 120px; border: 1px solid #e2e2e2; box-sizing: border-box; font-size: 14px;}
-#signupForm .field-input .btn {position: absolute; top: 10px; right: 10px; box-sizing: border-box; padding: 11px 10px 10px; width: 110px; border: 1px solid #e2e2e2; line-height: 17px; font-size: 14px; color: #888888; height: unset; cursor: pointer;}
+.navbar-groups-new {position: relative; height: 46px; border-radius: 2px; background-color: #5a86dd;}
+.navbar-groups-new .groups-new {display: block; line-height: 47px; width: 100%; text-align: center; left: 5px; font-size: 14px; font-weight: 400; color: white;}
 
-#signupForm fieldset.field-agree-all {padding: 16px 0; border-bottom: 1px solid #e2e2e2;}
-#signupForm fieldset.field-agree-all input {background-color: #ffffff;}
-#signupForm fieldset .label-text {font-size: 16px; color: #333333; vertical-align: top;}
-.sign-container input[type=checkbox] {position: relative; width: 28px; height: 28px; margin-right: 12px; border: 0;}
-/* .sign-container input[type=checkbox]:after {text-indent: 3px; content: '\e5ca'; font-size: 20px; line-height: 24px; color: #dddddd; display: inline-block; width: 100%; height: 100%; box-sizing: border-box; position: absolute; top: 0; left: 0; border: 1px solid #dddddd;} */
+.navbar-groups-option {overflow: hidden; padding: 3px 0 2px; border-bottom: 1px solid #eeeeef; line-height: 32px;}
+.screen-out {overflow: hidden; position: absolute; width: 0; height: 0; line-height: 0; text-indent: -9999px;}
+.navbar-groups-option button, .navbar-groups-option a {display: inline-block; line-height: 32px; font-size: 13px; color: #979797;}
+.navbar-groups-option button {float: right; border: 0 none; border-radius: 0; background-color: transparent; cursor: pointer; outline: none;}
 
-.sign-container .submit-btn {width: 100%; box-sizing: border-box; height: 60px; background-color: #4778d9; border: none; box-shadow: inset 0 0 0 1px #3f6dca; font-size: 16px; font-weight: 400; cursor: pointer; color: #ffffff;}
-.sign-container .submit-btn:disabled {color: rgba(255, 255, 255, 0.5);}
+.navbar-groups-list {padding: 4px 0 17px;}
+.navbar-groups-list .groups-item {padding: 1px 0; border-bottom: 1px solid #e9e9e9; width: 100%;}
+.navbar-groups-list .groups-item .groups-item-title {display: block; position: relative; height: 36px; padding-left: 24px; font-weight: 200; font-size: 14px; line-height: 37px; color: #222;}
+.navbar-groups-list .groups-item .groups-item-title .groups-item-name {display: inline-block; overflow: hidden; max-width: 85%; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; vertical-align: top;}
+.navbar-groups-list .groups-item .groups-item-title .groups-item-count {display: inline-block; vertical-align: top;}
+.navbar-groups-list .groups-item .groups-item-title .groups-folding-icon {position: absolute; top: 10px; left: 0; width: 14px; height: 14px; border: 1px solid #bfbfbf; border-radius: 14px; background-color: white;}
 
-#signupForm fieldset.field-agreements {padding: 22px 0;}
-#signupForm fieldset.field-agreements li{position: relative; line-height: 24px; margin-bottom: 15px;}
+.groups-category-list {padding: 0 0 12px 16px;}
+.groups-category-list .category-item {position: relative; height: 25px; line-height: 26px; border-radius: 2px;}
+.groups-category-list .category-item a {display: block; overflow: hidden; padding: 0 22px 0 8px; font-size: 14px; color: #808080;}
 
-#signupForm fieldset .error-msg {display: block; position: absolute; left: 120px; bottom: 15px; font-size: 13px; color: #f44336;}
-#signupForm fieldset .success-msg {display: block; position: absolute; left: 120px; bottom: 15px; font-size: 13px; color: #18d626;}
-#signupForm fieldset.field-error input {height: 90px; padding-bottom: 51px;}
-#signupForm fieldset.field-success input {height: 90px; padding-bottom: 51px;}
+
+.work-basic-layout .work-basic-layout-body {float: left; position: relative; width: 74%; margin-bottom: 50px;}
+.homepage .home-page-header {color: #363041; margin-bottom: 10px;}
+.homepage .home-page-header h2 {display: inline-block; font-weight: 500; float: left; font-size: 16px; line-height: 30px;}
+.homepage .home-page-header .home-page-header-link-to {display: inline-block; float: right; font-size: 13px; line-height: 16px;}
+.homepage .home-page-header .home-page-header-link-to a {display: inline-block; color: #868686; padding: 6px 11px 6px 8px; border: 1px solid #dcdfe4; border-radius: 3px;}
+.homepage .home-page-header:after {content: ""; display: block; clear: both;}
+
+.scroll-container {overflow-x: visible; overflow-y:auto; outline: navy;}
+.scroll-container.scroll-container--window {overflow: visible;}
+
+.wall-thread {margin-bottom: 15px; border: 1px solid #dcdfe4; border-radius: 3px; background-color: white; box-shadow: 0 1px 1px rgba(0,0,0,0.05); outline: none;}
+.wall-thread-parent {padding: 0 20px 20px;}
+.wall-thread-parent:before {display: block; overflow: hidden; clear: both; content: '';}
+.wall-msg-group-title {padding: 20px 0 14px; border-bottom: 1px solid #e5e5e5; font-weight: normal; font-size: 14px; line-height: 1;}
+.wall-msg-group-title a {color: #333;}
+
+.wall-feed-msg {margin-top: 15px; margin-bottom: 10px; padding-left: 58px; transition : opacity 0.2s cubic-bezier(0.4, 0, 1, 1);}
+.wall-feed-msg-content {position: relative;}
+.wall-feed-msg-content .wall-feed-msg-profile {position: absolute; top: 0; left: -60px; width: 52px; height: 52px;}
+.ra-popover__trigger {display: inline-block; vertical-align: top; cursor: pointer;}
+
+.wall-feed-msg-content .wall-feed-msg-body {position: relative; top: 5px; padding: 0;}
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-actor {display: inline-block; margin-right: 3px; font-weight: bold; font-size: 13px; line-height: 21px;}
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-msg {font-size: 13px; margin-top: 15px;}
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-msg .message {display: inline;}
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-msg .message .marked {display: inline;}
+.message * {color: inherit; font-size: inherit; line-height: inherit;}
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-msg .message .marked p:first-child, .wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-msg .message .marked div.marked__paragraph 
+	{
+		display: inline;
+	}
+
+.message div.marked__paragraph {margin-bottom: 0; word-wrap: break-word; word-break: break-all;}
+.message div.marked__paragraph--empty {height: 15px;}
+
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-meta {font-weight: 400; font-size: 12px; color: #979797;}
+.wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-meta a {color: #979797;}
 
 

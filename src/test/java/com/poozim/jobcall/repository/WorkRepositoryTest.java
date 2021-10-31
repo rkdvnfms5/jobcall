@@ -20,6 +20,10 @@ public class WorkRepositoryTest {
 	private WorkRepository wr;
 	
 	@Autowired
+	private WorkCategoryRepository wcr;
+	
+	
+	@Autowired
 	private JPAQueryFactory jpaQueryFactory;
 	
 	public void test() {
@@ -40,11 +44,7 @@ public class WorkRepositoryTest {
 	
 	@Test
 	public void selectOneTest() {
-		Work work = new Work();
-		//code : 86A5EA0F, seq : 6
-		work.setSeq(6);
-		work.setCode("86A5EA0F");
-		System.out.println(wr.findById(6));
+		wcr.getWorkCategoryList(1);
 	}
 
 }

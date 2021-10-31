@@ -12,9 +12,14 @@ public class WorkCategoryRepositoryCustomImpl implements WorkCategoryRepositoryC
 
 	private JPAQueryFactory queryFactory;
 	
+	public WorkCategoryRepositoryCustomImpl(JPAQueryFactory queryFactory) {
+		this.queryFactory = queryFactory;
+	}
+	
 	@Override
 	public List<WorkCategory> getWorkCategoryList(int workseq) {
 		QWorkCategory workcategory = QWorkCategory.workCategory;
+		System.out.println("@@@@@@@@@@@@@ workseq : " + workseq);
 		return queryFactory.selectFrom(workcategory).where(workcategory.work_seq.eq(workseq)).fetch();
 	}
 
