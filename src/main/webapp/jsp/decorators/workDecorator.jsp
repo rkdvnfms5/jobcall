@@ -13,6 +13,11 @@
 </head>
 <body>
 	<%@ include file="/jsp/include/work_header.jsp"%>
-	<sitemesh:write property='body' />
+	<div class="work-contents">
+		<main class="work-basic-layout">
+			<%@ include file="/jsp/include/work_lnb.jsp"%>
+			<sitemesh:write property='body' />
+		</main>
+</div>
 </body>
 </html>

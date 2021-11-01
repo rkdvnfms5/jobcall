@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
@@ -120,9 +121,13 @@ public class WorkService {
 		return 1;
 	}
 	
+	public WorkGroupMember getWorkGroupMemberOne(int groupseq, int memberseq) {
+		return workGroupRepository.getWorkGroupMemberOne(groupseq, memberseq);
+	}
+	
 	//WorkCategory CRUD and Logics
-	public List<WorkCategory> getWorkCategoryList(int workseq){
-		return workCategoryRepository.getWorkCategoryList(workseq);
+	public List<WorkCategory> getWorkCategoryList(WorkCategory workCategory){
+		return workMapper.getWorkCategoryList(workCategory);
 	}
 	
 	public int insertWorkCategory(WorkCategory workCategory) {
@@ -155,6 +160,10 @@ public class WorkService {
 		}
 		return res;
 	}
+	
 	//WorkBoard CRUD and Logics
+	public List<WorkBoard> getWorkBoardList(WorkBoard workBoard){
+		return workMapper.getWorkBoardList(workBoard);
+	}
 	
 }

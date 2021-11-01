@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.poozim.jobcall.model.QWorkGroup;
 import com.poozim.jobcall.model.QWorkGroupMember;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.model.WorkGroupMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class WorkGroupRepositoryCustomImpl extends QuerydslRepositorySupport implements WorkGroupRepositoryCustom {
@@ -34,6 +35,12 @@ public class WorkGroupRepositoryCustomImpl extends QuerydslRepositorySupport imp
 		QWorkGroupMember wgm = QWorkGroupMember.workGroupMember;
 		int cnt = (int)queryFactory.selectFrom(wgm).where(wgm.group_seq.eq(param.getSeq())).fetchCount();
 		return cnt;
+	}
+
+	@Override
+	public WorkGroupMember getWorkGroupMemberOne(int groupseq, int memberseq) {
+		QWorkGroupMember wgm = QWorkGroupMember.workGroupMember;
+		return queryFactory.selectFrom(wgm).where(wgm.group_seq.eq(groupseq), wgm.member_seq.eq(memberseq)).fetchOne();
 	}
 
 }

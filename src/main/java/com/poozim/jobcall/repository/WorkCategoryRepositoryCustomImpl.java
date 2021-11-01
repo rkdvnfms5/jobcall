@@ -19,7 +19,6 @@ public class WorkCategoryRepositoryCustomImpl implements WorkCategoryRepositoryC
 	@Override
 	public List<WorkCategory> getWorkCategoryList(int workseq) {
 		QWorkCategory workcategory = QWorkCategory.workCategory;
-		System.out.println("@@@@@@@@@@@@@ workseq : " + workseq);
 		return queryFactory.selectFrom(workcategory).where(workcategory.work_seq.eq(workseq)).fetch();
 	}
 

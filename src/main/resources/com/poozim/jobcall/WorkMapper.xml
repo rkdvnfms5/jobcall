@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.poozim.jobcall.mapper.WorkMapper">
+	
+	<sql id="selectBoard">
+		<if test="work_seq != null and work_seq != ''"> AND b.work_seq = #{work_seq}</if>
+		<if test="group_seq != null and group_seq != ''"> AND b.group_seq = #{group_seq}</if>
+	</sql>
+
 	<select id="getWorkGroupList" parameterType="WorkGroup" resultType="WorkGroup">
 		SELECT wg.*, 
 		(SELECT category_seq FROM WorkCategoryGroup wcg WHERE wcg.group_seq = wg.seq AND wcg.member_seq = #{member_seq}) as category_seq
@@ -14,5 +20,46 @@
 			OR	
 			(wg.access like 'private' AND wg.seq IN (SELECT group_seq FROM WorkGroupMember WHERE member_seq = #{member_seq}))
 		)
+	</select>
+	
+	<select id="getWorkBoardList" parameterType="WorkBoard" resultMap="workBoardMap">
+		SELECT *
+		FROM WorkBoard b, WorkGroupMember gm
+		WHERE b.group_seq = gm.group_seq
+		AND gm.member_seq = #{member_seq}
+		<include refid="selectBoard" />
+		ORDER BY b.regdate DESC
+	</select>
+	
+	<select id="getWorkBoardFileList" parameterType="int" resultType="WorkBoardFile">
+		SELECT *
+		FROM WorkBoardFile
+		WHERE board_seq = #{board_seq}
+	</select>
+	
+	<resultMap type="WorkBoard" id="workBoardMap">
+		<result property="seq" column="seq" />
+		<result property="member_seq" column="member_seq" />
+		<result property="member_id" column="member_id" />
+		<result property="member_name" column="member_name" />
+		<result property="work_seq" column="work_seq" />
+		<result property="group_seq" column="group_seq" />
+		<result property="title" column="title" />
+		<result property="type" column="type" />
+		<result property="startdate" column="startdate" />
+		<result property="enddate" column="enddate" />
+		<result property="worker" column="worker" />
+		<result property="content" column="content" />
+		<result property="status" column="status" />
+		<result property="register" column="register" />
+		<result property="regdate" column="regdate" />
+		<collection property="workBoardFileList" column="seq" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
+	</resultMap>
+	
+	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
+		SELECT *
+		FROM WorkCategory
+		WHERE defaultyn = 'Y'
+		OR member_seq = #{member_seq}
 	</select>
 </mapper>

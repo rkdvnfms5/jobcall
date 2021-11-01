@@ -16,16 +16,14 @@ public class LoginUtil {
 	
 	public static boolean getLoginCheck(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		if((boolean)session.getAttribute("loginCheck")) {
-			return true;
+		if(session.getAttribute("loginCheck") == null || !(boolean)session.getAttribute("loginCheck")) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 	
 	public static Member getLoginMember(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		System.out.println("@@@@@@@@@@@@@@@@@@@");
-		System.out.println((Member)session.getAttribute("member"));
 		return (Member)session.getAttribute("member");
 	}
 }

@@ -1,9 +1,12 @@
 package com.poozim.jobcall.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -27,4 +30,7 @@ public class WorkBoard {
 	String status;
 	String regdate;
 	String register;
+	
+	@Transient
+	List<WorkBoardFile> workBoardFileList;
 }

@@ -97,3 +97,18 @@ body {background-color: #f5f5f5;}
 .wall-feed-msg-content .wall-feed-msg-body .wall-feed-msg-meta a {color: #979797;}
 
 
+.category-page .page-header {margin-bottom: 10px;}
+.page-header {position: relative;}
+.tab {border-bottom: 2px solid #485060;}
+.tab .tab__item {display: inline-block; height: 46px; padding: 0 20px; background-color: #fff; border: 1px solid #dcdfe4; border-bottom: none; color: #a6a6a6; font-size: 14px; line-height: 46px; vertical-align: top;}
+.tab .tab__item.tab__item--active {color: #497bd8;}
+.tmp-cate-editor {
+    overflow: hidden;
+    min-height: 700px;
+    border-top: 1px solid #dcdfe4;
+    border-bottom: 1px solid #dcdfe4;
+    background-color: #fff;
+    color: #404040;
+}
+
+
