@@ -130,6 +130,10 @@ public class WorkService {
 		return workMapper.getWorkCategoryList(workCategory);
 	}
 	
+	public WorkCategory getWorkCategoryOne(int seq) {
+		return workCategoryRepository.findById(seq).get();
+	}
+	
 	public int insertWorkCategory(WorkCategory workCategory) {
 		workCategory.setDefaultyn("N");
 		workCategoryRepository.save(workCategory);
@@ -155,10 +159,12 @@ public class WorkService {
 		//포함되어있던 그룹들 가져와서 디폴트 카테고리에 넣기
 		WorkCategory defaultCategory = workCategoryRepository.getDefaultCategory(workCategory.getWork_seq());
 		int res = workCategoryRepository.updateCategoryGroupCategoryseq(workCategory.getSeq(), defaultCategory.getSeq());
-		if(res > 0) {
-			workCategoryRepository.delete(workCategory);
-		}
+		workCategoryRepository.delete(workCategory);
 		return res;
+	}
+	
+	public int moveWorkGroupList(WorkCategoryGroup workCategoryGroup) {
+		return workMapper.moveWorkGroupList(workCategoryGroup);
 	}
 	
 	//WorkBoard CRUD and Logics

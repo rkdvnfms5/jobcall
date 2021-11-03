@@ -13,6 +13,9 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 		<class>com.poozim.jobcall.model.CommentFile</class>
 		<class>com.poozim.jobcall.model.FavoritLog</class>
 		<class>com.poozim.jobcall.model.StatusLog</class>
+		<class>com.poozim.jobcall.model.WorkCategory</class>
+		<class>com.poozim.jobcall.model.WorkCategoryGroup</class>
+		<class>com.poozim.jobcall.model.WorkGroupMember</class>
 		
 		<properties>
 			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->

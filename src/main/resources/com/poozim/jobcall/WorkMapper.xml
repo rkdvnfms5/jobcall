@@ -62,4 +62,16 @@
 		WHERE defaultyn = 'Y'
 		OR member_seq = #{member_seq}
 	</select>
+	
+	<update id="moveWorkGroupList" parameterType="WorkCategoryGroup">
+		UPDATE WorkCategoryGroup
+		SET category_seq = #{category_seq}
+		WHERE member_seq = #{member_seq}
+		<if test="groupSeqList != null and groupSeqList != ''">
+			AND group_seq IN
+			<foreach collection="groupSeqList" item="groupseq" open="(" close=")" separator=" , " index="i">
+				#{groupseq}
+			</foreach>
+		</if>
+	</update>
 </mapper>

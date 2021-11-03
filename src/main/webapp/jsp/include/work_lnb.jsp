@@ -50,7 +50,7 @@
 		</ul>
 		<div class="navbar-groups">
 			<div class="navbar-groups-new">
-				<a class="groups-new" href="#">
+				<a class="groups-new" href="/work/group/new">
 					새로운 그룹만들기
 				</a>
 			</div>
