@@ -41,7 +41,7 @@ public class OciUtilTest {
         final String bucket = "bucket-20210728-1124";
 		final String object = "";
         
-		ConfigFile config = ConfigFileReader.parse("/Users/pooreun.kang/ocikey/config", "DEFAULT");
+		ConfigFile config = ConfigFileReader.parse("~/ocikey/config", "DEFAULT");
 //		Supplier<InputStream> privateKeySupplier = new SimplePrivateKeySupplier(config.get("key_file"));
 		
 		
@@ -92,7 +92,7 @@ public class OciUtilTest {
         System.out.println(
                 "The Approximate total size of objects within this bucket : "
                         + response.getBucket().getApproximateSize());
-        
+
 	}
 	
 }

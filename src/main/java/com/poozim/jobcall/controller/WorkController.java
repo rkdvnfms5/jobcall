@@ -106,7 +106,7 @@ public class WorkController {
 		//get Work Boards
 		
 		
-		return "/work/view";
+		return "/work/group";
 	}
 	
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
