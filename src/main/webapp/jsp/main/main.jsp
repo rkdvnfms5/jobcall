@@ -8,7 +8,7 @@
 	<div class="main-contents">
 		<section class="main-headline">
 			<div class="cover">
-				<h1 class="title">일거리, 여기에 <span class="title-strong">강림</span></h1>
+				<h1 class="title">요청 사항, 여기에 <span class="title-strong">강림</span></h1>
 				<div class="desc">
 					카톡으로 숨막히는 업무 전달은 그만하고 잡콜이야에서 콜하세요.
 				</div>

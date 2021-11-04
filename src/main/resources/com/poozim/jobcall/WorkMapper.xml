@@ -57,10 +57,11 @@
 	</resultMap>
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
-		SELECT *
-		FROM WorkCategory
-		WHERE defaultyn = 'Y'
-		OR member_seq = #{member_seq}
+		SELECT wc.*, 
+			(SELECT COUNT(*) FROM WorkCategoryGroup wcg WHERE wcg.category_seq = wc.seq AND wcg.member_seq = #{member_seq}) as group_count
+		FROM WorkCategory wc
+		WHERE wc.defaultyn = 'Y'
+		OR wc.member_seq = #{member_seq}
 	</select>
 	
 	<update id="moveWorkGroupList" parameterType="WorkCategoryGroup">
@@ -74,4 +75,18 @@
 			</foreach>
 		</if>
 	</update>
+	
+	<insert id="insertWorkGroupMemberList" parameterType="WorkGroupMember">
+		INSERT INTO WorkGroupMember (
+			group_seq,
+			member_seq,
+			regdate
+		) VALUES 
+		<if test="memberSeqList != null and memberSeqList != ''">
+			<foreach collection="memberSeqList" item="memberseq" open="" close="" separator=" , " index="i">
+				(#{group_seq}, #{memberseq}, #{regdate})
+			</foreach>
+		</if>
+		
+	</insert>
 </mapper>

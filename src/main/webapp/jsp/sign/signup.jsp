@@ -123,7 +123,7 @@ $(document).ready(function(){
 		}
 	})
 	
-	$("#signupForm input").on('change', function(){
+	$("#signupForm input").on('propertychange change keyup paste input', function(){
 		var check = checkSignup();
 		if(check){
 			$("#sign-submit").attr("disabled", false);

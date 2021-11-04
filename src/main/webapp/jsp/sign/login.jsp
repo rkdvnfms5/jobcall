@@ -16,7 +16,7 @@
 				<fieldset class="fieldset-group">
 					<fieldset class="field-input field-id">
 						<label for="login-id">아이디</label>
-						<input type="text" name="id" id="login-id" value="" placeholder="아이디를 입력해주세요." oninput="this.value = this.value.replace(/[^0-9a-zA-Z]/g, '');">
+						<input type="text" name="id" id="login-id" value="" placeholder="아이디를 입력해주세요." oninput="this.value = this.value.replace(/[^0-9a-zA-Z]/g, '');" style="ime-mode:inactive;">
 					</fieldset>
 					<fieldset class="field-input field-password">
 						<label for="login-password">비밀번호</label>

@@ -81,7 +81,7 @@ public class WorkController {
 		return "/work/view";
 	}
 	
-	@RequestMapping(value = "/{groupseq}/group", method = RequestMethod.GET)
+	@RequestMapping(value = "/group/{groupseq}", method = RequestMethod.GET)
 	@WorkLnbSet
 	public String group(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("groupseq") int groupseq) {
@@ -174,4 +174,21 @@ public class WorkController {
 	public String groupNewPage(HttpServletRequest request, HttpServletResponse response, Model model) {
 		return "/work/group_new";
 	}
+	
+	@RequestMapping(value = "/group", method = RequestMethod.POST)
+	@WorkLnbSet
+	public String groupInsert(HttpServletRequest request, HttpServletResponse response, Model model, WorkGroup workGroup) {
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		workGroup.setMember_seq(member.getSeq());
+		workGroup.setWork_seq(member.getWork_seq());
+		workGroup.setRegister(member.getId());
+		workGroup.setRegdate(TimeUtil.getDateTime());
+		workGroup.setUseyn("Y");
+		
+		workService.insertWorkGroup(workGroup);
+		
+		return "redirect:/work/group/" + workGroup.getSeq();
+	}
+	
 }

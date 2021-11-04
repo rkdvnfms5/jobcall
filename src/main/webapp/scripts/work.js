@@ -1,157 +1,110 @@
-function checkSignup() {
-	if($("#sign-title").val() == ''){
+function insertCategory(){
+	var title = $(".tmp-cate-editor-cates__item-input").val();
+	
+	$.ajax({
+		url : '/work/category',
+		method : 'POST',
+		data : {title : title},
+		dataType : 'JSON',
+		success : function(res) {
+			location.reload();
+		},
+		error : function(xhr, status, error){
+			alert("카테고리 추가를 실패했습니다.")
+		}
+	})
+}
+
+//server.xml 에 추가 <Connector parseBodyMethods="POST,PUT,DELETE" />
+
+function updateCategory(seq){
+	var title = $(".tmp-cate-editor-cates__item-input").val();
+	
+	$.ajax({
+		url : '/work/category',
+		method : 'PUT',
+		data : {seq : seq, title : title},
+		dataType : 'JSON',
+		success : function(res) {
+			location.reload();
+		},
+		error : function(xhr, status, error){
+			alert("카테고리 수정을 실패했습니다.")
+		}
+	})
+}
+
+function deleteCategory(seq){
+	if(confirm("카테고리를 삭제하시겠습니까?")){
+		$.ajax({
+			url : '/work/category',
+			method : 'DELETE',
+			data : {seq : seq},
+			dataType : 'JSON',
+			success : function(res) {
+				location.reload();
+			},
+			error : function(xhr, status, error){
+				alert("카테고리 삭제를 실패했습니다.")
+			}
+		})
+	}
+}
+
+
+function moveGroupCategory(){
+	var categoryseq = $("#categorySelect").val();
+	var groupseqArr = new Array();
+	
+	$("#group-list").find("input[type=checkbox]:checked").each(function(index, item){
+		groupseqArr.push(Number(item.value));
+	});
+	
+	
+	$.ajax({
+		url : '/work/category_move',
+		method : 'POST',
+		data : {category_seq : categoryseq, groupSeqList : groupseqArr},
+		dataType : 'JSON',
+		success : function(res) {
+			if(res.res > 0){
+				location.reload();
+			}
+		},
+		error : function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	})
+	
+}
+
+function checkCategoryGroupAll(){
+	if($("#groupCheckAll").is(":checked")){
+		$("#group-list").find("input[type=checkbox]").prop("checked", true);
+	} else {
+		$("#group-list").find("input[type=checkbox]").prop("checked", false);
+	}
+}
+
+function uncheckCategoryGroupAll(){
+	$("#groupCheckAll").prop("checked", false);
+	$("#group-list").find("input[type=checkbox]").prop("checked", false);
+}
+
+function checkInsertGroup() {
+	if($.trim($("#insertGroupForm input[name='access']:checked")).length < 1){
 		return false;
 	}
 	
-	if($("#sign-email").val() == ''){
+	if($.trim($("#insertGroupForm #group_name").val()) == ''){
 		return false;
 	}
 	
-	if(!validateEmail()){
-		return false;
-	}
-	
-	if($("#authYN").val() != 'Y'){
-		return false;
-	}
-	
-	if($("#sign-id").val() == ''){
-		return false;
-	}
-	
-	if($("#sign-password").val() == ''){
-		return false;
-	}
-	
-	if($("#sign-password").val().length < 8){
-		return false;
-	}
-	
-	if($("#sign-password-re").val() == ''){
-		return false;
-	}
-	
-	if($("#sign-password").val() != $("#sign-password-re").val()){
-		return false;
-	}
-	
-	if(!validatePassword() || !validateRePassword()){
-		return false;
-	}
-	
-	if($("#sign-name").val() == ''){
-		return false;
-	}
-	
-	if($("#sign-department").val() == ''){
-		return false;
-	}
-	
-	if(!$("#agree-term").is(":checked")){
-		return false;
-	}
-	
-	if(!$("#agree-privacy-nec").is(":checked")){
+	if($.trim($("#insertGroupForm #group_content").val()) == ''){
 		return false;
 	}
 	
 	return true;
-}
-
-function validateEmail(){
-	var emailReg = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
-	
-	if(!emailReg.test($("#sign-email").val())){
-		$("#field-email").addClass("field-error");
-		$("#field-email .error-msg").show();
-		return false;
-	} else {
-		$("#field-email").removeClass("field-error");
-		$("#field-email .error-msg").hide();
-		return true;
-	}
-	
-}
-
-function sendAuthCode(){
-	var email = $("#sign-email").val();
-	$.ajax({
-		url : "/sign/get_auth",
-		method : "post",
-		data : {email : email},
-		dataType : "json",
-		success : function(res){
-			alert("발송되었습니다.");
-		}
-	})
-}
-
-function checkAuthCode(){
-	var authcode = $("#sign-authcode").val();
-	$.ajax({
-		url : "/sign/check_auth",
-		method : "post",
-		data : {value : authcode},
-		dataType : "json",
-		success : function(res){
-			if(res.res == 1){
-				$("#field-auth").addClass("field-success");
-				$("#auth-msg").addClass("success-msg");
-				$("#auth-msg").html("인증되었습니다.");
-				$("#authYN").val("Y");
-			} else {
-				$("#field-auth").addClass("field-error");
-				$("#auth-msg").addClass("error-msg");
-				$("#auth-msg").html("인증코드가 다릅니다.");
-				$("#authYN").val("N");
-			}
-			$("#auth-msg").show();
-		}
-	})
-}
-
-function validatePassword(){
-	var passwordReg = /^[0-9a-zA-Z!@#$%&]{8,}$/;
-	var bool = false;
-	if(!passwordReg.test($("#sign-password").val())){
-		$("#field-password").addClass("field-error");
-		$("#field-password .error-msg").show();
-		bool = false;
-	} else {
-		$("#field-password").removeClass("field-error");
-		$("#field-password .error-msg").hide();
-		bool = true;
-	}
-	
-	if($("#sign-password-re").val() != ''){
-		var res = validateRePassword();
-	}
-	
-	return bool;
-}
-
-function validateRePassword(){
-	var password = $("#sign-password").val();
-	var rePassword = $("#sign-password-re").val();
-	
-	if(password != rePassword){
-		$("#field-password-re").addClass("field-error");
-		$("#field-password-re .error-msg").show();
-		return false;
-	} else {
-		$("#field-password-re").removeClass("field-error");
-		$("#field-password-re .error-msg").hide();
-		return true;
-	}
-	
-}
-
-function agreeAll(obj){
-	if($(obj).is(":checked")){
-		$(".field-agreements li input[type='checkbox']").prop("checked", true);
-	} else {
-		$(".field-agreements li input[type='checkbox']").prop("checked", false);
-	}
 }
 
 

@@ -65,14 +65,14 @@
 					<li class="groups-item">
 						<a class="groups-item-title" href="#">
 							<strong class="groups-item-name">${category.title}</strong>
-							<span class="groups-item-count">(0)</span>
+							<span class="groups-item-count">(${category.group_count})</span>
 							<span class="groups-folding-icon"></span>
 						</a>
 						<ul class="groups-category-list">
 							<c:forEach items="${LnbWorkGroupList}" var="group">
 								<c:if test="${group.category_seq eq category.seq}">
 									<li class="category-item">
-									<a class="" href="#">
+									<a class="" href="/work/group/${group.seq}">
 											<span class="category-item-title">
 												<span class="text-name">${group.name}</span>
 											</span>

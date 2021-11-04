@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.mapper.WorkMapper;
+import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkCategory;
@@ -47,10 +48,13 @@ public class WorkService {
 	@Autowired
 	private WorkBoardFileRepository workBoardFileRepository;
 	
+	@Autowired
+	private MemberRepository memberRepository;
 	
 	//Mybatis Mappers
 	@Autowired
 	private WorkMapper workMapper;
+	
 	
 	public Work getWorkOne(int seq) {
 		return workRepository.findById(seq).get();
@@ -71,15 +75,28 @@ public class WorkService {
 	
 	@Transactional
 	public int insertWorkGroup(WorkGroup workGroup) {
-		workGroupRepository.save(workGroup);
+		//그룹 추가
+		workGroup = workGroupRepository.save(workGroup);
 		
-		//그룹 만든 멤버 그룹에 참여
 		WorkGroupMember workGroupMember = new WorkGroupMember();
 		workGroupMember.setGroup_seq(workGroup.getSeq());
-		workGroupMember.setMember_seq(workGroup.getMember_seq());
 		workGroupMember.setRegdate(workGroup.getRegdate());
-		
-		workGroupMemberRepository.save(workGroupMember);
+		//접근권한이 공개면
+		if(workGroup.getAccess().equals("public")) {
+			//그룹 만든 멤버 그룹에 참여
+			workGroupMember.setMember_seq(workGroup.getMember_seq());
+			
+			workGroupMemberRepository.save(workGroupMember);
+		}
+		//접근권한이 비공개면
+		else if(workGroup.getAccess().equals("private")) {
+			//전체 멤버 그룹에 참여
+			Member member = new Member();
+			member.setWork_seq(workGroup.getWork_seq());
+			workGroupMember.setMemberSeqList(memberRepository.getWorkMemberSeqList(member));
+			
+			workMapper.insertWorkGroupMemberList(workGroupMember);
+		}
 		
 		//디폴트 카테고리에 그룹 추가
 		WorkCategory defaultCategory = workCategoryRepository.getDefaultCategory(workGroup.getWork_seq());

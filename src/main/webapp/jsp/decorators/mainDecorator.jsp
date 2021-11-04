@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>잡콜이야</title>
 <%@ include file="/jsp/include/common_header.jsp"%>
 <link rel="stylesheet" href="/css/header.css"/>
 <link rel="stylesheet" href="/css/main.css"/>

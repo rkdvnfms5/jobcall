@@ -7,6 +7,7 @@ import com.poozim.jobcall.model.WorkBoardFile;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.model.WorkGroupMember;
 
 public interface WorkMapper {
 	public List<WorkGroup> getWorkGroupList(WorkGroup workGroup);
@@ -18,4 +19,6 @@ public interface WorkMapper {
 	public List<WorkCategory> getWorkCategoryList(WorkCategory workCategory);
 	
 	public int moveWorkGroupList(WorkCategoryGroup workCategoryGroup);
+	
+	public int insertWorkGroupMemberList(WorkGroupMember workGroupMember);
 }
