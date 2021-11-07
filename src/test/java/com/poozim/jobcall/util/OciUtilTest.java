@@ -39,6 +39,7 @@ import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.requests.GetPreauthenticatedRequestRequest;
 import com.oracle.bmc.objectstorage.requests.ListObjectsRequest;
 import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
+import com.oracle.bmc.objectstorage.responses.CreateBucketResponse;
 import com.oracle.bmc.objectstorage.responses.CreatePreauthenticatedRequestResponse;
 import com.oracle.bmc.objectstorage.responses.DeleteBucketResponse;
 import com.oracle.bmc.objectstorage.responses.GetBucketResponse;
@@ -162,7 +163,6 @@ public class OciUtilTest {
         client.close();
 	}
 	
-	@Test
 	public void getObjectOneTest() throws Exception {
 		ConfigFile config = ConfigFileReader.parse("~/ocikey/config", "DEFAULT");
 		
@@ -361,7 +361,8 @@ public class OciUtilTest {
         			.build();
         			
         
-        client.createBucket(request);
+        CreateBucketResponse response = client.createBucket(request);
+        System.out.println(response);
         client.close();
 	}
 	
@@ -399,7 +400,7 @@ public class OciUtilTest {
         client.close();
 	}
 	
-	
+	@Test
 	public void deleteBucketTest() throws Exception {
 		ConfigFile config = ConfigFileReader.parse("~/ocikey/config", "DEFAULT");
 		

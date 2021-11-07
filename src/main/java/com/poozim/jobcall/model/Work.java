@@ -22,6 +22,7 @@ public class Work {
 	String title;
 	String code;
 	String email;
+	String bucket_name;
 	String useyn;
 	String regdate;
 	String register;

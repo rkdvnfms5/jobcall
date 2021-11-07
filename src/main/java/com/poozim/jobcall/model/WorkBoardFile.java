@@ -16,6 +16,7 @@ public class WorkBoardFile {
 	int board_seq;
 	String path;
 	String name;
+	String object_name;
 	String src;
 	String regdate;
 }

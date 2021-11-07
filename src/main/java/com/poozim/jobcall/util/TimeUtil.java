@@ -20,4 +20,12 @@ public class TimeUtil {
 	    dtFormat.applyPattern("yyyy-MM-dd HH:mm:ss");
 	    return dtFormat.format(d);
 	}
+	
+	public static String getDateTimeString() {
+	    Date d = new Date();
+	
+	    SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMdd HHmmss", Locale.KOREA);
+	    dtFormat.applyPattern("yyyyMMddHHmmss");
+	    return dtFormat.format(d);
+	}
 }
