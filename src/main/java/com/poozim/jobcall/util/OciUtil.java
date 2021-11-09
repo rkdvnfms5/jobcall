@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.bmc.objectstorage.ObjectStorage;
+import com.oracle.bmc.objectstorage.model.Bucket;
 import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
 import com.oracle.bmc.objectstorage.model.CreatePreauthenticatedRequestDetails;
 import com.oracle.bmc.objectstorage.model.ListObjects;
@@ -22,6 +23,7 @@ import com.oracle.bmc.objectstorage.model.CreatePreauthenticatedRequestDetails.A
 import com.oracle.bmc.objectstorage.requests.CreateBucketRequest;
 import com.oracle.bmc.objectstorage.requests.CreatePreauthenticatedRequestRequest;
 import com.oracle.bmc.objectstorage.requests.DeleteObjectRequest;
+import com.oracle.bmc.objectstorage.requests.GetBucketRequest;
 import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.requests.ListObjectsRequest;
 import com.oracle.bmc.objectstorage.requests.PutObjectRequest;
@@ -29,6 +31,7 @@ import com.oracle.bmc.objectstorage.responses.CreateBucketResponse;
 import com.oracle.bmc.objectstorage.responses.CreatePreauthenticatedRequestResponse;
 import com.oracle.bmc.objectstorage.responses.DeleteBucketResponse;
 import com.oracle.bmc.objectstorage.responses.DeleteObjectResponse;
+import com.oracle.bmc.objectstorage.responses.GetBucketResponse;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import com.oracle.bmc.objectstorage.responses.ListObjectsResponse;
 import com.oracle.bmc.objectstorage.transfer.DownloadConfiguration;
@@ -53,6 +56,24 @@ public class OciUtil {
 		propsUtil = new PropertiesUil();
 		this.compartmentId = propsUtil.getProperty("compartment_ocid");
 		this.namespaceName = propsUtil.getProperty("storage_namespace");
+	}
+	
+	/**
+	 * 버킷 가져오는 메서드
+	 * 
+	 * @param 가져올 버킷 이름
+	 * @return 버킷
+	 */
+	public static Bucket getBucket(String bucketName) {
+		GetBucketRequest request =
+	        		GetBucketRequest.builder()
+	        			.namespaceName(namespaceName)
+	        			.bucketName(bucketName)
+	        			.build();
+	        
+        GetBucketResponse response = client.getBucket(request);
+	        
+		return response.getBucket();
 	}
 	
 	/**
@@ -82,6 +103,7 @@ public class OciUtil {
 	}
 	
 	/**
+	 * 사전인증 생성 메서드
 	 * 
 	 * @param 사전인증 등록할 버킷이름
 	 * @param 사전인증 만료 날짜
@@ -112,6 +134,7 @@ public class OciUtil {
 	}
 	
 	/**
+	 * 오브젝트 업로드 메서드
 	 * 
 	 * @param bucketName
 	 * @param file
@@ -162,6 +185,7 @@ public class OciUtil {
 	}
 	
 	/**
+	 * 오브젝트 다운로드 메서드
 	 * 
 	 * @param bucketName 버킷명
 	 * @param objectName 파일명
@@ -207,12 +231,27 @@ public class OciUtil {
 		}
 	}
 	
+	/**
+	 * 오브젝트 url 가져오는 메서드
+	 * 
+	 * @param preAuth 사전인증 access code
+	 * @param bucketName 버킷 이름
+	 * @param objectName 오브젝트 이름
+	 * @return
+	 */
 	public static String getObjectSrc(String preAuth ,String bucketName, String objectName) {
 		String src = host + "/p/" + preAuth + "/n/" + namespaceName + "/b/" + bucketName + "/o/" + objectName;
 		
 		return src;
 	}
 	
+	/**
+	 * 오브젝트 삭제 메서드
+	 * 
+	 * @param bucketName 버킷 이름
+	 * @param objectName 오브젝트 이름
+	 * @return
+	 */
 	public static int deleteObject(String bucketName, String objectName) {
 		DeleteObjectRequest request = 
         		DeleteObjectRequest.builder()
@@ -227,6 +266,13 @@ public class OciUtil {
         return res;
 	}
 	
+	/**
+	 * 오브젝트 리스트 가져오는 메서드
+	 * 
+	 * @param bucketName 버킷 이름
+	 * @param prefix 오브젝트 이름 시작 문자열
+	 * @return
+	 */
 	public static List<ObjectSummary> getObjectList(String bucketName, String prefix) {
 		ListObjectsRequest request =
         		ListObjectsRequest.builder()
@@ -244,6 +290,13 @@ public class OciUtil {
 		return objectList;
 	}
 	
+	/**
+	 * 오브젝트 1개 가져오는 메서드
+	 * 
+	 * @param bucketName 버킷 이름
+	 * @param objectName 오브젝트 이름
+	 * @return
+	 */
 	public static ObjectSummary getObjectOne(String bucketName, String objectName) {
 		ListObjectsRequest request =
         		ListObjectsRequest.builder()
