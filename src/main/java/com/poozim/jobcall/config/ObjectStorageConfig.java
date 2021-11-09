@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.oracle.bmc.ConfigFileReader;
 import com.oracle.bmc.ConfigFileReader.ConfigFile;
+import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorage;
@@ -19,6 +20,8 @@ public class ObjectStorageConfig {
 	public ObjectStorage client() throws IOException {
 		ConfigFile config = ConfigFileReader.parse("~/ocikey/config", "DEFAULT");
 		AuthenticationDetailsProvider provider = new ConfigFileAuthenticationDetailsProvider(config);
-		return new ObjectStorageClient(provider);
+		ObjectStorage client = new ObjectStorageClient(provider);
+		client.setRegion(Region.AP_SEOUL_1);
+		return client;
 	}
 }

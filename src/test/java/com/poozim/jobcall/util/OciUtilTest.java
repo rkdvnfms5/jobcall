@@ -400,7 +400,6 @@ public class OciUtilTest {
         client.close();
 	}
 	
-	@Test
 	public void deleteBucketTest() throws Exception {
 		ConfigFile config = ConfigFileReader.parse("~/ocikey/config", "DEFAULT");
 		
@@ -504,6 +503,20 @@ public class OciUtilTest {
         client.deletePreauthenticatedRequest(request);
         
         client.close();
+	}
+	
+	public void getAccessCode() {
+		String str = "/p/yq_gnYvxM2HR2UmaK6YFaUCRr7QZriq_pojlkMla84xHRwp80WgZ99iB3LN0bnWo/n/cnwovahmge5s/b/bucket-20210728-1124/o/";
+	
+		str = str.substring(str.indexOf("/p/") + 3, str.indexOf("/n/"));
+	
+		System.out.println("@@@@@@@@@@@@@ str : " + str);
+	}
+
+	@Test
+	public void getExt() {
+		String str = "test.jpg";
+		System.out.println(str.substring(str.lastIndexOf(".") + 1));
 	}
 	
 }

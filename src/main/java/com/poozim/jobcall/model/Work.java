@@ -23,6 +23,7 @@ public class Work {
 	String code;
 	String email;
 	String bucket_name;
+	String preauth_code;
 	String useyn;
 	String regdate;
 	String register;
