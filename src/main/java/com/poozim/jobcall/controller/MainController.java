@@ -25,4 +25,10 @@ public class MainController {
 	public String main(HttpServletRequest request, HttpServletResponse response, Model model) {
 		return "/main/main";
 	}
+	
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public String test(HttpServletRequest request, HttpServletResponse response, Model mode) {
+		System.out.println(org.glassfish.jersey.internal.LocalizationMessages.WARNING_PROPERTIES());
+		return "/main/main";
+	}
 }

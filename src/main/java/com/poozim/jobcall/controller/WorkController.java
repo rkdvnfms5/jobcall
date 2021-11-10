@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.aop.WorkLnbSet;
@@ -81,33 +82,6 @@ public class WorkController {
 		return "/work/view";
 	}
 	
-	@RequestMapping(value = "/group/{groupseq}", method = RequestMethod.GET)
-	@WorkLnbSet
-	public String group(HttpServletRequest request, HttpServletResponse response, Model model,
-			@PathVariable("groupseq") int groupseq) {
-		//get WorkGroup
-		WorkGroup workGroup = workService.getWorkGroupOne(groupseq);
-		model.addAttribute("WorkGroup", workGroup);
-		
-		if(workGroup != null && workGroup.getUseyn().equals("N")) {
-			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
-			return "/util/alert";
-		}
-		
-		Member member = LoginUtil.getLoginMember(request, response);
-		
-		WorkGroupMember wgm = workService.getWorkGroupMemberOne(groupseq, member.getSeq());
-		
-		if(wgm == null) {
-			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
-			return "/util/alert";
-		}
-		
-		//get Work Boards
-		
-		
-		return "/work/group";
-	}
 	
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
 	@WorkLnbSet
@@ -169,10 +143,68 @@ public class WorkController {
 		return jsonView;
 	}
 	
+	@RequestMapping(value = "/group/{groupseq}", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String group(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("groupseq") int groupseq) {
+		//get WorkGroup
+		WorkGroup workGroup = workService.getWorkGroupOne(groupseq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		if(workGroup == null || workGroup.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
+			return "/util/alert";
+		}
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(groupseq, member.getSeq());
+		
+		if(wgm == null) {
+			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
+			return "/util/alert";
+		}
+		
+		//get master info
+		
+		
+		//get Work Boards
+		
+		
+		return "/work/group";
+	}
+	
+	@RequestMapping(value = "/group/{groupseq}", method = RequestMethod.PUT)
+	public String updateGroup (HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("groupseq") int groupseq, WorkGroup workGroup){
+		WorkGroup group = workService.getWorkGroupOne(groupseq);
+		
+		if(group.getMember_seq() == LoginUtil.getLoginMember(request, response).getSeq()) {
+			group.setAccess(workGroup.getAccess());
+			group.setContent(workGroup.getContent());
+			workService.updateWorkGroup(group);
+			return "redirect:/work/group/" + groupseq;
+		}
+		
+		model.addAttribute("msg", "그룹 마스터만 수정이 가능합니다.");
+		return "/util/alert";
+	}
+	
 	@RequestMapping(value = "/group/new", method = RequestMethod.GET)
 	@WorkLnbSet
 	public String groupNewPage(HttpServletRequest request, HttpServletResponse response, Model model) {
 		return "/work/group_new";
+	}
+	
+	@RequestMapping(value = "/group/{groupseq}/setting", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupSettingPage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("groupseq") int groupseq) {
+		WorkGroup workGroup = workService.getWorkGroupOne(groupseq);
+		model.addAttribute("WorkGroup", workGroup);
+		
+		return "/work/group_setting";
 	}
 	
 	@RequestMapping(value = "/group", method = RequestMethod.POST)
@@ -191,4 +223,22 @@ public class WorkController {
 		return "redirect:/work/group/" + workGroup.getSeq();
 	}
 	
+	@RequestMapping(value = "/board", method = RequestMethod.POST)
+	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard,
+			@RequestParam("attachFiles") List<MultipartFile> attachFiles) {
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		workBoard.setMember_seq(member.getSeq());
+		workBoard.setMember_id(member.getId());
+		workBoard.setMember_name(member.getName());
+		workBoard.setWork_seq(member.getWork_seq());
+		workBoard.setRegister(member.getId());
+		workBoard.setRegdate(TimeUtil.getDateTime());
+		workBoard.setStatus("request");
+		
+		workService.insertWorkBoard(workBoard);
+		
+		return jsonView;
+	}
+
 }

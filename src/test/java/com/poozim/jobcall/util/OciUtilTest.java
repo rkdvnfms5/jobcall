@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -50,12 +51,16 @@ import com.oracle.bmc.objectstorage.responses.ListObjectsResponse;
 import com.oracle.bmc.objectstorage.transfer.*;
 import com.oracle.bmc.objectstorage.transfer.UploadManager.UploadRequest;
 import com.oracle.bmc.objectstorage.transfer.UploadManager.UploadResponse;
+import com.poozim.jobcall.mapper.WorkMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/*.xml", 
 								   "file:src/main/webapp/WEB-INF/spring/appServlet/*.xml"})
 public class OciUtilTest {
 
+	@Autowired
+	private WorkMapper mapper;
+	
 	public void Test() throws Exception {
 		final String compartmentId = "ocid1.tenancy.oc1..aaaaaaaa3leal2u527hmtcuhb4o7s5vhrf3cg4gupzytr3npcg5mbqtmjq4q";
         final String bucket = "bucket-20210728-1124";
@@ -513,10 +518,15 @@ public class OciUtilTest {
 		System.out.println("@@@@@@@@@@@@@ str : " + str);
 	}
 
-	@Test
 	public void getExt() {
 		String str = "test.jpg";
 		System.out.println(str.substring(str.lastIndexOf(".") + 1));
+	}
+	
+	@Test
+	public void whereJar() {
+		System.out.println(org.glassfish.jersey.internal.LocalizationMessages.WARNING_PROPERTIES());
+		System.out.println("@@@@@@@@@@@@@@@@@@@@ : " + mapper.getCreatedWorkCode("태스트"));
 	}
 	
 }

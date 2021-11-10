@@ -1,15 +1,18 @@
 package com.poozim.jobcall.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
+import com.poozim.jobcall.model.WorkBoardFile;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
@@ -22,6 +25,8 @@ import com.poozim.jobcall.repository.WorkCategoryRepository;
 import com.poozim.jobcall.repository.WorkGroupMemberRepository;
 import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
+import com.poozim.jobcall.util.OciUtil;
+import com.poozim.jobcall.util.RedisUtil;
 
 @Service
 public class WorkService {
@@ -142,6 +147,10 @@ public class WorkService {
 		return workGroupRepository.getWorkGroupMemberOne(groupseq, memberseq);
 	}
 	
+	public int getWorkGroupMemberCnt(WorkGroup workGroup) {
+		return workGroupRepository.getWorkGroupMemberCnt(workGroup);
+	}
+	
 	//WorkCategory CRUD and Logics
 	public List<WorkCategory> getWorkCategoryList(WorkCategory workCategory){
 		return workMapper.getWorkCategoryList(workCategory);
@@ -187,6 +196,39 @@ public class WorkService {
 	//WorkBoard CRUD and Logics
 	public List<WorkBoard> getWorkBoardList(WorkBoard workBoard){
 		return workMapper.getWorkBoardList(workBoard);
+	}
+	
+	public int insertWorkBoard(WorkBoard workBoard) {
+		workBoardRepository.save(workBoard);
+
+		if(workBoard.getAttachFiles() != null && !workBoard.getAttachFiles().isEmpty()) {
+			for(int i=0; i<workBoard.getAttachFiles().size(); i++) {
+				MultipartFile file = workBoard.getAttachFiles().get(i);
+				String objectName = file.getOriginalFilename();
+				Work redisWork = RedisUtil.getWorkRedis(workBoard.getWork_seq());
+				try {
+					String bucketName = redisWork.getBucket_name();//버킷 네임 해야함
+					
+					if(OciUtil.createObject(bucketName, file, objectName) > 0) {
+						WorkBoardFile workBoardFile = new WorkBoardFile();
+						workBoardFile.setBoard_seq(workBoard.getSeq());
+						workBoardFile.setName(file.getOriginalFilename());
+						workBoardFile.setObject_name(objectName);
+						workBoardFile.setSrc(OciUtil.getObjectSrc(redisWork.getPreauth_code(), bucketName, objectName));
+						workBoardFile.setRegdate(workBoard.getRegdate());
+						workBoardFileRepository.save(workBoardFile);
+					}
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return 0;
 	}
 	
 }

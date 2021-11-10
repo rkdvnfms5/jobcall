@@ -1,12 +1,21 @@
 package com.poozim.jobcall.service;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkCategory;
@@ -19,6 +28,7 @@ import com.poozim.jobcall.repository.WorkCategoryRepository;
 import com.poozim.jobcall.repository.WorkGroupMemberRepository;
 import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
+import com.poozim.jobcall.util.OciUtil;
 import com.poozim.jobcall.util.TimeUtil;
 
 @Service
@@ -45,6 +55,9 @@ public class SignService {
 	@Autowired
 	private BCryptPasswordEncoder bcryEncoder;
 	
+	@Autowired
+	private WorkMapper workMapper;
+	
 	@Transactional
 	public int signupWork(Work work, Member member) {
 		member.setPassword(bcryEncoder.encode(member.getPassword()));
@@ -57,7 +70,8 @@ public class SignService {
 		work = workRepository.save(work);
 		member.setWork_seq(work.getSeq());
 		
-		workRepository.setWorkCode(work);
+		//workRepository.setWorkCode(work);
+		work.setCode(workMapper.getCreatedWorkCode(work.getTitle()));
 		
 		//기본 그룹 생성
 		WorkGroup workGroup = new WorkGroup();
@@ -96,6 +110,21 @@ public class SignService {
 		wcg.setMember_seq(member.getSeq());
 		
 		WorkCategoryGroupRepository.save(wcg);
+		
+		//oci 버킷 생성
+		
+		String bucketName = work.getSeq() + "_" + TimeUtil.getDateTimeString();
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		System.out.println(LocalDateTime.now().plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		Date expireDate = new Date(2021, 11, 21);
+		System.out.println(expireDate);
+		try {
+			work.setBucket_name(OciUtil.createBucket(bucketName));
+			work.setPreauth_code(OciUtil.createPreAuth(bucketName, expireDate));
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("OCI Error");
+		}
 		
 		return 1;
 	}

@@ -49,10 +49,12 @@ public class OciUtil {
 	
 	public static String host = "https://objectstorage.ap-seoul-1.oraclecloud.com";
 	
-	@Autowired
-	static ObjectStorage client;
+	private static ObjectStorage client;
 	
-	public OciUtil() throws IOException {
+	@Autowired
+	public OciUtil(ObjectStorage client) throws IOException {
+		this.client = client;
+		
 		propsUtil = new PropertiesUil();
 		this.compartmentId = propsUtil.getProperty("compartment_ocid");
 		this.namespaceName = propsUtil.getProperty("storage_namespace");
@@ -142,7 +144,7 @@ public class OciUtil {
 	 * @throws IOException 
 	 * @throws IllegalStateException 
 	 */
-	public static int createObject(String bucketName, MultipartFile file) throws IllegalStateException, IOException {
+	public static int createObject(String bucketName, MultipartFile file, String objectName) throws IllegalStateException, IOException {
 		UploadConfiguration uploadConfiguration =
                 UploadConfiguration.builder()
                         .allowMultipartUploads(true)
@@ -157,7 +159,9 @@ public class OciUtil {
         String contentEncoding = null;
         String contentLanguage = null;
         
-        String objectName = file.getOriginalFilename();
+        if(objectName == null || objectName.equals("")) {
+        	objectName = file.getOriginalFilename();
+        }
         String ext = objectName.substring(objectName.lastIndexOf(".") + 1);
         
         File object = new File(file.getOriginalFilename());

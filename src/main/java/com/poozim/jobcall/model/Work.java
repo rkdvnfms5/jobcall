@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.redis.core.RedisHash;
 
 import lombok.Data;
 

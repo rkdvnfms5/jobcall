@@ -21,4 +21,6 @@ public interface WorkMapper {
 	public int moveWorkGroupList(WorkCategoryGroup workCategoryGroup);
 	
 	public int insertWorkGroupMemberList(WorkGroupMember workGroupMember);
+	
+	public String getCreatedWorkCode(String title);
 }

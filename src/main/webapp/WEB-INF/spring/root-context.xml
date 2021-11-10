@@ -48,6 +48,8 @@
     <!-- redis -->
     <bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" p:host-name="${REDIS_HOST}" p:port="${REDIS_PORT}" p:password="${REDIS_PASSWORD}" />
 
-	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate" p:connectionFactory-ref="redisConnectionFactory" />
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate" p:connectionFactory-ref="redisConnectionFactory" />
 
+	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate" p:connectionFactory-ref="redisConnectionFactory" />
+	
 </beans>

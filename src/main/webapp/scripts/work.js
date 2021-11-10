@@ -91,20 +91,19 @@ function uncheckCategoryGroupAll(){
 	$("#group-list").find("input[type=checkbox]").prop("checked", false);
 }
 
-function checkInsertGroup() {
-	if($.trim($("#insertGroupForm input[name='access']:checked")).length < 1){
+function checkGroupValue() {
+	if($.trim($("input[name='access']:checked")).length < 1){
 		return false;
 	}
 	
-	if($.trim($("#insertGroupForm #group_name").val()) == ''){
+	if($.trim($("#group_name").val()) == ''){
 		return false;
 	}
 	
-	if($.trim($("#insertGroupForm #group_content").val()) == ''){
+	if($.trim($("#group_content").val()) == ''){
 		return false;
 	}
 	
 	return true;
 }
-
 

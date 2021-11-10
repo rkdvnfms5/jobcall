@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -33,4 +35,7 @@ public class WorkBoard {
 	
 	@Transient
 	List<WorkBoardFile> workBoardFileList;
+	
+	@Transient
+	List<MultipartFile> attachFiles;
 }

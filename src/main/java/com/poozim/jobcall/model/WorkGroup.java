@@ -27,4 +27,7 @@ public class WorkGroup {
 	
 	@Transient
 	int category_seq;
+	
+	@Transient
+	int member_count;
 }

@@ -15,12 +15,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class RedisTest {
 	
 	@Autowired
-	StringRedisTemplate redisTemplate;
+	StringRedisTemplate stringRedisTemplate;
 	
 	@Test
 	public void test() {
 
-	    final ValueOperations<String, String> stringStringValueOperations = redisTemplate.opsForValue();
+	    final ValueOperations<String, String> stringStringValueOperations = stringRedisTemplate.opsForValue();
 	    
 	   // stringStringValueOperations.set("testKey", "testValue"); // redis set
 	   
@@ -31,6 +31,5 @@ public class RedisTest {
 	   // stringStringValueOperations.getOperations().rename("testKey", "testKey2"); //key명 변경
 	   
 	   stringStringValueOperations.set("testKey2", "testValue2"); // redis 덮어쓰기
-	   
 	}
 }

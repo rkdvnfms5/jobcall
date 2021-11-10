@@ -89,4 +89,8 @@
 		</if>
 		
 	</insert>
+	
+	<select id="getCreatedWorkCode" parameterType="String" resultType="String">
+		SELECT getWorkCode(#{title}) as code
+	</select>
 </mapper>

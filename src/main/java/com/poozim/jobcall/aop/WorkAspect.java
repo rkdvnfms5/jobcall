@@ -23,6 +23,7 @@ import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
+import com.poozim.jobcall.util.RedisUtil;
 
 @Component
 @Aspect
@@ -56,6 +57,12 @@ public class WorkAspect {
 			workCategory.setMember_seq(member.getSeq());
 			List<WorkCategory> workCategoryList = workService.getWorkCategoryList(workCategory);
 			request.setAttribute("LnbWorkCategoryList", workCategoryList);
+			
+			//work info store in redis
+			Work redisWork = RedisUtil.getWorkRedis(work.getSeq());
+			if(redisWork == null) {
+				RedisUtil.insertWorkRedis(work);
+			}
 			
 		}
 	}
