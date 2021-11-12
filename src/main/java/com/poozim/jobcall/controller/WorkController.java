@@ -230,8 +230,7 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
-	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model) {
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
 		WorkBoard workBoard = new WorkBoard();
 		Member member = LoginUtil.getLoginMember(request, response);
 		
@@ -247,7 +246,6 @@ public class WorkController {
 		workBoard.setRegister(member.getId());
 		workBoard.setRegdate(TimeUtil.getDateTime());
 		workBoard.setStatus("request");
-		List<MultipartFile> attachFiles = multipartRequest.getFiles("attachFiles");
 		
 		System.out.println(attachFiles);
 		if(attachFiles != null && !attachFiles.isEmpty()) {
