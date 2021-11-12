@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import com.poozim.jobcall.model.Work;
 
 @Configuration
 @Component
+//@EnableRedisRepositories
 public class RedisConfig {
 
 	private LettuceConnectionFactory redisConnectionFactory;
@@ -37,7 +39,7 @@ public class RedisConfig {
 		RedisTemplate<String, Member> memberRedisTemplate = new RedisTemplate<>();
 		memberRedisTemplate.setConnectionFactory(redisConnectionFactory);
 		memberRedisTemplate.setKeySerializer(new StringRedisSerializer());
-		memberRedisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Work>(Work.class));
+		memberRedisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Member>(Member.class));
 		return memberRedisTemplate;
 	}
 }

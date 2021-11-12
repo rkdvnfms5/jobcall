@@ -39,13 +39,14 @@ public class WorkAspect {
 		log.info("======================================set WorkLNBAttrs Logic");
 		HttpServletRequest request = ((ServletRequestAttributes)(RequestContextHolder.currentRequestAttributes())).getRequest();
 		HttpServletResponse response = ((ServletRequestAttributes)(RequestContextHolder.currentRequestAttributes())).getResponse();
-		
+		HttpSession session = request.getSession();
 		if(LoginUtil.getLoginCheck(request, response)) {
 			Member member= LoginUtil.getLoginMember(request, response);
 			request.setAttribute("member", member);
 			
 			Work work = workService.getWorkOne(member.getWork_seq());
 			request.setAttribute("LnbWork", work);
+			session.setAttribute("WorkInfo", work);
 			
 			WorkGroup workGroup = new WorkGroup();
 			workGroup.setMember_seq(member.getSeq());
@@ -57,12 +58,6 @@ public class WorkAspect {
 			workCategory.setMember_seq(member.getSeq());
 			List<WorkCategory> workCategoryList = workService.getWorkCategoryList(workCategory);
 			request.setAttribute("LnbWorkCategoryList", workCategoryList);
-			
-			//work info store in redis
-			Work redisWork = RedisUtil.getWorkRedis(work.getSeq());
-			if(redisWork == null) {
-				RedisUtil.insertWorkRedis(work);
-			}
 			
 		}
 	}

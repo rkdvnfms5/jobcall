@@ -37,5 +37,5 @@ public class WorkBoard {
 	List<WorkBoardFile> workBoardFileList;
 	
 	@Transient
-	List<MultipartFile> attachFiles;
+	List<MultipartFile> attachFileList;
 }

@@ -26,6 +26,7 @@
 		SELECT *
 		FROM WorkBoard b, WorkGroupMember gm
 		WHERE b.group_seq = gm.group_seq
+		AND b.group_seq = #{group_seq}
 		AND gm.member_seq = #{member_seq}
 		<include refid="selectBoard" />
 		ORDER BY b.regdate DESC

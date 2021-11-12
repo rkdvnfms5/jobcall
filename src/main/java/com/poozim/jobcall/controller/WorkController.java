@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.aop.WorkLnbSet;
@@ -145,7 +146,7 @@ public class WorkController {
 	
 	@RequestMapping(value = "/group/{groupseq}", method = RequestMethod.GET)
 	@WorkLnbSet
-	public String group(HttpServletRequest request, HttpServletResponse response, Model model,
+	public String groupPage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("groupseq") int groupseq) {
 		//get WorkGroup
 		WorkGroup workGroup = workService.getWorkGroupOne(groupseq);
@@ -170,7 +171,12 @@ public class WorkController {
 		
 		
 		//get Work Boards
+		WorkBoard workBoard = new WorkBoard();
+		workBoard.setMember_seq(member.getSeq());
+		workBoard.setGroup_seq(groupseq);
+		List<WorkBoard> workBoardList = workService.getWorkBoardList(workBoard);
 		
+		model.addAttribute("WorkBoardList", workBoardList);
 		
 		return "/work/group";
 	}
@@ -224,10 +230,16 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
-	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard,
-			@RequestParam("attachFiles") List<MultipartFile> attachFiles) {
+	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model) {
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		WorkBoard workBoard = new WorkBoard();
 		Member member = LoginUtil.getLoginMember(request, response);
 		
+		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+		String type = ServletRequestUtils.getStringParameter(request, "type", "");
+		
+		workBoard.setContent(content);
+		workBoard.setType(type);
 		workBoard.setMember_seq(member.getSeq());
 		workBoard.setMember_id(member.getId());
 		workBoard.setMember_name(member.getName());
@@ -235,8 +247,14 @@ public class WorkController {
 		workBoard.setRegister(member.getId());
 		workBoard.setRegdate(TimeUtil.getDateTime());
 		workBoard.setStatus("request");
+		List<MultipartFile> attachFiles = multipartRequest.getFiles("attachFiles");
 		
-		workService.insertWorkBoard(workBoard);
+		System.out.println(attachFiles);
+		if(attachFiles != null && !attachFiles.isEmpty()) {
+			workBoard.setAttachFileList(attachFiles);
+		}
+		
+		workService.insertWorkBoard(workBoard, request, response);
 		
 		return jsonView;
 	}

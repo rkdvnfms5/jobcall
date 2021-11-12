@@ -5,10 +5,14 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:redis="http://www.springframework.org/schema/redis"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-		http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis-1.0.xsd">
+		http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis-1.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 	
 	<!-- properties 파일 사용 -->
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -52,4 +56,9 @@
 
 	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate" p:connectionFactory-ref="redisConnectionFactory" />
 	
+	<context:annotation-config />
+	<bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration" />
+	
+	<util:constant
+	static-field="org.springframework.session.data.redis.config.ConfigureRedisAction.NO_OP"/>
 </beans>

@@ -3,6 +3,9 @@ package com.poozim.jobcall.service;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,7 @@ import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
 import com.poozim.jobcall.util.OciUtil;
 import com.poozim.jobcall.util.RedisUtil;
+import com.poozim.jobcall.util.SessionUtil;
 
 @Service
 public class WorkService {
@@ -198,23 +202,23 @@ public class WorkService {
 		return workMapper.getWorkBoardList(workBoard);
 	}
 	
-	public int insertWorkBoard(WorkBoard workBoard) {
+	public int insertWorkBoard(WorkBoard workBoard, HttpServletRequest request, HttpServletResponse response) {
 		workBoardRepository.save(workBoard);
 
-		if(workBoard.getAttachFiles() != null && !workBoard.getAttachFiles().isEmpty()) {
-			for(int i=0; i<workBoard.getAttachFiles().size(); i++) {
-				MultipartFile file = workBoard.getAttachFiles().get(i);
+		if(workBoard.getAttachFileList() != null && !workBoard.getAttachFileList().isEmpty()) {
+			for(int i=0; i<workBoard.getAttachFileList().size(); i++) {
+				MultipartFile file = workBoard.getAttachFileList().get(i);
 				String objectName = file.getOriginalFilename();
-				Work redisWork = RedisUtil.getWorkRedis(workBoard.getWork_seq());
+				Work sessionWork = SessionUtil.getWorkInfo(request, response);
 				try {
-					String bucketName = redisWork.getBucket_name();//버킷 네임 해야함
+					String bucketName = sessionWork.getBucket_name();//버킷 네임 해야함
 					
 					if(OciUtil.createObject(bucketName, file, objectName) > 0) {
 						WorkBoardFile workBoardFile = new WorkBoardFile();
 						workBoardFile.setBoard_seq(workBoard.getSeq());
 						workBoardFile.setName(file.getOriginalFilename());
 						workBoardFile.setObject_name(objectName);
-						workBoardFile.setSrc(OciUtil.getObjectSrc(redisWork.getPreauth_code(), bucketName, objectName));
+						workBoardFile.setSrc(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
 						workBoardFile.setRegdate(workBoard.getRegdate());
 						workBoardFileRepository.save(workBoardFile);
 					}

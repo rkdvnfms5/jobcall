@@ -1100,21 +1100,27 @@ body {background-color: #f5f5f5;}
 }
 
 .message-form.message-form--editing .message-form__text-wrap {
-    border-color: #e3e3e3;
-    background-color: #fcfcfc;
+    /* border-color: #e3e3e3;
+    background-color: #fcfcfc; */
 }
 
 .message-form .message-form__body .message-form__text-wrap {
     position: relative;
-    border: solid 1px #eeeeee;
+    /* border: solid 1px #eeeeee; */
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
 .message-form.message-form--editing .message-form__text-wrap {
-    border-color: #e3e3e3;
+    /* border-color: #e3e3e3;
+    background-color: #fcfcfc; */
+}
+
+.message-form.message-form--editing .message-form__text-wrap textarea {
+	border-color: #e3e3e3;
     background-color: #fcfcfc;
+    width: 100%;
 }
 
 .message-form .ProseMirror {
