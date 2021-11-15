@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.poozim.jobcall.mapper.WorkMapper;
+import com.poozim.jobcall.model.Comment;
+import com.poozim.jobcall.model.CommentFile;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
@@ -31,6 +33,8 @@ import com.poozim.jobcall.repository.WorkRepository;
 import com.poozim.jobcall.util.OciUtil;
 import com.poozim.jobcall.util.RedisUtil;
 import com.poozim.jobcall.util.SessionUtil;
+import com.poozim.jobcall.util.StringUtil;
+import com.poozim.jobcall.util.TimeUtil;
 
 @Service
 public class WorkService {
@@ -126,6 +130,7 @@ public class WorkService {
 		return 1;
 	}
 	
+	@Transactional
 	public int deleteWorkGroup(WorkGroup workGroup) {
 		int memberCnt = workGroupRepository.getWorkGroupMemberCnt(workGroup);
 		if(memberCnt > 1) {
@@ -202,13 +207,19 @@ public class WorkService {
 		return workMapper.getWorkBoardList(workBoard);
 	}
 	
+	public WorkBoard getWorkBoardOne(int seq) {
+		return workBoardRepository.findById(seq).get();
+	}
+	
+	@Transactional
 	public int insertWorkBoard(WorkBoard workBoard, HttpServletRequest request, HttpServletResponse response) {
 		workBoardRepository.save(workBoard);
 
 		if(workBoard.getAttachFileList() != null && !workBoard.getAttachFileList().isEmpty()) {
 			for(int i=0; i<workBoard.getAttachFileList().size(); i++) {
 				MultipartFile file = workBoard.getAttachFileList().get(i);
-				String objectName = file.getOriginalFilename();
+				String str = file.getOriginalFilename();
+				String objectName =  str.substring(0, str.lastIndexOf(".")) + "_" + TimeUtil.getDateTimeString() + str.substring(str.lastIndexOf("."));
 				Work sessionWork = SessionUtil.getWorkInfo(request, response);
 				try {
 					String bucketName = sessionWork.getBucket_name();//버킷 네임 해야함
@@ -219,6 +230,7 @@ public class WorkService {
 						workBoardFile.setName(file.getOriginalFilename());
 						workBoardFile.setObject_name(objectName);
 						workBoardFile.setSrc(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
+						workBoardFile.setSize(StringUtil.getSizeStr(file.getSize()));
 						workBoardFile.setRegdate(workBoard.getRegdate());
 						workBoardFileRepository.save(workBoardFile);
 					}
@@ -235,4 +247,85 @@ public class WorkService {
 		return 0;
 	}
 	
+	@Transactional
+	public int deleteWorkBoard(WorkBoard workBoard, HttpServletRequest request, HttpServletResponse response) {
+		//delete WorkBoardFiles
+		Work sessionWork = SessionUtil.getWorkInfo(request, response);
+		
+		List<WorkBoardFile> workBoardFileList = workBoardRepository.getWorkBoardFileList(workBoard);
+		
+		if(workBoardFileList != null && !workBoardFileList.isEmpty()) {
+			workBoardRepository.deleteWorkBoardFiles(workBoard);
+			
+			for(int i=0; i<workBoardFileList.size(); i++) {
+				OciUtil.deleteObject(sessionWork.getBucket_name(), workBoardFileList.get(i).getObject_name());
+			}
+		}
+		
+		//delete WorkComemnts
+		List<Comment> commentList = workBoardRepository.getCommentList(workBoard);
+		if(commentList != null && !commentList.isEmpty()) {
+			for(int i=0; i<commentList.size(); i++) {
+				List<CommentFile> commentFileList = workBoardRepository.getCommentFileList(commentList.get(i));
+				if(commentFileList != null && !commentFileList.isEmpty()) {
+					for(int j=0; j<commentFileList.size(); j++) {
+						OciUtil.deleteObject(sessionWork.getBucket_name(), commentFileList.get(j).getObject_name());
+					}
+					workBoardRepository.deleteCommentFiles(commentList.get(i));
+				}
+			}
+			workBoardRepository.deleteComments(workBoard);
+		}
+		
+		workBoardRepository.delete(workBoard);
+		
+		return 1;
+	}
+	
+	@Transactional
+	public int updateWorkBoard(WorkBoard workBoard, HttpServletRequest request, HttpServletResponse response) {
+		Work sessionWork = SessionUtil.getWorkInfo(request, response);
+		//delete BoardFiles
+		if(workBoard.getBoardFileSeqList() != null && !workBoard.getBoardFileSeqList().isEmpty()) {
+			List<WorkBoardFile> workBoardFileList = workBoardRepository.getWorkBoardFileList(workBoard);
+			for(int i=0; i<workBoardFileList.size(); i++) {
+				OciUtil.deleteObject(sessionWork.getBucket_name(), workBoardFileList.get(i).getObject_name());
+			}
+			workBoardRepository.deleteWorkBoardFiles(workBoard);
+		}
+		
+		//add BoardFiles
+		if(workBoard.getAttachFileList() != null && !workBoard.getAttachFileList().isEmpty() && workBoard.getAttachFileList().size() > 0) {
+			for(int i=0; i<workBoard.getAttachFileList().size(); i++) {
+				MultipartFile file = workBoard.getAttachFileList().get(i);
+				String str = file.getOriginalFilename();
+				String objectName =  str.substring(0, str.lastIndexOf(".")) + "_" + TimeUtil.getDateTimeString() + str.substring(str.lastIndexOf("."));
+				try {
+					String bucketName = sessionWork.getBucket_name();//버킷 네임 해야함
+					
+					if(OciUtil.createObject(bucketName, file, objectName) > 0) {
+						WorkBoardFile workBoardFile = new WorkBoardFile();
+						workBoardFile.setBoard_seq(workBoard.getSeq());
+						workBoardFile.setName(file.getOriginalFilename());
+						workBoardFile.setObject_name(objectName);
+						workBoardFile.setSrc(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
+						workBoardFile.setSize(StringUtil.getSizeStr(file.getSize()));
+						workBoardFile.setRegdate(workBoard.getRegdate());
+						workBoardFileRepository.save(workBoardFile);
+					}
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//update Board
+		workBoardRepository.save(workBoard);
+		
+		return 1;
+	}
 }

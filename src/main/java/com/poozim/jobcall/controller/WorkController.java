@@ -2,6 +2,7 @@ package com.poozim.jobcall.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
@@ -230,31 +232,70 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
-	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
+	public String InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, 
+			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
 		WorkBoard workBoard = new WorkBoard();
 		Member member = LoginUtil.getLoginMember(request, response);
 		
 		String content = ServletRequestUtils.getStringParameter(request, "content", "");
 		String type = ServletRequestUtils.getStringParameter(request, "type", "");
+		int group_seq = ServletRequestUtils.getIntParameter(request, "group_seq", 0);
 		
+		content = content.replaceAll("(\r\n|\r|\n|\n\r)", "\\<br\\>");
 		workBoard.setContent(content);
 		workBoard.setType(type);
 		workBoard.setMember_seq(member.getSeq());
 		workBoard.setMember_id(member.getId());
 		workBoard.setMember_name(member.getName());
 		workBoard.setWork_seq(member.getWork_seq());
+		workBoard.setGroup_seq(group_seq);
 		workBoard.setRegister(member.getId());
 		workBoard.setRegdate(TimeUtil.getDateTime());
 		workBoard.setStatus("request");
 		
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		System.out.println(attachFiles);
+		
 		if(attachFiles != null && !attachFiles.isEmpty()) {
 			workBoard.setAttachFileList(attachFiles);
 		}
-		
 		workService.insertWorkBoard(workBoard, request, response);
 		
-		return jsonView;
+		return "redirect:/work/group/" + group_seq;
 	}
 
+	@RequestMapping(value = "/board/{boardseq}", method = RequestMethod.DELETE)
+	public View deleteBoard(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("boardseq") int boardseq) {
+		int res = 0;
+		Member member = LoginUtil.getLoginMember(request, response);
+		WorkBoard workBoard = workService.getWorkBoardOne(boardseq);
+		
+		if(workBoard.getMember_seq() == member.getSeq()) {
+			res = workService.deleteWorkBoard(workBoard, request, response);
+		}
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/board/{boardseq}", method = RequestMethod.PUT)
+	public View updateBoard(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("boardseq") int boardseq,
+			 @RequestParam("attachFiles") List<MultipartFile> attachFiles,  @RequestParam("boardFileSeqList") List<Integer> boardFileSeqList) {
+		int res = 0;
+		Member member = LoginUtil.getLoginMember(request, response);
+		WorkBoard workBoard = workService.getWorkBoardOne(boardseq);
+		
+		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+		
+		if(workBoard.getMember_seq() == member.getSeq()) {
+			workBoard.setAttachFileList(attachFiles);
+			workBoard.setBoardFileSeqList(boardFileSeqList);
+			workBoard.setContent(content);
+			res = workService.updateWorkBoard(workBoard, request, response);
+		}
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
 }

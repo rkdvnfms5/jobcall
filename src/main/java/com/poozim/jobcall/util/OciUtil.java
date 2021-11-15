@@ -165,7 +165,9 @@ public class OciUtil {
         String ext = objectName.substring(objectName.lastIndexOf(".") + 1);
         
         File object = new File(file.getOriginalFilename());
-        file.transferTo(object);
+        if(!object.exists()) {
+        	file.transferTo(object);
+        }
         
         PutObjectRequest request =
 	                PutObjectRequest.builder()
@@ -182,9 +184,8 @@ public class OciUtil {
 	                UploadRequest.builder(object).allowOverwrite(true).build(request);
 		
 		UploadResponse response = uploadManager.upload(uploadDetails);
-        
-		int res = (response == null? 0 : 1);
 		
+		int res = (response == null? 0 : 1);
         return res;
 	}
 	

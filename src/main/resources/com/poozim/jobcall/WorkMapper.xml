@@ -55,6 +55,7 @@
 		<result property="register" column="register" />
 		<result property="regdate" column="regdate" />
 		<collection property="workBoardFileList" column="seq" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
+		<collection property="commentList" column="seq" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
 	</resultMap>
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
@@ -94,4 +95,30 @@
 	<select id="getCreatedWorkCode" parameterType="String" resultType="String">
 		SELECT getWorkCode(#{title}) as code
 	</select>
+	
+	<select id="getCommentList" parameterType="int" resultMap="CommentMap">
+		SELECT *
+		FROM Comment
+		WHERE board_seq = #{board_seq}
+	</select>
+	
+	<select id="getCommentFileList" parameterType="int" resultType="CommentFile">
+		SELECT *
+		FROM CommentFile
+		WHERE comment_seq = #{comment_seq}
+	</select>
+	
+	<resultMap type="Comment" id="CommentMap">
+		<result property="seq" column="seq" />
+		<result property="board_seq" column="board_seq" />
+		<result property="member_seq" column="member_seq" />
+		<result property="member_id" column="member_id" />
+		<result property="member_name" column="member_name" />
+		<result property="content" column="content" />
+		<result property="register" column="register" />
+		<result property="regdate" column="regdate" />
+		<result property="modifier" column="modifier" />
+		<result property="moddate" column="moddate" />
+		<collection property="commentFileList" column="seq" javaType="java.util.ArrayList" ofType="CommentFile" select="getCommentFileList"></collection>
+	</resultMap>
 </mapper>

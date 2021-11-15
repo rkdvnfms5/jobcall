@@ -37,5 +37,11 @@ public class WorkBoard {
 	List<WorkBoardFile> workBoardFileList;
 	
 	@Transient
+	List<Comment> commentList;
+	
+	@Transient
 	List<MultipartFile> attachFileList;
+	
+	@Transient
+	List<Integer> boardFileSeqList;
 }

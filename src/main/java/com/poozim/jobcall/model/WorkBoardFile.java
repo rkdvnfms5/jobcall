@@ -17,6 +17,7 @@ public class WorkBoardFile {
 	String path;
 	String name;
 	String object_name;
+	String size;
 	String src;
-	String regdate;
+	String regdate;	
 }

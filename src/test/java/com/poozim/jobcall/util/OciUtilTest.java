@@ -518,12 +518,13 @@ public class OciUtilTest {
 		System.out.println("@@@@@@@@@@@@@ str : " + str);
 	}
 
+	@Test
 	public void getExt() {
 		String str = "test.jpg";
-		System.out.println(str.substring(str.lastIndexOf(".") + 1));
+		System.out.println(str.substring(0, str.lastIndexOf(".")) + "2020202020" + str.substring(str.lastIndexOf(".")));
+		
 	}
 	
-	@Test
 	public void whereJar() {
 		System.out.println(org.glassfish.jersey.internal.LocalizationMessages.WARNING_PROPERTIES());
 		System.out.println("@@@@@@@@@@@@@@@@@@@@ : " + mapper.getCreatedWorkCode("태스트"));
