@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -28,4 +30,10 @@ public class Comment {
 	
 	@Transient
 	List<CommentFile> commentFileList;
+	
+	@Transient
+	List<MultipartFile> attachFileList;
+	
+	@Transient
+	List<Integer> commentFileSeqList;
 }

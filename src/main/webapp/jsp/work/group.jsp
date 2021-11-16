@@ -140,7 +140,7 @@
 	    							</div>
 	    							<div class="message-form-submit-control">
 	    								<button class="ra-button message-form-submit-control__cancel-button">취소</button>
-	    								<button type="submit" id="insert-submit" onclick="" disabled class="ra-button message-form-submit-control__submit-button ra-button--accent">작성하기</button>
+	    								<button type="button" id="insert-submit" onclick="insertBoard()" disabled class="ra-button message-form-submit-control__submit-button ra-button--accent">작성하기</button>
 	    							</div>
 	    						</div>
 	    					</div>
@@ -276,28 +276,32 @@
 							</div>
 						</c:forEach>
 						
+						<form action="/work/comment" class="comment-insert-form" method="post">
+						<input type="hidden" name="board_seq" value="${Board.seq}">
 						<div class="comment-input">
-							<textarea rows="5" cols=""></textarea>
+							<textarea rows="5" cols="" class="comment-input-textArea" name="content"></textarea>
 							
-							<ul class="board-insert-attach-list" id="board-insert-attach-list">
-	   							<li>
+							<ul class="comment-insert-attach-list">
+	   							<!-- <li>
 	   								<span class="file-name">1분자기소개.txt (2.28KB)</span>
 	   								<span class="file-delete"> X </span>
-	   							</li>
+	   							</li> -->
 	   						</ul>
 		    						
 							<div class="comment-input-footer">
-								<span class="message-form__attach-file" onclick="">
+								<span class="message-form__attach-file" onclick="$(this).siblings('.comment-input-attach').click();">
 									<button type="button" class="icon-button" aria-label="[object Object]">
 										<i class="ico ico-attach" aria-hidden="true"><svg width="12px" height="13px" viewBox="0 0 12 13" version="1.1"><g id="attach" stroke="none" stroke-width="1" fill="#A0A0A0" fill-rule="evenodd"><path d="M12,6.82441256 L6.84573271,11.8390279 C6.05830882,12.605117 5.1142178,12.9920643 4.01343133,12.9998816 C2.91264486,13.0076988 1.96855384,12.6285686 1.18112994,11.8624795 C0.393706043,11.0963904 -6.03961325e-14,10.1739704 -6.03961325e-14,9.09519189 C-6.03961325e-14,8.01641338 0.393706043,7.09399342 1.18112994,6.32790433 L6.84159577,0.820805635 C7.40404141,0.273599142 8.09503569,0 8.91459934,0 C9.73416299,0 10.4251573,0.273599142 10.9876029,0.820805635 C11.5500485,1.36801213 11.8272497,2.03637575 11.8192148,2.82591654 C11.8111799,3.61545734 11.5259439,4.28382096 10.9634982,4.83102745 L5.56404706,10.0841835 C5.2105098,10.4281419 4.78466449,10.6001185 4.28649835,10.6001185 C3.78833221,10.6001185 3.3624869,10.4281419 3.00894964,10.0841835 C2.65541238,9.74022514 2.47462899,9.32200931 2.46659405,8.82952347 C2.45855912,8.33703763 2.63130769,7.91882179 2.98484495,7.57486343 L7.87809756,2.81419075 L8.64944772,3.56464161 L3.75619511,8.32531429 C3.61156623,8.46602453 3.54327029,8.63409258 3.55130522,8.82952347 C3.55934016,9.02495436 3.63567093,9.1930224 3.7802998,9.33373264 C3.92492868,9.47444288 4.09365984,9.54479695 4.28649835,9.54479695 C4.47933686,9.54479695 4.64806802,9.47444288 4.7926969,9.33373264 L10.1921481,4.08057658 C10.5456853,3.73661822 10.7264687,3.31840238 10.7345036,2.82591654 C10.7425386,2.3334307 10.56979,1.91521487 10.2162527,1.5712565 C9.86271548,1.22729813 9.42883535,1.05532153 8.91459934,1.05532153 C8.40036333,1.05532153 7.9664832,1.22729813 7.61294594,1.5712565 L1.95248011,7.07835519 C1.39003446,7.62556168 1.10881586,8.29783386 1.10881586,9.09519189 C1.10881586,9.89254993 1.39003446,10.5648221 1.95248011,11.1120286 C2.51492575,11.6592351 3.20190262,11.9289257 4.01343133,11.9211084 C4.82496004,11.9132912 5.51193691,11.6357835 6.07438255,11.088577 L11.2286498,6.0739617 L12,6.82441256 Z"></path></g></svg></i>
 									</button>
 									<span class="message-form__attach-file-label">파일첨부</span>
 								</span>
 								<div class="float-right">
-									<button class="comment-input-btn" disabled="disabled">작성하기</button>
+									<button type="button" class="comment-input-btn" disabled="disabled" onclick="insertComment(this)">작성하기</button>
 								</div>
+								<input type="file" class="comment-input-attach hide" multiple="multiple" autocomplete="off" name="attachFiles">
 							</div>
 						</div>
+						</form>
 					</div>
 				</c:forEach>
 			</div>
@@ -309,7 +313,12 @@ var board_attache_files = new Array();
 var delete_board_attach_files;
 var board_modify_files = new Array();
 
+var comment_attache_files = new Array();
+var delete_comment_attach_files;
+var comment_modify_files = new Array();
+
 $(document).ready(function(){
+	//board insert
 	$("#contentTextArea").on('focusin focusout propertychange change keyup paste input', function(){
 		var check = checkBoardValue();
 		if(check){
@@ -324,6 +333,7 @@ $(document).ready(function(){
 		setBoardInsertAttacheHtml();
 	});
 	
+	//board modify
 	$(".board-modify-textArea").on('focusin focusout propertychange change keyup paste input', function(){
 		var updateTextArea = $(this).closest(".updateBoardForm").find(".board-modify-textArea");
 		if($.trim(updateTextArea.val()) != ''){
@@ -340,6 +350,29 @@ $(document).ready(function(){
 		
 		setBoardModifyAttacheHtml(ul);
 	});
+	
+	
+	//comment insert
+	$(".comment-input-textArea").on('focusin focusout propertychange change keyup paste input', function(){
+		if($.trim($(this).val()) != ''){
+			$(this).closest(".comment-input").find(".comment-input-btn").attr("disabled", false);
+		} else {
+			$(this).closest(".comment-input").find(".comment-input-btn").attr("disabled", true);
+		}
+	});
+	
+	$(".comment-input-attach").on("change", function(){
+		if($.trim($(this).closest(".comment-input").find(".comment-input-textArea").val()) != ''){
+			$(this).closest(".comment-input").find(".comment-input-btn").attr("disabled", false);
+		} else {
+			$(this).closest(".comment-input").find(".comment-input-btn").attr("disabled", true);
+		}
+		
+		comment_attache_files = Array.from($(this)[0].files);
+		setCommentInsertAttacheHtml($(this).closest(".comment-input").find(".comment-insert-attach-list"));
+	});
+	
+	//comment modify
 })
 
 function checkBoardValue(){
@@ -377,7 +410,7 @@ function insertBoard(){
 	}
 	
 	data.append("type", "plain");
-	
+	showLoading();
 	$.ajax({
 		url : url,
 		type : 'POST',
@@ -391,6 +424,7 @@ function insertBoard(){
 		},
 		error : function(request, status, error){
 			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
+			hideLoading();
 		}
 	})
 	
@@ -421,6 +455,7 @@ function removeBoardInsertAttache(index){
 
 function deleteBoard(seq){
 	if(confirm("정말 삭제하시겠습니까?")){
+		showLoading();
 		$.ajax({
 			url : '/work/board/' + seq,
 			method : 'DELETE',
@@ -435,6 +470,7 @@ function deleteBoard(seq){
 			},
 			error : function(request, status, error){
 				alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
+				hideLoading();
 			}
 		})
 	}
@@ -514,6 +550,8 @@ function modifyBoard(obj){
 		data.append("boardFileSeqList", new Array());
 	}
 	
+	showLoading();
+	
 	$.ajax({
 		url : url,
 		type : 'PUT',
@@ -527,6 +565,7 @@ function modifyBoard(obj){
 		},
 		error : function(request, status, error){
 			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
+			hideLoading();
 		}
 	})
 }
@@ -534,7 +573,6 @@ function modifyBoard(obj){
 function setBoardModifyAttacheHtml(ul){
 	ul.find('li.added').remove();
 	var array = board_modify_files;
-	console.log(array);
 	if(array.length > 0){
 		var html = "";
 		for(var i=0; i<array.length; i++){
@@ -553,6 +591,68 @@ function removeBoardModifyAttache(index, obj){
 		board_modify_files.splice(index, 1);
 		setBoardModifyAttacheHtml(ul);
 	}
+}
+
+function setCommentInsertAttacheHtml(ul){
+	ul.empty();
+	var array = comment_attache_files;
+	if(array.length > 0){
+		var html = "";
+		for(var i=0; i<array.length; i++){
+			html += '<li class="block"><span class="file-name">' + array[i].name + ' ('+ array[i].size +')</span>';
+			html += '<span class="file-delete" onclick="removeCommentInsertAttache(' + i + ', this)"> X </span></li>';
+			
+		}
+		ul.append(html);
+	}
+}
+
+function removeCommentInsertAttache(index, obj){
+	var ul = $(obj).closest(".comment-input").find(".comment-insert-attach-list");
+	if(comment_attache_files.length > index){
+		comment_attache_files.splice(index, 1);
+		setCommentInsertAttacheHtml(ul);
+	}
+}
+
+function insertComment(obj){
+	var insertForm = $(obj).closest(".comment-insert-form");
+	
+	var url = insertForm.attr("action");
+	var data = new FormData();
+	var formData = insertForm.serializeArray();
+	
+	$(formData).each(function(index, obj){
+		data.append(obj.name, obj.value);
+		
+	})
+	
+	if(comment_attache_files.length > 0){
+		for(var i=0; i<comment_attache_files.length; i++){
+			if(comment_attache_files[i].name != ''){
+				data.append("attachFiles", comment_attache_files[i]);
+			}
+		}
+	}
+	
+	showLoading();
+	
+	$.ajax({
+		url : url,
+		type : 'POST',
+		enctype: 'multipart/form-data',
+		data : data,
+		processData: false,
+		contentType : false,
+		dataType : 'JSON',
+		success : function(res){
+			location.reload();
+		},
+		error : function(request, status, error){
+			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
+			hideLoading();
+		}
+	})
 }
 </script>
 </body>

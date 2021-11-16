@@ -22,6 +22,8 @@ import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
+import com.poozim.jobcall.repository.CommentFileRepository;
+import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.MemberRepository;
 import com.poozim.jobcall.repository.WorkBoardFileRepository;
 import com.poozim.jobcall.repository.WorkBoardRepository;
@@ -63,6 +65,12 @@ public class WorkService {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	@Autowired
+	private CommentRepository commentRepository;
+	
+	@Autowired
+	private CommentFileRepository commentFileRepository;
 	
 	//Mybatis Mappers
 	@Autowired
@@ -244,7 +252,7 @@ public class WorkService {
 			}
 		}
 		
-		return 0;
+		return 1;
 	}
 	
 	@Transactional
@@ -263,18 +271,18 @@ public class WorkService {
 		}
 		
 		//delete WorkComemnts
-		List<Comment> commentList = workBoardRepository.getCommentList(workBoard);
+		List<Comment> commentList = commentRepository.getCommentList(workBoard);
 		if(commentList != null && !commentList.isEmpty()) {
 			for(int i=0; i<commentList.size(); i++) {
-				List<CommentFile> commentFileList = workBoardRepository.getCommentFileList(commentList.get(i));
+				List<CommentFile> commentFileList = commentRepository.getCommentFileList(commentList.get(i));
 				if(commentFileList != null && !commentFileList.isEmpty()) {
 					for(int j=0; j<commentFileList.size(); j++) {
 						OciUtil.deleteObject(sessionWork.getBucket_name(), commentFileList.get(j).getObject_name());
 					}
-					workBoardRepository.deleteCommentFiles(commentList.get(i));
+					commentRepository.deleteCommentFiles(commentList.get(i));
 				}
 			}
-			workBoardRepository.deleteComments(workBoard);
+			commentRepository.deleteComments(workBoard);
 		}
 		
 		workBoardRepository.delete(workBoard);
@@ -310,7 +318,7 @@ public class WorkService {
 						workBoardFile.setObject_name(objectName);
 						workBoardFile.setSrc(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
 						workBoardFile.setSize(StringUtil.getSizeStr(file.getSize()));
-						workBoardFile.setRegdate(workBoard.getRegdate());
+						workBoardFile.setRegdate(TimeUtil.getDateTime());
 						workBoardFileRepository.save(workBoardFile);
 					}
 				} catch (IllegalStateException e) {
@@ -327,5 +335,108 @@ public class WorkService {
 		workBoardRepository.save(workBoard);
 		
 		return 1;
+	}
+	
+	@Transactional
+	public int insertComment(Comment comment, HttpServletRequest request, HttpServletResponse response) {
+		commentRepository.save(comment);
+		
+		if(comment.getAttachFileList() != null && !comment.getAttachFileList().isEmpty()) {
+			for(int i=0; i<comment.getAttachFileList().size(); i++) {
+				MultipartFile file = comment.getAttachFileList().get(i);
+				String str = file.getOriginalFilename();
+				String objectName =  str.substring(0, str.lastIndexOf(".")) + "_" + TimeUtil.getDateTimeString() + str.substring(str.lastIndexOf("."));
+				Work sessionWork = SessionUtil.getWorkInfo(request, response);
+				try {
+					String bucketName = sessionWork.getBucket_name();//버킷 네임 해야함
+					
+					if(OciUtil.createObject(bucketName, file, objectName) > 0) {
+						CommentFile commentFile = new CommentFile();
+						commentFile.setComment_seq(comment.getSeq());
+						commentFile.setName(file.getOriginalFilename());
+						commentFile.setObject_name(objectName);
+						commentFile.setSrc(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
+						commentFile.setSize(StringUtil.getSizeStr(file.getSize()));
+						commentFile.setRegdate(comment.getRegdate());
+						commentFileRepository.save(commentFile);
+					}
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return 1;
+	}
+	
+	@Transactional
+	public int updateComment(Comment comment, HttpServletRequest request, HttpServletResponse response) {
+		Work sessionWork = SessionUtil.getWorkInfo(request, response);
+		//delete CommentFiles
+		if(comment.getCommentFileSeqList() != null && !comment.getCommentFileSeqList().isEmpty()) {
+			List<CommentFile> commentFileList = commentRepository.getCommentFileList(comment);
+			for(int i=0; i<commentFileList.size(); i++) {
+				OciUtil.deleteObject(sessionWork.getBucket_name(), commentFileList.get(i).getObject_name());
+			}
+			commentRepository.deleteCommentFiles(comment);
+		}
+		
+		//add CommentFiles
+		if(comment.getAttachFileList() != null && !comment.getAttachFileList().isEmpty() && comment.getAttachFileList().size() > 0) {
+			for(int i=0; i<comment.getAttachFileList().size(); i++) {
+				MultipartFile file = comment.getAttachFileList().get(i);
+				String str = file.getOriginalFilename();
+				String objectName =  str.substring(0, str.lastIndexOf(".")) + "_" + TimeUtil.getDateTimeString() + str.substring(str.lastIndexOf("."));
+				try {
+					String bucketName = sessionWork.getBucket_name();//버킷 네임 해야함
+					
+					if(OciUtil.createObject(bucketName, file, objectName) > 0) {
+						CommentFile commentFile = new CommentFile();
+						commentFile.setComment_seq(comment.getSeq());
+						commentFile.setName(file.getOriginalFilename());
+						commentFile.setObject_name(objectName);
+						commentFile.setSize(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
+						commentFile.setSrc(StringUtil.getSizeStr(file.getSize()));
+						commentFile.setRegdate(TimeUtil.getDateTime());
+						commentFileRepository.save(commentFile);
+					}
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		//update Comment
+		commentRepository.save(comment);
+		return 1;
+	}
+	
+	@Transactional
+	public int deleteComment(Comment comment, HttpServletRequest request, HttpServletResponse response) {
+		Work sessionWork = SessionUtil.getWorkInfo(request, response);
+		
+		//delete CommentFiles
+		List<CommentFile> commentFileList = commentRepository.getCommentFileList(comment);
+		if(commentFileList != null && !commentFileList.isEmpty()) {
+			for(int i=0; i<commentFileList.size(); i++) {
+				OciUtil.deleteObject(sessionWork.getBucket_name(), commentFileList.get(i).getObject_name());
+			}
+			commentRepository.deleteCommentFiles(comment);
+		}
+		
+		//delete Comment
+		commentRepository.delete(comment);
+		
+		return 1;
+	}
+	
+	public Comment getCommentOne(int seq) {
+		return commentRepository.findById(seq).get();
 	}
 }

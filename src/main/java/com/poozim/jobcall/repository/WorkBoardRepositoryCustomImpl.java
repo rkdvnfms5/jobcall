@@ -39,28 +39,6 @@ private JPAQueryFactory queryFactory;
 		return (int) queryFactory.delete(workBoardFile).where(workBoardFile.board_seq.eq(workBoard.getSeq())).execute();
 	}
 
-	@Override
-	public List<Comment> getCommentList(WorkBoard workBoard) {
-		QComment comment = QComment.comment;
-		return queryFactory.selectFrom(comment).where(comment.board_seq.eq(workBoard.getSeq())).fetch();
-	}
-
-	@Override
-	public int deleteComments(WorkBoard workBoard) {
-		QComment comment = QComment.comment;
-		return (int) queryFactory.delete(comment).where(comment.board_seq.eq(workBoard.getSeq())).execute();
-	}
-
-	@Override
-	public List<CommentFile> getCommentFileList(Comment comment) {
-		QCommentFile commentFile = QCommentFile.commentFile;
-		return queryFactory.selectFrom(commentFile).where(commentFile.comment_seq.eq(comment.getSeq())).fetch();
-	}
-
-	@Override
-	public int deleteCommentFiles(Comment comment) {
-		QCommentFile commentFile = QCommentFile.commentFile;
-		return (int) queryFactory.delete(commentFile).where(commentFile.comment_seq.eq(comment.getSeq())).execute();
-	}
+	
 
 }

@@ -12,9 +12,4 @@ public interface WorkBoardRepositoryCustom {
 	public List<WorkBoardFile> getWorkBoardFileList(WorkBoard workBoard);
 	public int deleteWorkBoardFiles(WorkBoard workBoard);
 	
-	public List<Comment> getCommentList(WorkBoard workBoard);
-	public int deleteComments(WorkBoard workBoard);
-	
-	public List<CommentFile> getCommentFileList(Comment comment);
-	public int deleteCommentFiles(Comment comment);
 }

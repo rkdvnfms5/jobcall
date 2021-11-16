@@ -56,7 +56,7 @@
 	</filter-mapping>
 
 	<!-- XSS Filter -->
-	<filter>
+	<!-- <filter>
 		<filter-name>multipartFilter</filter-name>
 		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
 		<init-param>
@@ -76,7 +76,7 @@
 	<filter-mapping>
 		<filter-name>XSSFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 	<!-- sitemesh -->
 	<filter>
 	    <filter-name>sitemesh</filter-name>

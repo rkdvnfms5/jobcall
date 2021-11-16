@@ -1556,9 +1556,9 @@ button {
 .wall-board-item {margin-bottom: 25px;}
 
 .comment-body, .comment-footer {padding-left: 50px;}
-.comment-footer {margin-top: 10px; margin-bottom: 10px; padding-bottom: 0;}
+.comment-footer {margin-top: 10px;padding-bottom: 0;}
 
-.comment-input {background-color: #fafbfc; width: 100%; border: solid 1px #dfe2e6; padding: 20px; position: relative; max-width: 630px; border-top: none; padding-left: 80px; padding-top: 20px; margin-top: -10px;}
+.comment-input {background-color: #f7f9fb; width: 100%; border: solid 1px #dfe2e6; padding: 20px; position: relative; max-width: 630px; border-top: none; padding-left: 80px; padding-top: 20px;}
 .comment-input textarea {
 	width: 100%;
 	border-color: #e3e3e3;
@@ -1627,3 +1627,10 @@ button {
 .block {
 	display: block;
 }
+
+.comment-insert-attach-list {border-bottom: 1px solid #e3e3e3; font-size: 13px; padding-top: 5px; padding-bottom: 5px;}
+.comment-insert-attach-list li {display: block;}
+.comment-insert-attach-list .file-name {color: #5A86DD;}
+.comment-insert-attach-list .file-delete {cursor: pointer; color: red; font-weight: 800;}
+
+.comment-input .message-form__attach-file {background-color: #fafbfc;}
