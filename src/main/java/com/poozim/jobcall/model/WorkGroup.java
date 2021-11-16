@@ -15,19 +15,19 @@ import lombok.Data;
 public class WorkGroup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int member_seq;
-	int work_seq;
-	String name;
-	String content;
-	String access;
-	String useyn;
-	String register;
-	String regdate;
+	private int seq;
+	private int member_seq;
+	private int work_seq;
+	private String name;
+	private String content;
+	private String access;
+	private String useyn;
+	private String register;
+	private String regdate;
 	
 	@Transient
-	int category_seq;
+	private int category_seq;
 	
 	@Transient
-	int member_count;
+	private int member_count;
 }

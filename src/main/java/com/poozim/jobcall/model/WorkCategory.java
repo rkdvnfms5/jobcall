@@ -13,13 +13,13 @@ import lombok.Data;
 public class WorkCategory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int work_seq;
-	int member_seq;
-	String title;
-	String defaultyn;
-	String regdate;
+	private int seq;
+	private int work_seq;
+	private int member_seq;
+	private String title;
+	private String defaultyn;
+	private String regdate;
 	
 	@Transient
-	int group_count;
+	private int group_count;
 }

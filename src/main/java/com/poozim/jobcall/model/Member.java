@@ -14,16 +14,18 @@ import lombok.Data;
 @Data
 @Entity
 public class Member implements Serializable{
+	private static final long serialVersionUID = -7147352927860924205L;
+		
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int work_seq;
-	String id;
-	String password;
-	String name;
-	String department;
-	String email;
-	String useyn;
-	String auth;
-	String regdate;
+	private int seq;
+	private int work_seq;
+	private String id;
+	private String password;
+	private String name;
+	private String department;
+	private String email;
+	private String useyn;
+	private String auth;
+	private String regdate;
 }

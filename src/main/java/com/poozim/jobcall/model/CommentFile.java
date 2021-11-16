@@ -12,12 +12,12 @@ import lombok.Data;
 public class CommentFile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int comment_seq;
-	String path;
-	String name;
-	String object_name;
-	String size;
-	String src;
-	String regdate;
+	private int seq;
+	private int comment_seq;
+	private String path;
+	private String name;
+	private String object_name;
+	private String size;
+	private String src;
+	private String regdate;
 }

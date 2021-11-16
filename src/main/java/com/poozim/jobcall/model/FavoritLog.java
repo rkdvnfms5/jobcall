@@ -12,11 +12,11 @@ import lombok.Data;
 public class FavoritLog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	String type;
-	int type_seq;
-	int member_seq;
-	String member_id;
-	String member_name;
-	String regdate;
+	private int seq;
+	private String type;
+	private int type_seq;
+	private int member_seq;
+	private String member_id;
+	private String member_name;
+	private String regdate;
 }

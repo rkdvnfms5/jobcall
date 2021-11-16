@@ -17,31 +17,31 @@ import lombok.Data;
 public class WorkBoard {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int member_seq;
-	String member_id;
-	String member_name;
-	int work_seq;
-	int group_seq;
-	String title;
-	String type;
-	String startdate;
-	String enddate;
-	String worker;
-	String content;
-	String status;
-	String regdate;
-	String register;
+	private int seq;
+	private int member_seq;
+	private String member_id;
+	private String member_name;
+	private int work_seq;
+	private int group_seq;
+	private String title;
+	private String type;
+	private String startdate;
+	private String enddate;
+	private String worker;
+	private String content;
+	private String status;
+	private String regdate;
+	private String register;
 	
 	@Transient
-	List<WorkBoardFile> workBoardFileList;
+	private List<WorkBoardFile> workBoardFileList;
 	
 	@Transient
-	List<Comment> commentList;
+	private List<Comment> commentList;
 	
 	@Transient
-	List<MultipartFile> attachFileList;
+	private List<MultipartFile> attachFileList;
 	
 	@Transient
-	List<Integer> boardFileSeqList;
+	private List<Integer> boardFileSeqList;
 }

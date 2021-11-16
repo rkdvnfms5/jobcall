@@ -6,12 +6,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -299,13 +302,18 @@ public class WorkController {
 		return jsonView;
 	}
 	
-	@RequestMapping(value = "/comment", method = RequestMethod.POST)
-	public View insertComment(HttpServletRequest request, HttpServletResponse response, Model model, Comment comment,
-			@RequestParam("attachFiles") List<MultipartFile> attachFiles) {
+	@RequestMapping(value = "/comment", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public View insertComment(HttpServletRequest request, HttpServletResponse response, Model model) {
+		MultipartHttpServletRequest req = (MultipartHttpServletRequest)request;
+		List<MultipartFile> attachFiles = req.getFiles("attachFiles");
 		int res = 0;
+		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+		int board_seq = ServletRequestUtils.getIntParameter(request, "board_seq", 0);
+		
 		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		System.out.println(attachFiles);
 		if(LoginUtil.getLoginCheck(request, response)) {
+			Comment comment = new Comment();
 			Member member = LoginUtil.getLoginMember(request, response);
 			comment.setRegdate(TimeUtil.getDateTime());
 			comment.setRegister(member.getId());
@@ -313,6 +321,8 @@ public class WorkController {
 			comment.setMember_id(member.getId());
 			comment.setMember_name(member.getName());
 			comment.setAttachFileList(attachFiles);
+			comment.setContent(content);
+			comment.setBoard_seq(board_seq);
 			res = workService.insertComment(comment, request, response);
 		} else {
 			model.addAttribute("msg", "로그인이 필요합니다.");

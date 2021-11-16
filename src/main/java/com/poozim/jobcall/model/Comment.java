@@ -17,23 +17,23 @@ import lombok.Data;
 public class Comment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int board_seq;
-	int member_seq;
-	String member_id;
-	String member_name;
-	String content;
-	String regdate;
-	String register;
-	String moddate;
-	String modifier;
+	private int seq;
+	private int board_seq;
+	private int member_seq;
+	private String member_id;
+	private String member_name;
+	private String content;
+	private String regdate;
+	private String register;
+	private String moddate;
+	private String modifier;
 	
 	@Transient
-	List<CommentFile> commentFileList;
+	private List<CommentFile> commentFileList;
 	
 	@Transient
-	List<MultipartFile> attachFileList;
+	private List<MultipartFile> attachFileList;
 	
 	@Transient
-	List<Integer> commentFileSeqList;
+	private List<Integer> commentFileSeqList;
 }

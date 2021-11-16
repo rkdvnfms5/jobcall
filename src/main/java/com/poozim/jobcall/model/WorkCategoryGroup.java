@@ -15,11 +15,11 @@ import lombok.Data;
 public class WorkCategoryGroup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int seq;
-	int category_seq;
-	int group_seq;
-	int member_seq;
+	private int seq;
+	private int category_seq;
+	private int group_seq;
+	private int member_seq;
 	
 	@Transient
-	List<Integer> groupSeqList;
+	private List<Integer> groupSeqList;
 }
