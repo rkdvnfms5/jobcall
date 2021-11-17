@@ -163,11 +163,9 @@ public class OciUtil {
         	objectName = file.getOriginalFilename();
         }
         String ext = objectName.substring(objectName.lastIndexOf(".") + 1);
-        
-        File object = new File(file.getOriginalFilename());
-        if(!object.exists()) {
-        	file.transferTo(object);
-        }
+        File object = new File(file.getName());
+        object.setWritable(true);
+    	file.transferTo(object);
         
         PutObjectRequest request =
 	                PutObjectRequest.builder()

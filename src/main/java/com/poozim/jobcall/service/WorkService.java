@@ -397,8 +397,8 @@ public class WorkService {
 						commentFile.setComment_seq(comment.getSeq());
 						commentFile.setName(file.getOriginalFilename());
 						commentFile.setObject_name(objectName);
-						commentFile.setSize(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
-						commentFile.setSrc(StringUtil.getSizeStr(file.getSize()));
+						commentFile.setSrc(OciUtil.getObjectSrc(sessionWork.getPreauth_code(), bucketName, objectName));
+						commentFile.setSize(StringUtil.getSizeStr(file.getSize()));
 						commentFile.setRegdate(TimeUtil.getDateTime());
 						commentFileRepository.save(commentFile);
 					}

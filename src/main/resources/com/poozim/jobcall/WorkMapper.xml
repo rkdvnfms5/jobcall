@@ -32,7 +32,7 @@
 		ORDER BY b.regdate DESC
 	</select>
 	
-	<select id="getWorkBoardFileList" parameterType="int" resultType="WorkBoardFile">
+	<select id="getWorkBoardFileList" resultType="WorkBoardFile">
 		SELECT *
 		FROM WorkBoardFile
 		WHERE board_seq = #{board_seq}
@@ -54,8 +54,8 @@
 		<result property="status" column="status" />
 		<result property="register" column="register" />
 		<result property="regdate" column="regdate" />
-		<collection property="workBoardFileList" column="seq" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
-		<collection property="commentList" column="seq" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
+		<collection property="workBoardFileList" column="{board_seq=seq}" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
+		<collection property="commentList" column="{board_seq=seq}" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
 	</resultMap>
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
@@ -96,13 +96,13 @@
 		SELECT getWorkCode(#{title}) as code
 	</select>
 	
-	<select id="getCommentList" parameterType="int" resultMap="CommentMap">
+	<select id="getCommentList" resultMap="CommentMap">
 		SELECT *
 		FROM Comment
 		WHERE board_seq = #{board_seq}
 	</select>
 	
-	<select id="getCommentFileList" parameterType="int" resultType="CommentFile">
+	<select id="getCommentFileList" resultType="CommentFile">
 		SELECT *
 		FROM CommentFile
 		WHERE comment_seq = #{comment_seq}
@@ -119,6 +119,6 @@
 		<result property="regdate" column="regdate" />
 		<result property="modifier" column="modifier" />
 		<result property="moddate" column="moddate" />
-		<collection property="commentFileList" column="seq" javaType="java.util.ArrayList" ofType="CommentFile" select="getCommentFileList"></collection>
+		<collection property="commentFileList" column="{comment_seq=seq}" javaType="java.util.ArrayList" ofType="CommentFile" select="getCommentFileList"></collection>
 	</resultMap>
 </mapper>

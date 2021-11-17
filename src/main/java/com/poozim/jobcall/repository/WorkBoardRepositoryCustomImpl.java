@@ -35,8 +35,11 @@ private JPAQueryFactory queryFactory;
 	@Override
 	public int deleteWorkBoardFiles(WorkBoard workBoard) {
 		QWorkBoardFile workBoardFile = QWorkBoardFile.workBoardFile;
-		
-		return (int) queryFactory.delete(workBoardFile).where(workBoardFile.board_seq.eq(workBoard.getSeq())).execute();
+		if(workBoard.getBoardFileSeqList() != null && !workBoard.getBoardFileSeqList().isEmpty()) {
+			return (int) queryFactory.delete(workBoardFile).where(workBoardFile.seq.in(workBoard.getBoardFileSeqList())).execute();
+		} else {
+			return (int) queryFactory.delete(workBoardFile).where(workBoardFile.board_seq.eq(workBoard.getSeq())).execute();
+		}
 	}
 
 	

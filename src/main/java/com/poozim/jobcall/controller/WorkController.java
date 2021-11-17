@@ -188,19 +188,21 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/group/{groupseq}", method = RequestMethod.PUT)
-	public String updateGroup (HttpServletRequest request, HttpServletResponse response, Model model,
+	public View updateGroup (HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("groupseq") int groupseq, WorkGroup workGroup){
+		int res = 0;
 		WorkGroup group = workService.getWorkGroupOne(groupseq);
 		
 		if(group.getMember_seq() == LoginUtil.getLoginMember(request, response).getSeq()) {
 			group.setAccess(workGroup.getAccess());
 			group.setContent(workGroup.getContent());
-			workService.updateWorkGroup(group);
-			return "redirect:/work/group/" + groupseq;
+			res = workService.updateWorkGroup(group);
+			
 		}
 		
+		model.addAttribute("res", res);
 		model.addAttribute("msg", "그룹 마스터만 수정이 가능합니다.");
-		return "/util/alert";
+		return jsonView;
 	}
 	
 	@RequestMapping(value = "/group/new", method = RequestMethod.GET)
@@ -236,7 +238,7 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
-	public String InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, 
+	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, 
 			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
 		WorkBoard workBoard = new WorkBoard();
 		Member member = LoginUtil.getLoginMember(request, response);
@@ -265,7 +267,7 @@ public class WorkController {
 		}
 		workService.insertWorkBoard(workBoard, request, response);
 		
-		return "redirect:/work/group/" + group_seq;
+		return jsonView;
 	}
 
 	@RequestMapping(value = "/board/{boardseq}", method = RequestMethod.DELETE)
@@ -302,11 +304,11 @@ public class WorkController {
 		return jsonView;
 	}
 	
-	@RequestMapping(value = "/comment", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public View insertComment(HttpServletRequest request, HttpServletResponse response, Model model) {
-		MultipartHttpServletRequest req = (MultipartHttpServletRequest)request;
-		List<MultipartFile> attachFiles = req.getFiles("attachFiles");
+	@RequestMapping(value = "/comment", method = RequestMethod.POST)
+	public View insertComment(HttpServletRequest request, HttpServletResponse response, Model model,
+			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
 		int res = 0;
+		
 		String content = ServletRequestUtils.getStringParameter(request, "content", "");
 		int board_seq = ServletRequestUtils.getIntParameter(request, "board_seq", 0);
 		
@@ -332,58 +334,58 @@ public class WorkController {
 		return jsonView;
 	}
 	
-//	@RequestMapping(value = "/comment/{comment_seq}", method = RequestMethod.DELETE)
-//	public View deleteComment(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("comment_seq") int comment_seq) {
-//		int res = 0;
-//		if(LoginUtil.getLoginCheck(request, response)) {
-//			model.addAttribute("res", res);
-//			model.addAttribute("msg", "로그인이 필요합니다.");
-//			return jsonView;
-//		} 
-//		
-//		Member member = LoginUtil.getLoginMember(request, response);
-//		Comment comment = workService.getCommentOne(comment_seq);
-//		
-//		if(comment.getMember_seq() != member.getSeq()) {
-//			model.addAttribute("res", res);
-//			model.addAttribute("msg", "작성자가 아닙니다.");
-//			return jsonView;
-//		}
-//		
-//		res = workService.deleteComment(comment, request, response);
-//		
-//		model.addAttribute("res", res);
-//		return jsonView;
-//	}
-//	
-//	@RequestMapping(value = "/comment/{comment_seq}", method = RequestMethod.PUT)
-//	public View updateComment(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("comment_seq") int comment_seq,
-//			@RequestParam("attachFiles") List<MultipartFile> attachFiles,  @RequestParam("commentFileSeqList") List<Integer> commentFileSeqList) {
-//		int res = 0;
-//		if(LoginUtil.getLoginCheck(request, response)) {
-//			model.addAttribute("res", res);
-//			model.addAttribute("msg", "로그인이 필요합니다.");
-//			return jsonView;
-//		} 
-//		
-//		Member member = LoginUtil.getLoginMember(request, response);
-//		Comment comment = workService.getCommentOne(comment_seq);
-//		
-//		if(comment.getMember_seq() != member.getSeq()) {
-//			model.addAttribute("res", res);
-//			model.addAttribute("msg", "작성자가 아닙니다.");
-//			return jsonView;
-//		}
-//		
-//		String content = ServletRequestUtils.getStringParameter(request, "content", "");
-//		
-//		comment.setCommentFileSeqList(commentFileSeqList);
-//		comment.setAttachFileList(attachFiles);
-//		comment.setContent(content);
-//		res = workService.updateComment(comment, request, response);
-//		
-//		model.addAttribute("res", res);
-//		return jsonView;
-//	}
+	@RequestMapping(value = "/comment/{comment_seq}", method = RequestMethod.DELETE)
+	public View deleteComment(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("comment_seq") int comment_seq) {
+		int res = 0;
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		} 
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		Comment comment = workService.getCommentOne(comment_seq);
+		
+		if(comment.getMember_seq() != member.getSeq()) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "작성자가 아닙니다.");
+			return jsonView;
+		}
+		
+		res = workService.deleteComment(comment, request, response);
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/comment/{comment_seq}", method = RequestMethod.PUT)
+	public View updateComment(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("comment_seq") int comment_seq,
+			@RequestParam("attachFiles") List<MultipartFile> attachFiles,  @RequestParam("commentFileSeqList") List<Integer> commentFileSeqList) {
+		int res = 0;
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		} 
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		Comment comment = workService.getCommentOne(comment_seq);
+		
+		if(comment.getMember_seq() != member.getSeq()) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "작성자가 아닙니다.");
+			return jsonView;
+		}
+		
+		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+		
+		comment.setCommentFileSeqList(commentFileSeqList);
+		comment.setAttachFileList(attachFiles);
+		comment.setContent(content);
+		res = workService.updateComment(comment, request, response);
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
 	
 }

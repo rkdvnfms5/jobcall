@@ -44,7 +44,11 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 	@Override
 	public int deleteCommentFiles(Comment comment) {
 		QCommentFile commentFile = QCommentFile.commentFile;
-		return (int) queryFactory.delete(commentFile).where(commentFile.comment_seq.eq(comment.getSeq())).execute();
+		if(comment.getCommentFileSeqList() != null && !comment.getCommentFileSeqList().isEmpty()) {
+			return (int) queryFactory.delete(commentFile).where(commentFile.seq.in(comment.getCommentFileSeqList())).execute();
+		} else {
+			return (int) queryFactory.delete(commentFile).where(commentFile.comment_seq.eq(comment.getSeq())).execute();
+		}
 	}
 
 }

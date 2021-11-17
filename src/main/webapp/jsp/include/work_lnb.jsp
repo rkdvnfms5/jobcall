@@ -75,6 +75,9 @@
 									<a class="" href="/work/group/${group.seq}">
 											<span class="category-item-title">
 												<span class="text-name">${group.name}</span>
+												<c:if test="${group.access eq 'private'}">
+													<i class="ico ico-lock" aria-hidden="true"><svg width="8px" height="10px" viewBox="0 0 8 10" version="1.1"><g id="lock" stroke="none" stroke-width="1" fill="#A8A8A8" fill-rule="evenodd"><path d="M6.93177579,4.00166776 L6.93177579,2.96834236 C6.93177579,1.33357103 5.60056952,0.00832702498 3.9658879,0.00832702498 C2.32787324,0.00832702498 1,1.33901285 1,2.96834236 L1,4.00638348 C0.43643723,4.05812741 0,4.41813387 0,4.85503827 L0,9.14496173 C0,9.61718633 0.510070171,10 1.14005102,10 L6.85994898,10 C7.48958177,10 8,9.61744737 8,9.14496173 L8,4.85503827 C8,4.40089775 7.52824857,4.02945121 6.93177579,4.00166776 Z M2,4 L2,2.99011614 C2,1.89521499 2.8973316,1 4,1 C5.10293921,1 6,1.89311649 6,2.99011614 L6,4 L2,4 Z"></path></g></svg></i>
+												</c:if>
 											</span>
 										</a>
 									</li>
@@ -83,36 +86,6 @@
 						</ul>
 					</li>
 				</c:forEach>
-				<!-- <li class="groups-item">
-					<a class="groups-item-title" href="#">
-						<strong class="groups-item-name">따란</strong>
-						<span class="groups-item-count">(0)</span>
-						<span class="groups-folding-icon"></span>
-					</a>
-				</li>
-				<li class="groups-item">
-					<a class="groups-item-title" href="#">
-						<strong class="groups-item-name">미분류 그룹</strong>
-						<span class="groups-item-count">(6)</span>
-						<span class="groups-folding-icon"></span>
-					</a>
-					<ul class="groups-category-list">
-						<li class="category-item">
-							<a class="" href="#">
-								<span class="category-item-title">
-									<span class="text-name">나만의 그룹</span>
-								</span>
-							</a>
-						</li>
-						<li class="category-item">
-							<a class="" href="#">
-								<span class="category-item-title">
-									<span class="text-name">[공통] 자유게시판</span>
-								</span>
-							</a>
-						</li>
-					</ul>
-				</li> -->
 			</ul>
 		</div>
 	</div>

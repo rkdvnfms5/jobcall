@@ -15,7 +15,6 @@
 		</header>
 		
 		<form id="updateGroupForm" action="/work/group/${WorkGroup.seq}" method="post">
-			<input type="hidden" name="_method" value="PUT" />
 			<div class="ibox group-new-page__body">
 				<table class="tbl-group-new">
 					<caption class="screen-hide"><span>그룹 정보</span></caption>
@@ -71,9 +70,9 @@
 					</tbody>
 				</table>
 				<div class="group-new-page__controls">
-					<button class="ra-button"><span>취소</span></button>
-					<button id="update-submit" class="ra-button ra-button--accent" disabled><span>확인</span></button>
-					<button class="ra-button group-new-page__preview-button"><span>미리 보기</span></button>
+					<button type="button" class="ra-button"><span>취소</span></button>
+					<button type="button" id="update-submit" class="ra-button ra-button--accent" disabled><span>확인</span></button>
+					<button type="button" class="ra-button group-new-page__preview-button"><span>미리 보기</span></button>
 				</div>
 			</div>
 		</form>
@@ -102,6 +101,34 @@ $(document).ready(function(){
 		$(this).parent(".ra-radiobox").addClass("ra-radiobox--active");
 	})
 })
+
+function updateGroup(){
+	var updateForm = $("#updateGroupForm")
+	var data = updateForm.serialize();
+	var url = updateForm.attr("action");
+	
+	showLoading();
+	
+	$.ajax({
+		url : url,
+		type : 'PUT',
+		data : data,
+		dataType : 'JSON',
+		success : function(res){
+			if(res.res == 1){
+				location.href = url;
+			} else {
+				alert(res.msg);
+				hideLoading();
+			}
+			
+		},
+		error : function(request, status, error){
+			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
+			hideLoading();
+		}
+	})
+}
 </script>
 </body>
 </html>
