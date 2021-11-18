@@ -107,3 +107,95 @@ function checkGroupValue() {
 	return true;
 }
 
+function checkBoardValue(){
+	if($.trim($("#contentTextArea").val()) == ''){
+		return false;
+	}
+	
+	return true;
+}
+
+function goGroupSetting(groupseq){
+	location.href = '/work/group/' + groupseq + '/setting';
+}
+
+function actionCheck(obj, action, target, target_seq, seq){
+	var parentObj = $(obj).parent();
+	var brother = parentObj.siblings('.feedback-button')
+	var brotherBtn = brother.find('.feedback-button__thumb');
+	
+	if(parentObj.hasClass("on")){
+		deleteActionLog(seq, obj);
+	} else {
+		if(brother.hasClass("on")){
+			updateActionLog(seq, action, obj);
+		} else {
+			insertActionLog(target, target_seq, action, obj);
+		}
+	}
+	
+	//parentObj.toggleClass("on");
+}
+
+function insertActionLog(target, target_seq, action, obj){
+	showLoading();
+	$.ajax({
+		url : '/work/action',
+		method : 'POST',
+		data : {target : target, target_seq : target_seq, action : action},
+		dataType : 'JSON',
+		success : function(res) {
+			location.reload();
+			hideLoading();
+		},
+		error : function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			hideLoading();
+		}
+	})
+}
+
+function updateActionLog(seq, action, obj){
+	if(seq > 0){
+		showLoading();
+		$.ajax({
+			url : '/work/action/' + seq,
+			method : 'PUT',
+			data : {seq : seq, action : action},
+			dataType : 'JSON',
+			success : function(res) {
+				location.reload();
+				hideLoading();
+			},
+			error : function(request, status, error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				hideLoading();
+			}
+		})
+	} else {
+		alert("seq 정보가 없습니다.");
+	}
+	
+}
+
+function deleteActionLog(seq, obj){
+	if(seq > 0){
+		showLoading();
+		$.ajax({
+			url : '/work/action/' + seq,
+			method : 'DELETE',
+			data : {seq : seq},
+			dataType : 'JSON',
+			success : function(res) {
+				location.reload();
+				hideLoading();
+			},
+			error : function(request, status, error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				hideLoading();
+			}
+		})
+	} else {
+		alert("seq 정보가 없습니다.");
+	}
+}

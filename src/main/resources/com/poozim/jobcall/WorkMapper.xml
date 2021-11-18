@@ -6,6 +6,14 @@
 	<sql id="selectBoard">
 		<if test="work_seq != null and work_seq != ''"> AND b.work_seq = #{work_seq}</if>
 		<if test="group_seq != null and group_seq != ''"> AND b.group_seq = #{group_seq}</if>
+		<if test="seq != null and seq != ''"> AND b.seq = #{seq}</if>
+	</sql>
+
+	<sql id="selectActionLog">
+		<if test="action != null and action != ''">AND action = #{action}</if>
+		<if test="target != null and target != ''">AND target = #{target}</if>
+		<if test="target_seq != null and target_seq != ''">AND target_seq = #{target_seq}</if>
+		<if test="member_seq != null and member_seq != ''">AND member_seq = #{member_seq}</if>
 	</sql>
 
 	<select id="getWorkGroupList" parameterType="WorkGroup" resultType="WorkGroup">
@@ -23,13 +31,25 @@
 	</select>
 	
 	<select id="getWorkBoardList" parameterType="WorkBoard" resultMap="workBoardMap">
-		SELECT *
+		SELECT *, 'board' as target, 'like' as `like`, 'dislike' as dislike, #{member_seq} as search_member_seq,
+		(SELECT action FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as action,
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq
 		FROM WorkBoard b, WorkGroupMember gm
 		WHERE b.group_seq = gm.group_seq
 		AND b.group_seq = #{group_seq}
 		AND gm.member_seq = #{member_seq}
 		<include refid="selectBoard" />
 		ORDER BY b.regdate DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="getWorkBoardCount" parameterType="WorkBoard" resultType="int">
+		SELECT COUNT(*)
+		FROM WorkBoard b, WorkGroupMember gm
+		WHERE b.group_seq = gm.group_seq
+		AND b.group_seq = #{group_seq}
+		AND gm.member_seq = #{member_seq}
+		<include refid="selectBoard" />
 	</select>
 	
 	<select id="getWorkBoardFileList" resultType="WorkBoardFile">
@@ -54,8 +74,14 @@
 		<result property="status" column="status" />
 		<result property="register" column="register" />
 		<result property="regdate" column="regdate" />
+		<result property="target" column="target" />
+		<result property="like" column="like" />
+		<result property="dislike" column="dislike" />
+		<result property="search_member_seq" column="search_member_seq" />
+		<collection property="likeList" column="{action=like, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
+		<collection property="dislikeList" column="{action=dislike, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
 		<collection property="workBoardFileList" column="{board_seq=seq}" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
-		<collection property="commentList" column="{board_seq=seq}" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
+		<collection property="commentList" column="{board_seq=seq, search_member_seq=search_member_seq}" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
 	</resultMap>
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
@@ -97,8 +123,10 @@
 	</select>
 	
 	<select id="getCommentList" resultMap="CommentMap">
-		SELECT *
-		FROM Comment
+		SELECT *, 'comment' as target, 'like' as `like`, 'dislike' as dislike,
+		(SELECT action FROM ActionLog al WHERE al.member_seq = #{search_member_seq} AND al.target LIKE 'comment' AND al.target_seq = c.seq) as action,
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{search_member_seq} AND al.target LIKE 'comment' AND al.target_seq = c.seq) as actionLog_seq
+		FROM Comment c
 		WHERE board_seq = #{board_seq}
 	</select>
 	
@@ -119,6 +147,18 @@
 		<result property="regdate" column="regdate" />
 		<result property="modifier" column="modifier" />
 		<result property="moddate" column="moddate" />
+		<result property="target" column="target" />
+		<result property="like" column="like" />
+		<result property="dislike" column="dislike" />
+		<collection property="likeList" column="{action=like, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
+		<collection property="dislikeList" column="{action=dislike, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
 		<collection property="commentFileList" column="{comment_seq=seq}" javaType="java.util.ArrayList" ofType="CommentFile" select="getCommentFileList"></collection>
 	</resultMap>
+	
+	<select id="getActionLogList" resultType="ActionLog">
+		SELECT *
+		FROM ActionLog
+		WHERE 1 = 1
+		<include refid="selectActionLog" />		
+	</select>
 </mapper>

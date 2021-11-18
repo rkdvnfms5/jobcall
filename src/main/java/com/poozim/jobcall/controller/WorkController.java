@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.aop.WorkLnbSet;
+import com.poozim.jobcall.model.ActionLog;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
@@ -184,6 +185,10 @@ public class WorkController {
 		
 		model.addAttribute("WorkBoardList", workBoardList);
 		
+		model.addAttribute("limit", workBoard.getLimit());
+		model.addAttribute("offset",workBoard.getOffset());
+		model.addAttribute("total", workService.getWorkBoardCount(workBoard));
+		
 		return "/work/group";
 	}
 	
@@ -237,6 +242,21 @@ public class WorkController {
 		return "redirect:/work/group/" + workGroup.getSeq();
 	}
 	
+	@RequestMapping(value = "/board", method = RequestMethod.GET)
+	public View getBoardList(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard) {
+		List<WorkBoard> workBoardList = workService.getWorkBoardList(workBoard);
+		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		model.addAttribute("workBoardList", workBoardList);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
+	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq) {
+		WorkBoard workBoard = workService.getWorkBoardOne(board_seq);
+		model.addAttribute("Board", workBoard);
+		return jsonView;
+	}
+	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
 	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, 
 			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
@@ -258,9 +278,6 @@ public class WorkController {
 		workBoard.setRegister(member.getId());
 		workBoard.setRegdate(TimeUtil.getDateTime());
 		workBoard.setStatus("request");
-		
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		System.out.println(attachFiles);
 		
 		if(attachFiles != null && !attachFiles.isEmpty()) {
 			workBoard.setAttachFileList(attachFiles);
@@ -312,8 +329,6 @@ public class WorkController {
 		String content = ServletRequestUtils.getStringParameter(request, "content", "");
 		int board_seq = ServletRequestUtils.getIntParameter(request, "board_seq", 0);
 		
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		System.out.println(attachFiles);
 		if(LoginUtil.getLoginCheck(request, response)) {
 			Comment comment = new Comment();
 			Member member = LoginUtil.getLoginMember(request, response);
@@ -388,4 +403,74 @@ public class WorkController {
 		return jsonView;
 	}
 	
+	
+	@RequestMapping(value = "/action", method = RequestMethod.POST)
+	public View insertActionLog(HttpServletRequest request, HttpServletResponse response, Model model, ActionLog actionLog) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		int res = 0;
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		actionLog.setMember_seq(member.getSeq());
+		actionLog.setMember_id(member.getId());
+		actionLog.setMember_name(member.getName());
+		actionLog.setRegdate(TimeUtil.getDateTime());
+		res = workService.insertActionLog(actionLog);
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/action/{actionLog_seq}", method = RequestMethod.PUT)
+	public View updateActionLog(HttpServletRequest request, HttpServletResponse response, Model model, ActionLog param,
+			@PathVariable("actionLog_seq") int actionLog_seq) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		int res = 0;
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		ActionLog actionLog = workService.getActionLogOne(actionLog_seq);
+		
+		if(member.getSeq() != actionLog.getMember_seq()) {
+			model.addAttribute("msg", "본인만 가능합니다.");
+			return jsonView;
+		}
+		
+		actionLog.setAction(param.getAction());
+		
+		res = workService.updateActionLog(actionLog);
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/action/{actionLog_seq}", method = RequestMethod.DELETE)
+	public View deleteActionLog(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("actionLog_seq") int actionLog_seq ) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		int res = 0;
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		ActionLog actionLog = workService.getActionLogOne(actionLog_seq);
+		
+		if(member.getSeq() != actionLog.getMember_seq()) {
+			model.addAttribute("msg", "본인만 가능합니다.");
+			return jsonView;
+		}
+		
+		res = workService.deleteActionLog(actionLog);
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
 }

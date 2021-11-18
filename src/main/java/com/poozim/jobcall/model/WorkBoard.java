@@ -44,4 +44,27 @@ public class WorkBoard {
 	
 	@Transient
 	private List<Integer> boardFileSeqList;
+	
+	//Paging
+	@Transient
+	private int limit = 10;
+	
+	@Transient
+	private int offset = 0;
+	
+	//action
+	@Transient
+	private List<ActionLog> likeList;
+	
+	@Transient
+	private List<ActionLog> dislikeList;
+	
+	@Transient
+	private String action;
+	
+	private String target;
+	private String like;
+	private String dislike;
+	private int actionLog_seq;
+	private int search_member_seq;
 }

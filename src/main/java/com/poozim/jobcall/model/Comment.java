@@ -36,4 +36,19 @@ public class Comment {
 	
 	@Transient
 	private List<Integer> commentFileSeqList;
+	
+	//action
+	@Transient
+	private List<ActionLog> likeList;
+	
+	@Transient
+	private List<ActionLog> dislikeList;
+	
+	@Transient
+	private String action;
+	
+	private String target;
+	private String like;
+	private String dislike;
+	private int actionLog_seq;
 }

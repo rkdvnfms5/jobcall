@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.poozim.jobcall.mapper.WorkMapper;
+import com.poozim.jobcall.model.ActionLog;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
 import com.poozim.jobcall.model.Member;
@@ -22,6 +23,7 @@ import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
+import com.poozim.jobcall.repository.ActionLogRepository;
 import com.poozim.jobcall.repository.CommentFileRepository;
 import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.MemberRepository;
@@ -71,6 +73,9 @@ public class WorkService {
 	
 	@Autowired
 	private CommentFileRepository commentFileRepository;
+	
+	@Autowired
+	private ActionLogRepository actionLogRepository;
 	
 	//Mybatis Mappers
 	@Autowired
@@ -213,6 +218,10 @@ public class WorkService {
 	//WorkBoard CRUD and Logics
 	public List<WorkBoard> getWorkBoardList(WorkBoard workBoard){
 		return workMapper.getWorkBoardList(workBoard);
+	}
+	
+	public int getWorkBoardCount(WorkBoard workBoard){
+		return workMapper.getWorkBoardCount(workBoard);
 	}
 	
 	public WorkBoard getWorkBoardOne(int seq) {
@@ -439,4 +448,25 @@ public class WorkService {
 	public Comment getCommentOne(int seq) {
 		return commentRepository.findById(seq).get();
 	}
+	
+	
+	//like, dislike
+	public ActionLog getActionLogOne(int actionLog_seq) {
+		return actionLogRepository.findById(actionLog_seq).get();
+	}
+	public int insertActionLog(ActionLog actionLog) {
+		actionLogRepository.save(actionLog);
+		return 1;
+	}
+	
+	public int updateActionLog(ActionLog actionLog) {
+		actionLogRepository.save(actionLog);
+		return 1;
+	}
+	
+	public int deleteActionLog(ActionLog actionLog) {
+		actionLogRepository.delete(actionLog);
+		return 1;
+	}
+	
 }

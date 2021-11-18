@@ -15,7 +15,6 @@ import com.poozim.jobcall.model.Work;
 
 @Configuration
 @Component
-//@EnableRedisRepositories
 public class RedisConfig {
 
 	private LettuceConnectionFactory redisConnectionFactory;

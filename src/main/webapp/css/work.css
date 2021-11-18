@@ -1719,3 +1719,138 @@ button {
 }
 
 .comment-footer-modify {margin-top: 20px; position: relative; padding-left: 50px; padding-bottom: 5px;}
+
+
+.feedback-button {
+    display: inline-block;
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: top;
+    position: relative;
+}
+
+.feedback-button .feedback-button__thumb {
+    display: inline-block;
+    overflow: hidden;
+    width: 28px;
+    height: 24px;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    font-size: 0;
+    line-height: 0;
+    vertical-align: top;
+}
+
+.feedback-button.on .feedback-button__thumb {
+    border-color: #5985E0;
+    background-color: #5985E0;
+}
+
+.ra-popover__trigger {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+}
+
+.feedback-button .feedback-button__count {
+    display: inline-block;
+    position: relative;
+    min-width: 28px;
+    height: 24px;
+    margin-left: 6px;
+    padding: 0 7px;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    font-size: 13px;
+    line-height: 24px;
+    color: #5985DC;
+    background-color: #fff;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+.feedback-button .feedback-button__count:after {
+    display: block;
+    position: absolute;
+    top: 7px;
+    left: -4px;
+    width: 6px;
+    height: 6px;
+    border-bottom: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+    background-color: #fff;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(
+45deg);
+    transform: rotate(
+45deg);
+    content: '';
+}
+
+.feedback-button .feedback-button__thumb .ico {
+    display: block;
+    width: 16px;
+    height: 15px;
+    margin: 0 auto 2px;
+}
+
+.feedback-button .feedback-button__thumb .ico svg {
+    width: 16px;
+    height: 15px;
+}
+.feedback-button.on .feedback-button__thumb .ico svg g {fill:#fff;}
+
+.feedback-button .like-list {
+	position: absolute;
+	top: 30px;
+	left: 0;
+	display: inline-block;
+	width: 160px;
+	height: 194px;
+	border: 1px solid #d0d0d0;
+    border-radius: 2px;
+    z-index: 12;
+    background-color: #fff;
+}
+
+.feedback-button .like-list .like-list-header {
+	height: 28px;
+    font-size: 11px;
+    line-height: 28px;
+    color: #5985e0;
+    text-indent: 10px;
+    border-bottom: solid 1px #5985e0;
+}
+
+.feedback-button .like-list .like-list-header .like-list-close {
+	float: right;
+	color: red;
+	font-weight: 600;
+	line-height: 28px;
+	padding-right: 5px;
+}
+
+.feedback-button .like-list .like-list-body {
+	
+}
+
+.feedback-button .like-list .like-list-body ul {
+}
+
+.feedback-button .like-list .like-list-body ul li{
+	display: block;
+	height: 33px;
+	overflow: hidden;
+	padding-left: 8px;
+	font-size: 12px;
+    border-bottom: solid 1px #dcdfe4;
+	line-height: 33px;
+}
+
+.like-list.hide {
+	display: none;
+}
+
