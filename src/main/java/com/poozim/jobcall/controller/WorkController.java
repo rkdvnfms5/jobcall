@@ -251,8 +251,11 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
-	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq) {
-		WorkBoard workBoard = workService.getWorkBoardOne(board_seq);
+	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
+			WorkBoard workBoard) {
+		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		workBoard = workService.getWorkBoardOneMapper(workBoard);
+		
 		model.addAttribute("Board", workBoard);
 		return jsonView;
 	}

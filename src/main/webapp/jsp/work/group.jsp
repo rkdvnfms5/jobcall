@@ -547,10 +547,6 @@ $(document).scroll(function() {
 	}
 });
 
-function getBoardHtml(board){
-	
-}
-
 function insertBoard(){
 	var url = $("#insertBoardForm").attr("action");
 	var data = new FormData();

@@ -228,6 +228,10 @@ public class WorkService {
 		return workBoardRepository.findById(seq).get();
 	}
 	
+	public WorkBoard getWorkBoardOneMapper(WorkBoard workBoard) {
+		return workMapper.getWorkBoardOne(workBoard);
+	}
+	
 	@Transactional
 	public int insertWorkBoard(WorkBoard workBoard, HttpServletRequest request, HttpServletResponse response) {
 		workBoardRepository.save(workBoard);

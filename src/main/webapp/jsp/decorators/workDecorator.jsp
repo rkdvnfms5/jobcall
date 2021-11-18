@@ -61,6 +61,7 @@
 			<sitemesh:write property='body' />
 		</main>
 </div>
+<input type="hidden" id="member_seq" value="${member.seq}">
 <div class="lodingDim hide">
 	<div class="loading"></div>
 </div>

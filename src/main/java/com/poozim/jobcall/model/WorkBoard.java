@@ -62,9 +62,18 @@ public class WorkBoard {
 	@Transient
 	private String action;
 	
+	@Transient
 	private String target;
+	
+	@Transient
 	private String like;
+	
+	@Transient
 	private String dislike;
+	
+	@Transient
 	private int actionLog_seq;
+	
+	@Transient
 	private int search_member_seq;
 }

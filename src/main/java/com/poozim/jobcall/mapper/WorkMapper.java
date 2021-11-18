@@ -16,6 +16,8 @@ public interface WorkMapper {
 	
 	public int getWorkBoardCount(WorkBoard workBoard);
 	
+	public WorkBoard getWorkBoardOne(WorkBoard workBoard);
+	
 	public List<WorkBoardFile> getWorkBoardFileList (int board_seq);
 	
 	public List<WorkCategory> getWorkCategoryList(WorkCategory workCategory);
