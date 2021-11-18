@@ -23,10 +23,10 @@
 					<a><span class="mylist-item-text">내글</span></a>
 				</li>
 				<li>
-					<a><span class="mylist-item-text">내글</span></a>
+					<a><span class="mylist-item-text">멘션</span></a>
 				</li>
 				<li>
-					<a><span class="mylist-item-text">내글</span></a>
+					<a><span class="mylist-item-text">요청</span></a>
 				</li>
 				<li>
 					<a><span class="mylist-item-text">내글</span></a>

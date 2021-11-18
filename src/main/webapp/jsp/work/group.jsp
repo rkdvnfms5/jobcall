@@ -69,9 +69,6 @@
 						<a href="#">일정</a>
 					</li>
 					<li class="ra-tab-menu__item" role="tab" aria-selected="false">
-						<a href="#">노트</a>
-					</li>
-					<li class="ra-tab-menu__item" role="tab" aria-selected="false">
 						<a href="#">요청</a>
 					</li>
 				</ul>
@@ -124,10 +121,6 @@
    									</div>
 	    						</div>
 	    						<ul class="board-insert-attach-list" id="board-insert-attach-list">
-	    							<!-- <li>
-	    								<span class="file-name">1분자기소개.txt (2.28KB)</span>
-	    								<span class="file-delete"> X </span>
-	    							</li> -->
 	    						</ul>
 	    						<div class="message-form__footer">
 	    							<div class="message-form__footer-leftalign">
@@ -428,10 +421,6 @@
 							<textarea rows="5" cols="" class="comment-input-textArea" name="content"></textarea>
 							
 							<ul class="comment-insert-attach-list">
-	   							<!-- <li>
-	   								<span class="file-name">1분자기소개.txt (2.28KB)</span>
-	   								<span class="file-delete"> X </span>
-	   							</li> -->
 	   						</ul>
 		    						
 							<div class="comment-input-footer">
