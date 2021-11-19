@@ -174,8 +174,9 @@ public class WorkController {
 			return "/util/alert";
 		}
 		
-		//get master info
-		
+		//get group member list
+		List<Member> groupMemberList = memberService.getGroupMemberList(wgm);
+		model.addAttribute("GroupMemberList", groupMemberList);
 		
 		//get Work Boards
 		WorkBoard workBoard = new WorkBoard();
@@ -261,26 +262,22 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
-	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, 
+	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard,
 			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
-		WorkBoard workBoard = new WorkBoard();
 		Member member = LoginUtil.getLoginMember(request, response);
 		
-		String content = ServletRequestUtils.getStringParameter(request, "content", "");
-		String type = ServletRequestUtils.getStringParameter(request, "type", "");
-		int group_seq = ServletRequestUtils.getIntParameter(request, "group_seq", 0);
+//		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+//		String type = ServletRequestUtils.getStringParameter(request, "type", "");
+//		int group_seq = ServletRequestUtils.getIntParameter(request, "group_seq", 0);
 		
-		content = content.replaceAll("(\r\n|\r|\n|\n\r)", "\\<br\\>");
+		String content = workBoard.getContent().replaceAll("(\r\n|\r|\n|\n\r)", "\\<br\\>");
 		workBoard.setContent(content);
-		workBoard.setType(type);
 		workBoard.setMember_seq(member.getSeq());
 		workBoard.setMember_id(member.getId());
 		workBoard.setMember_name(member.getName());
 		workBoard.setWork_seq(member.getWork_seq());
-		workBoard.setGroup_seq(group_seq);
 		workBoard.setRegister(member.getId());
 		workBoard.setRegdate(TimeUtil.getDateTime());
-		workBoard.setStatus("request");
 		
 		if(attachFiles != null && !attachFiles.isEmpty()) {
 			workBoard.setAttachFileList(attachFiles);
@@ -306,21 +303,46 @@ public class WorkController {
 	
 	@RequestMapping(value = "/board/{boardseq}", method = RequestMethod.PUT)
 	public View updateBoard(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("boardseq") int boardseq,
-			 @RequestParam("attachFiles") List<MultipartFile> attachFiles,  @RequestParam("boardFileSeqList") List<Integer> boardFileSeqList) {
+			 @RequestParam(value = "attachFiles", required = false) List<MultipartFile> attachFiles,  
+			 @RequestParam(value = "boardFileSeqList", required = false) List<Integer> boardFileSeqList) {
 		int res = 0;
 		Member member = LoginUtil.getLoginMember(request, response);
 		WorkBoard workBoard = workService.getWorkBoardOne(boardseq);
 		
 		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+		String status = ServletRequestUtils.getStringParameter(request, "status", "");
+		String worker = ServletRequestUtils.getStringParameter(request, "worker", "");
 		
 		if(workBoard.getMember_seq() == member.getSeq()) {
-			workBoard.setAttachFileList(attachFiles);
-			workBoard.setBoardFileSeqList(boardFileSeqList);
-			workBoard.setContent(content);
+			if(attachFiles != null && !attachFiles.isEmpty()) {
+				workBoard.setAttachFileList(attachFiles);
+			}
+			if(boardFileSeqList != null && !boardFileSeqList.isEmpty()) {
+				workBoard.setBoardFileSeqList(boardFileSeqList);
+			}
+			if(!content.equals("")) {
+				workBoard.setContent(content);
+			}
+			if(!status.equals("")) {
+				workBoard.setStatus(status);
+			}
+			if(!worker.equals("")) {
+				workBoard.setWorker(worker);
+			}
+			
 			res = workService.updateWorkBoard(workBoard, request, response);
 		}
 		
 		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/comment/{comment_seq}", method = RequestMethod.GET)
+	public View getCommentOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("comment_seq") int comment_seq,
+			Comment comment) {
+		comment.setSearch_member_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		comment = workService.getCommentOneMapper(comment);
+		model.addAttribute("Comment", comment);
 		return jsonView;
 	}
 	

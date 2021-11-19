@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.QMember;
+import com.poozim.jobcall.model.QWorkGroupMember;
+import com.poozim.jobcall.model.WorkGroupMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
@@ -23,6 +25,16 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 	public List<Integer> getWorkMemberSeqList(Member param) {
 		QMember member = QMember.member;
 		return queryFactory.select(member.seq).from(member).where(member.work_seq.eq(param.getWork_seq()), member.useyn.eq("Y")).fetch();
+	}
+
+	@Override
+	public List<Member> getWorkGroupMemberList(WorkGroupMember wgm) {
+		QMember member = QMember.member;
+		QWorkGroupMember workGroupMember = QWorkGroupMember.workGroupMember;
+		
+		List<Integer> groupMemberSeqList = queryFactory.select(workGroupMember.member_seq).from(workGroupMember).where(workGroupMember.group_seq.eq(wgm.getGroup_seq())).fetch();
+		
+		return queryFactory.selectFrom(member).where(member.seq.in(groupMemberSeqList)).fetch();
 	}
 
 }

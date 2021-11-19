@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
+import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.MemberRepository;
 import com.poozim.jobcall.repository.WorkRepository;
 
@@ -32,5 +33,9 @@ public class MemberService {
 	
 	public Member getMemberById(Member member) {
 		return memberRepository.getMemberById(member);
+	}
+	
+	public List<Member> getGroupMemberList(WorkGroupMember wgm){
+		return memberRepository.getWorkGroupMemberList(wgm);
 	}
 }

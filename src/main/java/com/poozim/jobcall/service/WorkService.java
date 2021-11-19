@@ -16,6 +16,7 @@ import com.poozim.jobcall.model.ActionLog;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
 import com.poozim.jobcall.model.Member;
+import com.poozim.jobcall.model.StatusLog;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
@@ -27,6 +28,7 @@ import com.poozim.jobcall.repository.ActionLogRepository;
 import com.poozim.jobcall.repository.CommentFileRepository;
 import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.MemberRepository;
+import com.poozim.jobcall.repository.StatusLogRepository;
 import com.poozim.jobcall.repository.WorkBoardFileRepository;
 import com.poozim.jobcall.repository.WorkBoardRepository;
 import com.poozim.jobcall.repository.WorkCategoryGroupRepository;
@@ -453,6 +455,10 @@ public class WorkService {
 		return commentRepository.findById(seq).get();
 	}
 	
+	public Comment getCommentOneMapper(Comment comment) {
+		return workMapper.getCommentOne(comment);
+	}
+	
 	
 	//like, dislike
 	public ActionLog getActionLogOne(int actionLog_seq) {
@@ -472,5 +478,7 @@ public class WorkService {
 		actionLogRepository.delete(actionLog);
 		return 1;
 	}
+	
+	//status log
 	
 }

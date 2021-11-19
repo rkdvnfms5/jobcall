@@ -58,4 +58,7 @@ public class Comment {
 	
 	@Transient
 	private int actionLog_seq;
+	
+	@Transient
+	private int search_member_seq;
 }

@@ -77,33 +77,34 @@
 		
 	<form action="/work/board" id="insertBoardForm" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="group_seq" id="group_seq" value="${WorkGroup.seq}">
+		<input type="hidden" name="type" id="type" value="plain">
 		<div class="wall-list-page">
 			<div class="message-form-group message-form-group--PLAIN">
 				<div class="message-form-group__header">
 					<ul class="message-form-group__tabs">
-						<li class="message-form-group__tab message-form-group__tab--active">
-							<button type="button">
+						<li class="message-form-group__tab plain message-form-group__tab--active">
+							<button type="button" onclick="setInsertBoardForm('plain')">
 								<i class="ico ico-wall_form_plain" aria-hidden="true"><svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1"><g id="wall_form_plain"><path d="M4.84456465,13.6099463 C5.03399088,13.5213435 5.21151614,13.3986953 5.3680596,13.2421518 L13.4644334,5.145778 C14.1751621,4.43504933 14.1823793,3.26136717 13.4629255,2.54191344 C12.7384559,1.8174438 11.5776819,1.8217846 10.859061,2.54040555 L2.76268715,10.6367794 C2.60721175,10.7922548 2.48540199,10.9698842 2.39750031,11.1600664 L2.22570384,11.1737627 L2,14.004839 L4.8310763,13.7791351 L4.84456465,13.6099463 L4.84456465,13.6099463 Z M9.73653905,3.66292745 L12.3419115,6.26829991 L11.5777165,7.03249494 L8.97234401,4.42712249 L9.73653905,3.66292745 Z" stroke="none" stroke-width="1" fill-rule="evenodd"></path></g></svg>
 								</i>
 								<span>글쓰기</span>
 							</button>
 						</li>
-						<li class="message-form-group__tab">
-							<button type="button">
+						<li class="message-form-group__tab schedule">
+							<button type="button" onclick="setInsertBoardForm('schedule')">
 								<i class="ico ico-wall_form_schedule" aria-hidden="true"><svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1"><g id="wall_form_schedule"><path transform="translate(0, -1)" d="M1,17 C0.4,17 0,16.6 0,16 L0,4 C0,3.4 0.4,3 1,3 L3,3 L3,2 C3,1.4 3.4,1 4,1 C4.6,1 5,1.4 5,2 L5,3 L11,3 L11,2 C11,1.4 11.4,1 12,1 C12.6,1 13,1.4 13,2 L13,3 L15,3 C15.6,3 16,3.4 16,4 L16,16 C16,16.6 15.6,17 15,17 L1,17 Z M2,6 L14,6 L14,15 L2,15 L2,6 Z M10,8 L12,8 L12,10 L10,10 L10,8 Z M4,8 L6,8 L6,10 L4,10 L4,8 Z M4,11 L6,11 L6,13 L4,13 L4,11 Z M7,8 L9,8 L9,10 L7,10 L7,8 Z M10,11 L12,11 L12,13 L10,13 L10,11 Z M7,11 L9,11 L9,13 L7,13 L7,11 Z" stroke="none" stroke-width="1" fill-rule="evenodd"></path></g></svg>
 								</i>
 								<span>일정</span>
 							</button>
 						</li>
-						<li class="message-form-group__tab">
-							<button type="button">
+						<li class="message-form-group__tab request">
+							<button type="button" onclick="setInsertBoardForm('request')">
 								<i class="ico ico-wall_form_task" aria-hidden="true"><svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1"><g id="wall_form_task"><path d="M1.00087166,0 L14.9991283,0 C15.5518945,0 16,0.444630861 16,1.00087166 L16,14.9991283 C16,15.5518945 15.5553691,16 14.9991283,16 L1.00087166,16 C0.448105505,16 0,15.5553691 0,14.9991283 L0,1.00087166 C0,0.448105505 0.444630861,0 1.00087166,0 Z M2,2 L14,2 L14,14 L2,14 L2,2 Z M7.12238198,8.12173857 L9.94873775,5.29538279 C10.340406,4.90371453 10.9717757,4.90006449 11.3650227,5.29331144 C11.755547,5.68383574 11.7625006,6.3100471 11.3629513,6.70959635 L7.83156011,10.2409876 C7.83121477,10.2413329 7.83086924,10.2416779 7.83052353,10.2420227 C7.83017914,10.242368 7.8298341,10.2427136 7.82948876,10.2430589 C7.43896446,10.6335832 6.80862693,10.6364106 6.41541132,10.243195 L4.29381873,8.12160244 C3.90336961,7.73115333 3.9007079,7.10077196 4.29395485,6.70752501 C4.68447914,6.31700071 5.31481668,6.31417327 5.70803229,6.70738888 L7.12238198,8.12173857 Z" stroke="none" stroke-width="1" fill-rule="evenodd"></path></g></svg>
 								</i>
 								<span>요청</span>
 							</button>
 						</li>
-						<li class="message-form-group__tab">
-							<button type="button">
+						<li class="message-form-group__tab vote">
+							<button type="button" onclick="setInsertBoardForm('vote')">
 								<i class="ico ico-wall_form_poll" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path fill="#828282" fill-rule="evenodd" d="M0 8h4.058v8H0V8zm6-6h4.058v14H6V2zm6 9h4.058v5H12v-5z"></path></svg>
 								</i>
 								<span>투표</span>
@@ -141,8 +142,8 @@
 	    				</div>
 	    			</div>
     			</div>
+    			</div>
 			</div>
-		</div>
 		</form>
 		<div class="scroll-container scroll-container--window wall__wall-message-list" tabindex="-1">
 			<div class="wall-list-wrap">
@@ -162,6 +163,30 @@
 							</div>
 							
 							<div class="board-body">
+								<div class="board-body-meta">
+									<c:choose>
+										<c:when test="${Board.type eq 'request'}">
+											<div class="worker-info">
+												<span>담당자 : </span>
+												<c:if test="${not empty Board.worker}">
+													<c:set var="workerArr" value="${fn:split(Board.worker, ',')}" />
+													<c:forEach items="${workerArr}" var="worker">
+														<span class="worker-id">${worker}</span>
+													</c:forEach>
+												</c:if>
+											</div>
+											<div class="status-info">
+												<span class="request ${Board.status eq 'request'? 'on':''}" <c:if test="${Board.status ne 'request'}">onclick="updateBoardStatus(${Board.seq}, 'request', this)"</c:if> >요청</span>
+												<span class="process ${Board.status eq 'process'? 'on':''}" <c:if test="${Board.status ne 'process'}">onclick="updateBoardStatus(${Board.seq}, 'process', this)"</c:if> >진행</span>
+												<span class="complete ${Board.status eq 'complete'? 'on':''}" <c:if test="${Board.status ne 'complete'}">onclick="updateBoardStatus(${Board.seq}, 'complete', this)"</c:if> >완료</span>
+											</div>
+										</c:when>
+										<c:when test="${Board.type eq 'schedule'}">
+										
+										</c:when>
+										<c:otherwise></c:otherwise>
+									</c:choose>
+								</div>
 								<div class="board-body-content">
 								${Board.content}
 								</div>
@@ -188,6 +213,30 @@
 									</div>
 								</c:if>
 								<div class="board-body-modify hide">
+									<c:choose>
+										<c:when test="${Board.type eq 'request'}">
+											<input type="hidden" name="worker" value="${Board.worker}">
+											<div class="request-message-form">
+												<div class="board-input-title">
+													<c:set var="workerArr" value="${fn:split(Board.worker, ',')}" />
+													<c:forEach items="${workerArr}" var="worker">
+														<div class="worker-label">
+															<span class="worker-label-id">${worker}</span>
+															<span class="worker-label-cancel" onclick="removeRequestBoardWorker(this, '${worker}')">X</span>
+														</div>
+													</c:forEach>
+													<input type="text" maxlength="30" name="input-worker" class="board-modify-worker" oninput="checkWorker(this)" placeholder="담당자 ID 입력">
+												</div>
+												<div class="mention-list hide">
+													<ul></ul>
+												</div>
+											</div>
+										</c:when>
+										<c:when test="${Board.type eq 'schedule'}">
+										
+										</c:when>
+										<c:otherwise></c:otherwise>
+									</c:choose>
 									<textarea rows="8" cols="" name="content" id="" class="board-modify-textArea">${Board.content}</textarea>
 									<ul class="board-modify-attach-list">
 										<c:forEach items="${Board.workBoardFileList}" var="BoardFile">
@@ -284,8 +333,8 @@
 						</div>
 						</form>
 						<c:forEach items="${Board.commentList}" var="Comment" varStatus="comment_status">
+						<div class="wall-comment">
 							<form action="/work/comment/${Comment.seq}" class="updateCommentForm" method="post">
-							<div class="wall-comment">
 								<div class="comment-header">
 									<div class="comment-header-profile">
 										<span class="avatar" url="https://t1.daumcdn.net/agit_resources/images/empty_profile.png" style="width: 36px; height: 36px; background-image: url(&quot;https://t1.daumcdn.net/agit_resources/images/empty_profile.png&quot;);"></span>
@@ -410,9 +459,8 @@
 	    							</div>
 	    							<input type="file" class="comment-modify-attach hide" multiple="multiple" autocomplete="off" name="attachFiles">
 								</div>
-							
-							</div>
 							</form>
+						</div>
 						</c:forEach>
 						
 						<form action="/work/comment" class="comment-insert-form" method="post">
@@ -448,6 +496,27 @@
 	<input type="hidden" name="offset" value="${offset}">
 	<input type="hidden" name="total" value="${total}">
 </form>
+<div id="worker_list" class="worker_list hide">
+	<c:forEach items="${GroupMemberList}" var="groupMember">
+		<li class="${groupMember.id}" onclick="addRequestBoardWorker(${groupMember.seq},'${groupMember.id}', this);">
+			<span class="avatar" url="https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png" subdomain="poozim" style="width: 30px; height: 30px; background-image: url(&quot;https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png&quot;);">
+				<c:if test="${WorkGroup.member_seq eq groupMember.seq}">
+					<button class="user-type-badge user-type-badge--x-small ${WorkGroup.member_seq eq groupMember.seq? 'user-type-badge--master':''}">
+						<i class="ico ico-master" aria-hidden="true"><svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1"><g id="master" stroke="none" stroke-width="1" fill="#B6B6B6" fill-rule="evenodd"><path d="M6.58747854,2.8805897 C6.59128227,2.89232338 6.59506039,2.90419325 6.59881229,2.91619933 L7.60714286,6.14285714 L9.52356702,2.73588085 C9.53622026,2.7133862 9.5488478,2.69147966 9.56144477,2.67016037 C9.21912618,2.39524243 9,1.97321105 9,1.5 C9,0.671572875 9.67157288,0 10.5,0 C11.3284271,0 12,0.671572875 12,1.5 C12,2.28644211 11.3947734,2.93152596 10.6246794,2.99489219 C10.6247471,2.99596099 10.6248144,2.9970307 10.6248813,2.99810135 L10.9376856,8.00296986 C10.9721009,8.5536144 10.5562834,9 10.0001925,9 L7.25,9 L4.75,9 L1.99980749,9 C1.44762906,9 1.02831477,8.54696369 1.06231438,8.00296986 L1.37511867,2.99810135 C1.37518558,2.9970307 1.3752529,2.99596098 1.37532062,2.9948922 C0.605226663,2.93152597 0,2.28644212 0,1.5 C0,0.671572875 0.671572875,0 1.5,0 C2.32842712,0 3,0.671572875 3,1.5 C3,1.97321634 2.78086892,2.39525187 2.43854375,2.67016959 C2.45114724,2.69148088 2.46377867,2.7133843 2.47643298,2.73588085 L4.39285714,6.14285714 L5.40118771,2.91619933 C5.40493953,2.90419351 5.40871772,2.89232366 5.41252169,2.8805898 C4.87607153,2.65202468 4.5,2.11993044 4.5,1.5 C4.5,0.671572875 5.17157288,0 6,0 C6.82842712,0 7.5,0.671572875 7.5,1.5 C7.5,2.11993036 7.12392858,2.65202453 6.58747854,2.8805897 Z M0,11 C0,10.4477153 0.455760956,10 1.00247329,10 L10.9975267,10 C11.5511774,10 12,10.4438648 12,11 C12,11.5522847 11.544239,12 10.9975267,12 L1.00247329,12 C0.448822582,12 0,11.5561352 0,11 Z"></path></g></svg></i>
+					</button>
+				</c:if>
+			</span>
+			<div class="user-info">
+				<div class="user-info-title">
+					${groupMember.id} (${groupMember.name})
+				</div>
+				<div class="user-info-subtitle">
+					${groupMember.department}
+				</div>
+			</div>
+		</li>
+	</c:forEach>
+</div>
 <script>
 var board_attache_files = new Array();
 var delete_board_attach_files;
@@ -560,7 +629,6 @@ function insertBoard(){
 		data.append("attachFiles", board_attache_files[i]);
 	}
 	
-	data.append("type", "plain");
 	showLoading();
 	$.ajax({
 		url : url,
@@ -633,6 +701,7 @@ function modifyBoardForm(obj) {
 	
 	board_body.find(".board-body-attach").hide();
 	board_body.find(".board-body-content").hide();
+	board_body.find(".board-body-meta").hide();
 	$(obj).closest(".wall-board").find(".board-footer").hide();
 	$(obj).closest(".board-setting-menu").toggleClass("hide");
 	
@@ -651,6 +720,7 @@ function cancelModifyBoard(obj){
 	
 	board_body.find(".board-body-attach").show();
 	board_body.find(".board-body-content").show();
+	board_body.find(".board-body-meta").show();
 	$(obj).closest(".wall-board").find(".board-footer").show();
 	
 	delete_board_attach_files = null;

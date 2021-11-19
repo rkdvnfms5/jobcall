@@ -2,6 +2,7 @@ package com.poozim.jobcall.mapper;
 
 import java.util.List;
 
+import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
 import com.poozim.jobcall.model.WorkCategory;
@@ -27,4 +28,6 @@ public interface WorkMapper {
 	public int insertWorkGroupMemberList(WorkGroupMember workGroupMember);
 	
 	public String getCreatedWorkCode(String title);
+	
+	public Comment getCommentOne(Comment comment);
 }

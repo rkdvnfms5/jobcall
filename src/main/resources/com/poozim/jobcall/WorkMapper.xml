@@ -138,6 +138,14 @@
 		WHERE board_seq = #{board_seq}
 	</select>
 	
+	<select id="getCommentOne" resultMap="CommentMap">
+		SELECT *, 'comment' as target, 'like' as `like`, 'dislike' as dislike,
+		(SELECT action FROM ActionLog al WHERE al.member_seq = #{search_member_seq} AND al.target LIKE 'comment' AND al.target_seq = c.seq) as action,
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{search_member_seq} AND al.target LIKE 'comment' AND al.target_seq = c.seq) as actionLog_seq
+		FROM Comment c
+		WHERE c.seq = #{seq}
+	</select>
+	
 	<select id="getCommentFileList" resultType="CommentFile">
 		SELECT *
 		FROM CommentFile
