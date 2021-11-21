@@ -79,6 +79,7 @@ public class SignService {
 		workGroup.setWork_seq(work.getSeq());
 		workGroup.setName("기본 그룹");
 		workGroup.setAccess("public");
+		workGroup.setDefaultyn("Y");
 		workGroup.setRegister(member.getId());
 		workGroup.setRegdate(work.getRegdate());
 		workGroup.setUseyn("Y");
@@ -127,5 +128,29 @@ public class SignService {
 		}
 		
 		return 1;
+	}
+	
+	@Transactional
+	public Member attendWork(Member member) {
+		member.setPassword(bcryEncoder.encode(member.getPassword()));
+		if(member.getSeq() > 0) {
+			member.setSeq(0);
+		}
+		memberRepository.save(member);
+		
+		//기본그룹 참여
+		WorkGroup workGroup = new WorkGroup();
+		workGroup.setDefaultyn("Y");
+		workGroup.setWork_seq(member.getWork_seq());
+		workGroup = workGroupRepository.getWorkGroupOne(workGroup);
+		
+		WorkGroupMember workGroupMember = new WorkGroupMember();
+		workGroupMember.setGroup_seq(workGroup.getSeq());
+		workGroupMember.setMember_seq(member.getSeq());
+		workGroupMember.setRegdate(member.getRegdate());
+		
+		workGroupMember = workGroupMemberRepository.save(workGroupMember);
+		
+		return member;
 	}
 }

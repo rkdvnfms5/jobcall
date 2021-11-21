@@ -14,7 +14,7 @@
 			<h2 class="page-header__title">멤버 초대하기</h2>
 		</header>
 		
-		<form id="insertMemberForm" action="/work/member/invite" method="post">
+		<form id="inviteMemberForm" action="/work/member/invite" method="post">
 			<div class="ibox group-new-page__body">
 				<table class="tbl-group-new">
 					<tbody>
@@ -31,7 +31,7 @@
 					</tbody>
 				</table>
 				<div class="group-new-page__controls">
-					<button type="button" id="insert-submit" class="ra-button ra-button--accent" disabled><span>초대하기</span></button>
+					<button type="button" id="insert-submit" class="ra-button ra-button--accent" onclick="inviteMember();" disabled><span>초대하기</span></button>
 				</div>
 			</div>
 		</form>
@@ -48,6 +48,27 @@ $(document).ready(function(){
 		}
 	});
 })
+
+function inviteMember(){
+	var data = $("#inviteMemberForm").serialize();
+	
+	$.ajax({
+		url : '/work/member/invite',
+		method : 'POST',
+		data : data,
+		dataType : 'JSON',
+		success : function(res) {
+			if(res.res == 1){
+				alert("초대를 완료했습니다.");
+			} else {
+				alert(res.msg);
+			}
+		},
+		error : function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	})
+}
 
 </script>
 </body>

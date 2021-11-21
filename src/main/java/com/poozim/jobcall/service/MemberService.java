@@ -25,6 +25,10 @@ public class MemberService {
 		return memberRepository.findById(seq).get();
 	}
 	
+	public Member getMemberOneCustom(Member member) {
+		return memberRepository.getMemberOne(member);
+	}
+	
 	public Member insertMember(Member member) {
 		member.setPassword(bcryEncoder.encode(member.getPassword()));
 		

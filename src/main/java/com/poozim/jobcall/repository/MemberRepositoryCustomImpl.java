@@ -6,6 +6,7 @@ import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.QMember;
 import com.poozim.jobcall.model.QWorkGroupMember;
 import com.poozim.jobcall.model.WorkGroupMember;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
@@ -36,5 +37,25 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 		
 		return queryFactory.selectFrom(member).where(member.seq.in(groupMemberSeqList)).fetch();
 	}
+
+	@Override
+	public Member getMemberOne(Member param) {
+		QMember member = QMember.member;
+		
+		BooleanBuilder builder = new BooleanBuilder();
+        if(param.getSeq() > 0){
+            builder.and(member.seq.eq(param.getSeq()));
+        }
+        if(param.getWork_seq() > 0){
+            builder.and(member.work_seq.eq(param.getWork_seq()));
+        }
+        if (param.getEmail() != null){
+            builder.and(member.email.eq(param.getEmail()));
+        }
+        
+		return queryFactory.selectFrom(member).where(builder).fetchOne();
+	}
+	
+	
 
 }

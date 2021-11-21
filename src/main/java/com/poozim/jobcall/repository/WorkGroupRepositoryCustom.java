@@ -11,4 +11,6 @@ public interface WorkGroupRepositoryCustom{
 	public int getWorkGroupMemberCnt(WorkGroup workGroup);
 	
 	public WorkGroupMember getWorkGroupMemberOne(int groupseq, int memberseq);
+	
+	public WorkGroup getWorkGroupOne(WorkGroup workGroup);
 }

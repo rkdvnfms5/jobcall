@@ -18,7 +18,7 @@
 							<label for="sign-title">
 								참여 코드
 							</label>
-							<input type="text" id="sign-title" name="code" maxlength="6" placeholder="프로젝트 참여 코드 입력"/>						
+							<input type="text" id="sign-title" name="code" maxlength="10" placeholder="프로젝트 참여 코드 입력"/>						
 						</fieldset>
 						
 						<h3 class="group-label">이메일 인증</h3>

@@ -9,6 +9,7 @@ import com.poozim.jobcall.model.QWorkGroup;
 import com.poozim.jobcall.model.QWorkGroupMember;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class WorkGroupRepositoryCustomImpl extends QuerydslRepositorySupport implements WorkGroupRepositoryCustom {
@@ -43,4 +44,24 @@ public class WorkGroupRepositoryCustomImpl extends QuerydslRepositorySupport imp
 		return queryFactory.selectFrom(wgm).where(wgm.group_seq.eq(groupseq), wgm.member_seq.eq(memberseq)).fetchOne();
 	}
 
+	@Override
+	public WorkGroup getWorkGroupOne(WorkGroup workGroup) {
+		QWorkGroup workgroup = QWorkGroup.workGroup;
+		
+		BooleanBuilder builder = new BooleanBuilder();
+        if(workGroup.getSeq() > 0){
+            builder.and(workgroup.seq.eq(workGroup.getSeq()));
+        }
+        if(workGroup.getDefaultyn() != null){
+            builder.and(workgroup.defaultyn.eq(workGroup.getDefaultyn()));
+        }
+        if (workGroup.getWork_seq() > 0){
+            builder.and(workgroup.work_seq.eq(workGroup.getWork_seq()));
+        }
+		
+		return queryFactory.selectFrom(workgroup).where(builder).fetchOne();
+	}
+
+	
+	
 }

@@ -206,7 +206,7 @@ public class SignController {
 			member.setRegdate(regdate);
 			member.setWork_seq(work.getSeq());
 			
-			member = memberService.insertMember(member);
+			member = signService.attendWork(member);
 			
 			LoginUtil.setLoginSession(request, response, member);
 		} else if(session.getAttribute("duplYN").toString().equals("N") || duplYN.equals("N")) {

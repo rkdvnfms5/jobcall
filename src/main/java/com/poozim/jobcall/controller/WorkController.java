@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.service.MemberService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
+import com.poozim.jobcall.util.MailUtil;
 import com.poozim.jobcall.util.TimeUtil;
 
 @Controller
@@ -530,5 +532,38 @@ public class WorkController {
 	public String memberInvitePage() {
 		
 		return "/work/member_new";
+	}
+	
+	@RequestMapping(value = "/member/invite", method = RequestMethod.POST)
+	public View memberInvite(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HttpSession session = request.getSession();
+		Work work = (Work)session.getAttribute("WorkInfo");
+		String email = ServletRequestUtils.getStringParameter(request, "email", "");
+		int res = 0;
+		
+		//메일 중복검사
+		Member member = new Member();
+		member.setEmail(email);
+		member.setWork_seq(work.getSeq());
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ : " + work.getSeq());
+		System.out.println(memberService.getMemberOneCustom(member));
+		if(memberService.getMemberOneCustom(member) != null) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "이미 참여중인 이메일입니다.");
+			return jsonView;
+		}
+		
+		//메일 보내기
+		String title = "잡콜이야 " + work.getTitle() + "로 초대합니다.";
+		String from = "rkdvnfms5@naver.com";
+		String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/sign/attend/" + work.getSeq();
+		text += "\n참여 코드 : " + work.getCode();
+		String to = email;
+		String cc = "";
+		
+		res = MailUtil.mailSend(title, from, text, to, cc);
+		model.addAttribute("res", res);
+		
+		return jsonView;
 	}
 }

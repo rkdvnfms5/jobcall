@@ -11,4 +11,6 @@ public interface MemberRepositoryCustom{
 	public List<Integer> getWorkMemberSeqList(Member member);
 	
 	public List<Member> getWorkGroupMemberList(WorkGroupMember wgm);
+	
+	public Member getMemberOne(Member member);
 }

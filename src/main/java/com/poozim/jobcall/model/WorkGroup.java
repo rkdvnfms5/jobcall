@@ -21,6 +21,7 @@ public class WorkGroup {
 	private String name;
 	private String content;
 	private String access;
+	private String defaultyn = "N";
 	private String useyn;
 	private String register;
 	private String regdate;
