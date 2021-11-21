@@ -86,7 +86,7 @@
 				<div class="group-new-page__controls">
 					<button class="ra-button"><span>취소</span></button>
 					<button id="insert-submit" class="ra-button ra-button--accent" disabled><span>확인</span></button>
-					<button class="ra-button group-new-page__preview-button"><span>미리 보기</span></button>
+					<!-- <button class="ra-button group-new-page__preview-button"><span>미리 보기</span></button> -->
 				</div>
 			</div>
 		</form>

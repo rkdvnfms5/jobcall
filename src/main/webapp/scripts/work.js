@@ -120,6 +120,20 @@ function checkBoardValue(){
 		}
 	}
 	
+	if(board_type == 'schedule'){
+		if($.trim($("#insertBoardForm input[name='title']").val()) == ''){
+			return false;
+		}
+		
+		if($.trim($("#insertBoardForm input[name='startdate']").val()) == ''){
+			return false;
+		}
+		
+		if($.trim($("#insertBoardForm input[name='enddate']").val()) == ''){
+			return false;
+		}
+	}
+	
 	return true;
 }
 
@@ -327,7 +341,17 @@ function getBoardHtml(board, coverFlag){
 		html += '</div>';
 	} 
 	else if(board.type == 'schedule'){
-		
+		var monthday = board.startdate.split("-");
+		html += '<div class="schedule-info">';
+		html += '<div class="schedule-calendar">';
+		html += '<div class="month">' + monthday[1] + '</div>';
+		html += '<div class="day">' + monthday[2] + '</div>';
+		html += '</div>';
+		html += '<div class="schedule-text">';
+		html += '<div class="schedule-title">' + board.title + '</div>';
+		html += '<div class="schedule-date">' + board.startdate + ' - ' + board.enddate + '</div>';
+		html += '</div></div>';
+	
 	}
 	else {
 		
@@ -368,7 +392,45 @@ function getBoardHtml(board, coverFlag){
 		html += '</div></div>';
 	}
 	else if(board.type == 'schedule'){
-		
+		html += '<div class="board-input-date">';
+		html += '<div class="input-datetime-container">';
+		html += '<input type="text" class="input-startdate" name="startdate" value="' + board.startdate + '">';
+		html += '</div> ';
+		html += '<div class="input-datetime-container time ';
+		if(board.starttime != ''){
+			html += 'hide';
+		}
+		html += '">';
+		html += '<input type="text" class="input-starttime" name="starttime" value="' + board.starttime + '" placeholder="시작 시간">';
+		html += '</div>';
+		html += ' - ';
+		html += '<div class="input-datetime-container">';
+		html += '<input type="text" class="input-enddate" name="enddate" value="' + board.enddate + '" >';
+		html += '</div> ';
+		html += '<div class="input-datetime-container time ';
+		if(board.endtime != ''){
+			html += 'hide';
+		}
+		html += '">';
+		html += '<input type="text" class="input-endtime" name="endtime" value="' + board.endtime + '" placeholder="종료 시간">';
+		html += '</div>';
+		html += '<div class="input-date-type">';
+		html += '<div>';
+		html += '<label class="schedule-form__label">';
+		html += '<span class="ra-checkbox">';
+		html += '<input type="checkbox" name="allYN" onchange="checkDateType(this)" ';
+			if(board.starttime == '' && board.endtime == ''){
+				html += 'checked';
+			}
+		html += '>';
+		html += '<i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i>';
+		html += '</span>';
+		html += ' 종일 ';
+		html += '</label>';
+		html += '</div></div></div>';
+		html += '<div class="board-input-title">';
+		html += '<input type="text" maxlength="30" name="title" id="board-insert-title" value="' + board.title + '" placeholder="일정 제목 입력">';
+		html += '</div>';
 	} else {
 		
 	}
@@ -603,6 +665,25 @@ function setInsertBoardForm(type){
 	$("#insertBoardForm .message-form-group__tab." + type).addClass("message-form-group__tab--active");
 	$("#insertBoardForm #type").val(type);
 	obj.html(html);
+	
+	// date time picker
+	$("#insertBoardForm input[name='startdate']").datepicker({
+		dateFormat : "yy-mm-dd"
+	});
+	
+	$("#insertBoardForm input[name='startdate']").datepicker('setDate', 'today');
+	
+	$("#insertBoardForm input[name='enddate']").datepicker({
+		dateFormat : "yy-mm-dd"
+	});
+	
+	$("#insertBoardForm input[name='enddate']").datepicker('setDate', 'today');
+	
+	$("#insertBoardForm input[name='starttime']").timepicker({
+	});
+	
+	$("#insertBoardForm input[name='endtime']").timepicker({
+	});
 }
 
 function getInsertPlainBoardHtml(){
@@ -633,12 +714,40 @@ function getInsertPlainBoardHtml(){
 
 function getInsertScheduleBoardHtml(){
 	var html = "";
-	html += '<div class="plain-message-form">';
+	html += '<div class="schedule-message-form">';
 	html += '<div class="message-form message-form--editing message-form--mode-wysiwyg" aria-disabled="false">';
+	
+	html += '<div class="message-form__header">';
+	html += '<div class="board-input-date">';
+	html += '<div class="input-datetime-container">';
+	html += '<input type="text" class="input-startdate" name="startdate">';
+	html += '</div> ';
+	html += '<div class="input-datetime-container time">';
+	html += '<input type="text" class="input-starttime" name="starttime" placeholder="시작 시간">';
+	html += '</div> ';
+	html += ' - ';
+	html += ' <div class="input-datetime-container">';
+	html += '<input type="text" class="input-enddate" name="enddate">';
+	html += '</div> ';
+	html += '<div class="input-datetime-container time">';
+	html += '<input type="text" class="input-endtime" name="endtime" placeholder="종료 시간">';
+	html += '</div>';
+	html += '<div class="input-date-type">';
+	html += '<div>';
+	html += '<label class="schedule-form__label">';
+	html += '<span class="ra-checkbox">';
+	html += '<input type="checkbox" name="allYN" onchange="checkDateType(this)"><i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i>';
+	html += '</span>';
+	html += ' 종일 ';
+	html += '</label></div></div></div>';
+	html += '<div class="board-input-title">';
+	html += '<input type="text" maxlength="30" name="title" id="board-insert-title" placeholder="일정 제목 입력">';
+	html += '</div></div>';
+
 	html += '<div class="message-form__body">';
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
-	html += '<textarea rows="8" cols="" name="content" id="contentTextArea"></textarea>';
+	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
 	html += '</div></div>';
 	html += '<ul class="board-insert-attach-list" id="board-insert-attach-list"></ul>';
 	html += '<div class="message-form__footer">';
@@ -675,7 +784,7 @@ function getInsertRequestBoardHtml(){
 	html += '<div class="message-form__body">';
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
-	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkRequestBoard(this)"></textarea>';
+	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
 	html += '</div></div>';
 				
 	html += '<ul class="board-insert-attach-list" id="board-insert-attach-list">';
@@ -798,6 +907,8 @@ function checkWorker(obj){
 
 function updateBoardStatus(board_seq, status, obj){
 	if(confirm($(obj).html() + " 상태로 바꾸시겠습니까?")){
+		showLoading();
+		
 		var data = new FormData();
 		data.append("seq", board_seq);
 		data.append("status", status);
@@ -812,9 +923,11 @@ function updateBoardStatus(board_seq, status, obj){
 			dataType : 'JSON',
 			success : function(res) {
 				reloadBoard(board_seq, $(obj).closest(".wall-board-item"));
+				hideLoading();
 			},
 			error : function(request, status, error){
 				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				hideLoading();
 			}
 		})
 	}
@@ -829,3 +942,34 @@ function checkRequestBoard(obj){
 	}
 }
 
+function checkBoard(obj){
+	var check = checkBoardValue();
+	if(check){
+		$(obj).closest('form').find(".message-form-submit-control__submit-button").attr("disabled", false);
+	} else {
+		$(obj).closest('form').find(".message-form-submit-control__submit-button").attr("disabled", true);
+	}
+}
+
+function checkDateType(obj){
+	var form = $(obj).closest("form");
+	if($(obj).is(":checked")){
+		form.find("div.time input[name='starttime']").val("");
+		form.find("div.time input[name='endtime']").val("");
+		form.find("div.time").addClass("hide");
+	} else {
+		form.find("div.time").removeClass("hide");
+	}
+	
+}
+
+function toggleGroupDesc(obj){
+	if($(obj).html() == '설명 접기'){
+		$(obj).siblings('pre.group-header__desc').hide();
+		$(obj).html("설명 보기");
+	} else {
+		$(obj).siblings('pre.group-header__desc').show();
+		$(obj).html("설명 접기");
+	}
+	
+}

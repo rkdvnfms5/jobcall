@@ -50,7 +50,7 @@
 			
 			<div class="group-header__footer group-header__desc--open">
 				<pre class="group-header__desc group-header__desc--premode">나만의 그룹에서 내 업무와 관련된 다양한 생각들을 정리하고 기록을 남겨보세요</pre>
-				<button class="group-header__desc-button">설명 접기</button>
+				<button type="button" class="group-header__desc-button" onclick="toggleGroupDesc(this)">설명 접기</button>
 				<strong class="screen-out">그룹 탭 메뉴</strong>
 				<ul class="ra-tab-menu tab-menu__group" role="tablist">
 					<li class="ra-tab-menu__item ra-tab-menu__item--active" role="tab" aria-selected="true">
@@ -113,6 +113,65 @@
 					</ul>
 				</div>
 				<div class="message-form-group__body">
+					<!-- <div class="schedule-message-form">
+						<div class="message-form message-form--editing message-form--mode-wysiwyg" aria-disabled="false">
+							<div class="message-form__header">
+								<div class="board-input-date">
+									<div class="input-datetime-container">
+										<input type="text" class="input-startdate" name="startdate">
+									</div>
+									<div class="input-datetime-container time">
+										<input type="text" class="input-starttime" name="starttime" placeholder="시작 시간">
+									</div>
+									 - 
+									<div class="input-datetime-container">
+										<input type="text" class="input-enddate" name="enddate">
+									</div>
+									<div class="input-datetime-container time">
+										<input type="text" class="input-endtime" name="endtime" placeholder="종료 시간">
+									</div>
+									<div class="input-date-type">
+										<div>
+											<label class="schedule-form__label">
+												<span class="ra-checkbox">
+													<input type="checkbox" name="allYN" onchange="checkDateType(this)"><i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i>
+												</span>
+												종일
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="board-input-title">
+									<input type="text" maxlength="30" name="title" id="board-insert-title" placeholder="일정 제목 입력">
+								</div>
+							</div>
+							
+							<div class="message-form__body">
+								<div class="message-form__text-wrap">
+									<div class="react-measure-wrap">
+										<textarea rows="8" cols="" name="content" id="contentTextArea"></textarea>
+   									</div>
+	    						</div>
+	    						<ul class="board-insert-attach-list" id="board-insert-attach-list">
+	    						</ul>
+	    						<div class="message-form__footer">
+	    							<div class="message-form__footer-leftalign">
+	    								<span class="message-form__attach-file" onclick="$('#attachFiles').click();">
+	    									<button type="button" class="icon-button" aria-label="[object Object]">
+	    										<i class="ico ico-attach" aria-hidden="true"><svg width="12px" height="13px" viewBox="0 0 12 13" version="1.1"><g id="attach" stroke="none" stroke-width="1" fill="#A0A0A0" fill-rule="evenodd"><path d="M12,6.82441256 L6.84573271,11.8390279 C6.05830882,12.605117 5.1142178,12.9920643 4.01343133,12.9998816 C2.91264486,13.0076988 1.96855384,12.6285686 1.18112994,11.8624795 C0.393706043,11.0963904 -6.03961325e-14,10.1739704 -6.03961325e-14,9.09519189 C-6.03961325e-14,8.01641338 0.393706043,7.09399342 1.18112994,6.32790433 L6.84159577,0.820805635 C7.40404141,0.273599142 8.09503569,0 8.91459934,0 C9.73416299,0 10.4251573,0.273599142 10.9876029,0.820805635 C11.5500485,1.36801213 11.8272497,2.03637575 11.8192148,2.82591654 C11.8111799,3.61545734 11.5259439,4.28382096 10.9634982,4.83102745 L5.56404706,10.0841835 C5.2105098,10.4281419 4.78466449,10.6001185 4.28649835,10.6001185 C3.78833221,10.6001185 3.3624869,10.4281419 3.00894964,10.0841835 C2.65541238,9.74022514 2.47462899,9.32200931 2.46659405,8.82952347 C2.45855912,8.33703763 2.63130769,7.91882179 2.98484495,7.57486343 L7.87809756,2.81419075 L8.64944772,3.56464161 L3.75619511,8.32531429 C3.61156623,8.46602453 3.54327029,8.63409258 3.55130522,8.82952347 C3.55934016,9.02495436 3.63567093,9.1930224 3.7802998,9.33373264 C3.92492868,9.47444288 4.09365984,9.54479695 4.28649835,9.54479695 C4.47933686,9.54479695 4.64806802,9.47444288 4.7926969,9.33373264 L10.1921481,4.08057658 C10.5456853,3.73661822 10.7264687,3.31840238 10.7345036,2.82591654 C10.7425386,2.3334307 10.56979,1.91521487 10.2162527,1.5712565 C9.86271548,1.22729813 9.42883535,1.05532153 8.91459934,1.05532153 C8.40036333,1.05532153 7.9664832,1.22729813 7.61294594,1.5712565 L1.95248011,7.07835519 C1.39003446,7.62556168 1.10881586,8.29783386 1.10881586,9.09519189 C1.10881586,9.89254993 1.39003446,10.5648221 1.95248011,11.1120286 C2.51492575,11.6592351 3.20190262,11.9289257 4.01343133,11.9211084 C4.82496004,11.9132912 5.51193691,11.6357835 6.07438255,11.088577 L11.2286498,6.0739617 L12,6.82441256 Z"></path></g></svg></i>
+	    									</button>
+	    									<span class="message-form__attach-file-label">파일첨부</span>
+	    								</span>
+	    							</div>
+	    							<div class="message-form-submit-control">
+	    								<button class="ra-button message-form-submit-control__cancel-button">취소</button>
+	    								<button type="button" id="insert-submit" onclick="insertBoard()" disabled class="ra-button message-form-submit-control__submit-button ra-button--accent">작성하기</button>
+	    							</div>
+	    						</div>
+	    					</div>
+	    					<input id="attachFiles" name="attachFiles" type="file" multiple="multiple" class="hide">
+	    				</div>
+	    			</div> -->
 					<div class="plain-message-form">
 						<div class="message-form message-form--editing message-form--mode-wysiwyg" aria-disabled="false">
 							<div class="message-form__body">
@@ -182,7 +241,16 @@
 											</div>
 										</c:when>
 										<c:when test="${Board.type eq 'schedule'}">
-										
+											<div class="schedule-info">
+												<div class="schedule-calendar">
+													<div class="month">${(fn:split(Board.startdate,'-'))[1]}</div>
+													<div class="day">${(fn:split(Board.startdate,'-'))[2]}</div>
+												</div>
+												<div class="schedule-text">
+													<div class="schedule-title">${Board.title}</div>
+													<div class="schedule-date">${Board.startdate} ${Board.starttime} - ${Board.enddate} ${Board.endtime}</div>
+												</div>
+											</div>
 										</c:when>
 										<c:otherwise></c:otherwise>
 									</c:choose>
@@ -233,7 +301,35 @@
 											</div>
 										</c:when>
 										<c:when test="${Board.type eq 'schedule'}">
-										
+											<div class="board-input-date">
+												<div class="input-datetime-container">
+													<input type="text" class="input-startdate" name="startdate" value="${Board.startdate}">
+												</div>
+												<div class="input-datetime-container time ${empty Board.starttime? 'hide':''}">
+													<input type="text" class="input-starttime" name="starttime" value="${Board.starttime}" placeholder="시작 시간">
+												</div>
+												 - 
+												<div class="input-datetime-container">
+													<input type="text" class="input-enddate" name="enddate" value="${Board.enddate}" >
+												</div>
+												<div class="input-datetime-container time ${empty Board.endtime? 'hide':''}">
+													<input type="text" class="input-endtime" name="endtime" value="${Board.endtime}" placeholder="종료 시간">
+												</div>
+												<div class="input-date-type">
+													<div>
+														<label class="schedule-form__label">
+															<span class="ra-checkbox">
+																<input type="checkbox" name="allYN" onchange="checkDateType(this)" ${empty Board.starttime and empty Board.endtime? 'checked':''}>
+																<i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i>
+															</span>
+															종일
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="board-input-title">
+												<input type="text" maxlength="30" name="title" id="board-insert-title" value="${Board.title}" placeholder="일정 제목 입력">
+											</div>
 										</c:when>
 										<c:otherwise></c:otherwise>
 									</c:choose>
@@ -710,6 +806,22 @@ function modifyBoardForm(obj) {
 	$(obj).closest(".wall-board").find(".board-footer-modify").show();
 	
 	delete_board_attach_files = new Array();
+	
+	// date time picker
+	var form = $(obj).closest('form');
+	form.find("input[name='startdate']").datepicker({
+		dateFormat : "yy-mm-dd"
+	});
+	
+	form.find("input[name='enddate']").datepicker({
+		dateFormat : "yy-mm-dd"
+	});
+	
+	form.find("input[name='starttime']").timepicker({
+	});
+	
+	form.find("input[name='endtime']").timepicker({
+	});
 }
 
 function cancelModifyBoard(obj){

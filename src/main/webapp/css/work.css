@@ -1865,6 +1865,14 @@ button {
 	padding: 8px 10px 4px;
 }
 
+.schedule-message-form .board-input-title {
+	width: auto;
+}
+
+.schedule-message-form .board-input-title input {
+	width: 100%;
+}
+
 .board-input-title input {
 	height: 24px;
 	line-height: 24px;
@@ -2069,4 +2077,146 @@ button {
 .board-body .board-body-meta .status-info span.complete.on {
 	background-color: #808080;
 }
+
+.board-input-date {
+	margin-bottom: 10px;
+}
+
+.board-input-date .input-datetime-container{
+	position: relative;
+    display: inline-block;
+}
+
+.board-input-date .input-datetime-container.hide {
+	display: none;
+}
+
+.board-input-date .input-datetime-container:after {
+	box-sizing: border-box;
+    position: absolute;
+    top: 13px;
+    right: 10px;
+    width: 7px;
+    height: 7px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent #999999 #999999 transparent;
+    -ms-transform: rotateZ(45deg);
+    -webkit-transform: rotateZ(
+45deg);
+    transform: rotateZ(
+45deg);
+    content: "";
+}
+
+.board-input-date input {
+	height: 32px;
+    border-radius: 3px !important;
+    background-color: #fcfcfc;
+    border: solid 1px #e3e3e3;
+    border-color: #e5e5e5 !important;
+    width: 120px;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #666;
+    font-family: Helvetica Nene, Helvetica, sans-serif;
+    font-size: 14px;
+    text-indent: 12px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.board-input-date .input-starttime, .board-input-date .input-endtime {
+	width: 100px;
+}
+
+.board-input-date .input-date-type {
+	margin-left: 15px;
+    float: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.board-input-date .input-date-type div{
+	display: inline-block;
+    line-height: 32px;
+    margin-right: 18px;
+}
+
+.board-input-date .input-date-type label {
+	display: inline;
+    font-size: 13px;
+    color: #999;
+    cursor: pointer;
+}
+
+.board-body .board-body-meta .schedule-info{
+    background-color: #fff;
+    border-radius: 3px;
+    margin-top: 14px;
+    margin-bottom: 26px;
+    padding: 10px;
+    border: solid 0.5px #d8d8d8;
+    color: #474747;	
+}
+
+.board-body .board-body-meta .schedule-info .schedule-text .schedule-title {
+	font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    text-overflow: ellipsis;
+}
+
+.board-body .board-body-meta .schedule-info .schedule-text .schedule-date{
+	color: #999;
+}
+
+.board-body .board-body-meta .schedule-info .schedule-calendar {
+	border: solid 1px #1d255c;
+	float: left;
+	width: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    text-align: center;
+    font-weight: 800;
+    line-height: 18px;
+}
+
+.board-body .board-body-meta .schedule-info .schedule-calendar .month {
+	background-color: #1d255c;
+	color: #fff;
+}
+
+.board-body .board-body-meta .schedule-info .schedule-calendar .day {
+    border-radius: 0 0 3px 3px;
+    background-color: #f8f8f8;
+    padding: 4px 0 0;
+    font-size: 18px;
+    line-height: 18px;
+    color: #1d255c;
+}
+
+.board-body .board-body-meta .schedule-info .schedule-text {
+	padding-left: 50px;
+}
+
+.board-body .board-body-modify .board-input-date {
+	position: relative;
+}
+
+.board-body .board-body-modify .board-input-title {
+	width: 97%;
+	margin-bottom: 10px;
+}
+
+.board-body .board-body-modify .board-input-title input {
+	width: 100%;
+}
+
+
+
 

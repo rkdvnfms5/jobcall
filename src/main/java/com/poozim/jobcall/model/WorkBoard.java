@@ -26,7 +26,9 @@ public class WorkBoard {
 	private String title;
 	private String type;
 	private String startdate;
+	private String starttime;
 	private String enddate;
+	private String endtime;
 	private String worker;
 	private String content;
 	private String status;

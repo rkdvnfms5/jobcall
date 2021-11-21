@@ -36,7 +36,7 @@
 		<c:if test="${member.auth eq 'master' || member.auth eq 'manager'}">
 			<ul class="navbar-member-buttons transparent">
 				<li>
-					<a>멤버 초대하기</a>
+					<a href="/work/member/invite">멤버 초대하기</a>
 				</li>
 			</ul>
 		</c:if>

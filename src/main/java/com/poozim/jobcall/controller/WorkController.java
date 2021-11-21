@@ -310,6 +310,15 @@ public class WorkController {
 		WorkBoard workBoard = workService.getWorkBoardOne(boardseq);
 		
 		String content = ServletRequestUtils.getStringParameter(request, "content", "");
+		
+		//schedule
+		String startdate = ServletRequestUtils.getStringParameter(request, "startdate", "");
+		String starttime = ServletRequestUtils.getStringParameter(request, "starttime", "");
+		String enddate = ServletRequestUtils.getStringParameter(request, "enddate", "");
+		String endtime = ServletRequestUtils.getStringParameter(request, "endtime", "");
+		String title = ServletRequestUtils.getStringParameter(request, "title", "");
+		
+		//request
 		String status = ServletRequestUtils.getStringParameter(request, "status", "");
 		String worker = ServletRequestUtils.getStringParameter(request, "worker", "");
 		
@@ -323,6 +332,23 @@ public class WorkController {
 			if(!content.equals("")) {
 				workBoard.setContent(content);
 			}
+			
+			//schedule
+			if(!startdate.equals("")) {
+				workBoard.setStartdate(startdate);
+			}
+			workBoard.setStarttime(starttime);
+			
+			if(!enddate.equals("")) {
+				workBoard.setEnddate(enddate);
+			}
+			workBoard.setEndtime(endtime);
+			
+			if(!title.equals("")) {
+				workBoard.setTitle(title);
+			}
+			
+			//request
 			if(!status.equals("")) {
 				workBoard.setStatus(status);
 			}
@@ -497,5 +523,12 @@ public class WorkController {
 		
 		model.addAttribute("res", res);
 		return jsonView;
+	}
+	
+	@RequestMapping(value = "/member/invite", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String memberInvitePage() {
+		
+		return "/work/member_new";
 	}
 }
