@@ -34,6 +34,8 @@ public class WorkBoard {
 	private String status;
 	private String regdate;
 	private String register;
+	private String modifier;
+	private String moddate;
 	
 	@Transient
 	private List<WorkBoardFile> workBoardFileList;
@@ -78,4 +80,13 @@ public class WorkBoard {
 	
 	@Transient
 	private int search_member_seq;
+	
+	@Transient
+	private String noticeyn = "N";
+	
+	@Transient
+	private List<BoardVote> boardVoteList;
+	
+	@Transient
+	private List<String> voteList;
 }

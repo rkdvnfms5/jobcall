@@ -235,12 +235,12 @@ public class SignController {
 		
 		member = memberService.getMemberById(member);
 		
-		boolean passwordYN = bcryEncoder.matches(password, member.getPassword());
-		
 		if(member == null || member.getSeq() == 0 || member.getUseyn().equals("N")) {
 			model.addAttribute("msg", "존재하지 않는 아이디입니다.");
 			return "/util/alert";
 		}
+		
+		boolean passwordYN = bcryEncoder.matches(password, member.getPassword());
 		
 		if(!passwordYN) {
 			model.addAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");

@@ -90,6 +90,7 @@
 		<collection property="dislikeList" column="{action=dislike, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
 		<collection property="workBoardFileList" column="{board_seq=seq}" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
 		<collection property="commentList" column="{board_seq=seq, search_member_seq=search_member_seq}" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
+		<collection property="boardVoteList" column="{board_seq=seq, search_member_seq=search_member_seq}" javaType="java.util.ArrayList" ofType="BoardVote" select="getBoardVoteList"></collection>
 	</resultMap>
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
@@ -177,4 +178,23 @@
 		WHERE 1 = 1
 		<include refid="selectActionLog" />		
 	</select>
+	
+	<select id="getBoardVoteList" resultMap="BoardVoteMap">
+		SELECT bv.* ,
+			IF((SELECT COUNT(*) FROM BoardVoteMember bvm WHERE bvm.member_seq = #{search_member_seq} AND bvm.vote_seq = bv.seq AND bvm.board_seq = #{board_seq}) > 0 , 'Y', 'N') as voteyn
+		FROM BoardVote bv
+		WHERE bv.board_seq = #{board_seq}
+	</select>
+	
+	<select id="getBoardVoteMemberList" resultType="BoardVoteMember">
+		SELECT *
+		FROM BoardVoteMember
+		WHERE vote_seq = #{vote_seq}
+	</select>
+	
+	<resultMap type="BoardVote" id="BoardVoteMap">
+		<result property="seq" column="seq" /> 
+		<collection property="boardVoteMemberList" column="{vote_seq=seq}" javaType="java.util.ArrayList" ofType="BoardVoteMember" select="getBoardVoteMemberList"></collection>
+	</resultMap>
+	
 </mapper>

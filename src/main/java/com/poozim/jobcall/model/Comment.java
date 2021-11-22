@@ -23,6 +23,7 @@ public class Comment {
 	private String member_id;
 	private String member_name;
 	private String content;
+	private String noticeyn = "N";
 	private String regdate;
 	private String register;
 	private String moddate;

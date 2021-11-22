@@ -1,6 +1,7 @@
 package com.poozim.jobcall.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,14 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.ActionLog;
+import com.poozim.jobcall.model.BoardVote;
+import com.poozim.jobcall.model.BoardVoteMember;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
 import com.poozim.jobcall.model.Member;
-import com.poozim.jobcall.model.StatusLog;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
@@ -25,10 +28,11 @@ import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.ActionLogRepository;
+import com.poozim.jobcall.repository.BoardVoteMemberRepository;
+import com.poozim.jobcall.repository.BoardVoteRepository;
 import com.poozim.jobcall.repository.CommentFileRepository;
 import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.MemberRepository;
-import com.poozim.jobcall.repository.StatusLogRepository;
 import com.poozim.jobcall.repository.WorkBoardFileRepository;
 import com.poozim.jobcall.repository.WorkBoardRepository;
 import com.poozim.jobcall.repository.WorkCategoryGroupRepository;
@@ -78,6 +82,12 @@ public class WorkService {
 	
 	@Autowired
 	private ActionLogRepository actionLogRepository;
+	
+	@Autowired
+	private BoardVoteRepository boardVoteRepository;
+	
+	@Autowired
+	private BoardVoteMemberRepository boardVoteMemberRepository;
 	
 	//Mybatis Mappers
 	@Autowired
@@ -236,7 +246,7 @@ public class WorkService {
 	
 	@Transactional
 	public int insertWorkBoard(WorkBoard workBoard, HttpServletRequest request, HttpServletResponse response) {
-		workBoardRepository.save(workBoard);
+		workBoard = workBoardRepository.save(workBoard);
 
 		if(workBoard.getAttachFileList() != null && !workBoard.getAttachFileList().isEmpty()) {
 			for(int i=0; i<workBoard.getAttachFileList().size(); i++) {
@@ -264,6 +274,17 @@ public class WorkService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+		}
+		
+		//add vote
+		if(workBoard.getType().equals("vote")) {
+			for(int i=0; i<workBoard.getVoteList().size(); i++) {
+				BoardVote boardVote = new BoardVote();
+				boardVote.setBoard_seq(workBoard.getSeq());
+				boardVote.setName(workBoard.getVoteList().get(i));
+				boardVote.setRegdate(workBoard.getRegdate());
+				boardVoteRepository.save(boardVote);
 			}
 		}
 		
@@ -348,6 +369,47 @@ public class WorkService {
 		
 		//update Board
 		workBoardRepository.save(workBoard);
+		
+		//if Request Board is updated status, then add Comment
+		if(workBoard.getNoticeyn().equals("Y") && workBoard.getType().equals("request")) {
+			Comment comment = new Comment();
+			comment.setNoticeyn("Y");
+			comment.setBoard_seq(workBoard.getSeq());
+			comment.setMember_seq(workBoard.getMember_seq());
+			comment.setMember_id(workBoard.getMember_id());
+			comment.setMember_name(workBoard.getMember_name());
+			
+			switch (workBoard.getStatus()) {
+			case "request":
+				comment.setContent("상태를 요청으로 변경했습니다");
+				break;
+			case "process":
+				comment.setContent("상태를 진행중으로 변경했습니다");
+				break;
+			default:
+				comment.setContent("상태를 완료로 변경했습니다");
+				break;
+			}
+			
+			comment.setRegdate(workBoard.getModdate());
+			comment.setRegister(workBoard.getModifier());
+			commentRepository.save(comment);
+		}
+		
+		//if Vote Board is updated status, then add Comment
+		if(workBoard.getNoticeyn().equals("Y") && workBoard.getType().equals("vote")) {
+			Comment comment = new Comment();
+			comment.setNoticeyn("Y");
+			comment.setBoard_seq(workBoard.getSeq());
+			comment.setMember_seq(workBoard.getMember_seq());
+			comment.setMember_id(workBoard.getMember_id());
+			comment.setMember_name(workBoard.getMember_name());
+			comment.setContent("투표를 마감했습니다. 자세한 투표 결과는 본문을 참고해주세요.");
+			
+			comment.setRegdate(workBoard.getModdate());
+			comment.setRegister(workBoard.getModifier());
+			commentRepository.save(comment);
+		}
 		
 		return 1;
 	}
@@ -479,6 +541,18 @@ public class WorkService {
 		return 1;
 	}
 	
-	//status log
+	//vote
+	public BoardVoteMember getVoteMemberOne(BoardVoteMember boardVoteMember) {
+		return boardVoteMemberRepository.getBoardVoteMemberOne(boardVoteMember);
+	}
 	
+	public int insertVoteMember(BoardVoteMember boardVoteMember) {
+		boardVoteMemberRepository.save(boardVoteMember);
+		return 1;
+	}
+	
+	public int deleteVoteMember(BoardVoteMember boardVoteMember) {
+		boardVoteMemberRepository.delete(boardVoteMember);
+		return 1;
+	}
 }

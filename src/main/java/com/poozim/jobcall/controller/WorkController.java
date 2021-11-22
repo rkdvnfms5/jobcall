@@ -26,6 +26,7 @@ import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.aop.WorkLnbSet;
 import com.poozim.jobcall.model.ActionLog;
+import com.poozim.jobcall.model.BoardVoteMember;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
@@ -265,7 +266,8 @@ public class WorkController {
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
 	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard,
-			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
+			 @RequestParam("attachFiles") List<MultipartFile> attachFiles,
+			 @RequestParam(value = "vote", required = false) List<String> voteList) {
 		Member member = LoginUtil.getLoginMember(request, response);
 		
 //		String content = ServletRequestUtils.getStringParameter(request, "content", "");
@@ -283,6 +285,10 @@ public class WorkController {
 		
 		if(attachFiles != null && !attachFiles.isEmpty()) {
 			workBoard.setAttachFileList(attachFiles);
+		}
+		
+		if(voteList != null && !voteList.isEmpty()) {
+			workBoard.setVoteList(voteList);
 		}
 		workService.insertWorkBoard(workBoard, request, response);
 		
@@ -353,10 +359,14 @@ public class WorkController {
 			//request
 			if(!status.equals("")) {
 				workBoard.setStatus(status);
+				workBoard.setNoticeyn("Y");
 			}
 			if(!worker.equals("")) {
 				workBoard.setWorker(worker);
 			}
+			
+			workBoard.setModdate(TimeUtil.getDateTime());
+			workBoard.setModifier(member.getId());
 			
 			res = workService.updateWorkBoard(workBoard, request, response);
 		}
@@ -564,6 +574,59 @@ public class WorkController {
 		res = MailUtil.mailSend(title, from, text, to, cc);
 		model.addAttribute("res", res);
 		
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/vote", method = RequestMethod.POST)
+	public View insertVoteMember(HttpServletRequest request, HttpServletResponse response, Model model
+			, BoardVoteMember boardVoteMember) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		int res = 0;
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		boardVoteMember.setMember_seq(member.getSeq());
+		boardVoteMember.setMember_id(member.getId());
+		boardVoteMember.setMember_name(member.getName());
+		boardVoteMember.setRegdate(TimeUtil.getDateTime());
+		res = workService.insertVoteMember(boardVoteMember);
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/vote/{vote_seq}", method = RequestMethod.DELETE)
+	public View deleteVoteMember(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("vote_seq") int vote_seq ) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		int res = 0;
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		BoardVoteMember boardVoteMember = new BoardVoteMember();
+		boardVoteMember.setVote_seq(vote_seq);
+		boardVoteMember.setMember_seq(member.getSeq());
+		boardVoteMember = workService.getVoteMemberOne(boardVoteMember);
+		
+		if(boardVoteMember == null) {
+			model.addAttribute("msg", "투표 정보가 잘못되었습니다.");
+			return jsonView;
+		}
+		
+		if(member.getSeq() != boardVoteMember.getMember_seq()) {
+			model.addAttribute("msg", "본인만 가능합니다.");
+			return jsonView;
+		}
+		
+		res = workService.deleteVoteMember(boardVoteMember);
+		
+		model.addAttribute("res", res);
 		return jsonView;
 	}
 }
