@@ -521,6 +521,9 @@ public class WorkService {
 		return workMapper.getCommentOne(comment);
 	}
 	
+	public List<Comment> getCommentList(Comment comment) {
+		return workMapper.getCommentList(comment);
+	}
 	
 	//like, dislike
 	public ActionLog getActionLogOne(int actionLog_seq) {

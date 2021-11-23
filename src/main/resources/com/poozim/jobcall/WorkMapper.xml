@@ -32,8 +32,10 @@
 	
 	<select id="getWorkBoardList" parameterType="WorkBoard" resultMap="workBoardMap">
 		SELECT *, 'board' as target, 'like' as `like`, 'dislike' as dislike, #{member_seq} as search_member_seq,
+		(SELECT c.seq FROM Comment c WHERE c.board_seq = b.seq ORDER BY c.seq ASC LIMIT 1) as first_comment_seq,
 		(SELECT action FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as action,
-		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq,
+		(SELECT IF(COUNT(c2.seq) > #{comment_limit}, COUNT(c2.seq)-#{comment_limit}, 0) FROM Comment c2 WHERE c2.board_seq = b.seq) as comment_offset
 		FROM WorkBoard b, WorkGroupMember gm
 		WHERE b.group_seq = gm.group_seq
 		AND b.group_seq = #{group_seq}
@@ -54,8 +56,10 @@
 	
 	<select id="getWorkBoardOne" parameterType="WorkBoard" resultMap="workBoardMap">
 		SELECT *, 'board' as target, 'like' as `like`, 'dislike' as dislike, #{member_seq} as search_member_seq,
+		(SELECT c.seq FROM Comment c WHERE c.board_seq = b.seq ORDER BY c.seq ASC LIMIT 1) as first_comment_seq,
 		(SELECT action FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as action,
-		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq,
+		(SELECT IF(COUNT(c2.seq) > #{comment_limit}, COUNT(c2.seq)-#{comment_limit}, 0) FROM Comment c2 WHERE c2.board_seq = b.seq) as comment_offset
 		FROM WorkBoard b
 		WHERE b.seq = #{seq}
 	</select>
@@ -86,10 +90,11 @@
 		<result property="like" column="like" />
 		<result property="dislike" column="dislike" />
 		<result property="search_member_seq" column="search_member_seq" />
+		<result property="comment_offset" column="comment_offset" />
 		<collection property="likeList" column="{action=like, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
 		<collection property="dislikeList" column="{action=dislike, target=target, target_seq=seq}" javaType="java.util.ArrayList" ofType="ActionLog" select="getActionLogList"></collection>
 		<collection property="workBoardFileList" column="{board_seq=seq}" javaType="java.util.ArrayList" ofType="WorkBoardFile" select="getWorkBoardFileList"></collection>
-		<collection property="commentList" column="{board_seq=seq, search_member_seq=search_member_seq}" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
+		<collection property="commentList" column="{board_seq=seq, search_member_seq=search_member_seq, init_offset=comment_offset}" javaType="java.util.ArrayList" ofType="Comment" select="getCommentList"></collection>
 		<collection property="boardVoteList" column="{board_seq=seq, search_member_seq=search_member_seq}" javaType="java.util.ArrayList" ofType="BoardVote" select="getBoardVoteList"></collection>
 	</resultMap>
 	
@@ -137,6 +142,15 @@
 		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{search_member_seq} AND al.target LIKE 'comment' AND al.target_seq = c.seq) as actionLog_seq
 		FROM Comment c
 		WHERE board_seq = #{board_seq}
+		ORDER BY c.regdate ASC
+		<choose>
+			<when test="offset != null and offset != ''">
+				LIMIT #{limit} OFFSET #{offset}
+			</when>
+			<otherwise>
+				LIMIT 5 OFFSET #{init_offset}
+			</otherwise>
+		</choose>
 	</select>
 	
 	<select id="getCommentOne" resultMap="CommentMap">

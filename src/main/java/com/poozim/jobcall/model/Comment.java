@@ -62,4 +62,14 @@ public class Comment {
 	
 	@Transient
 	private int search_member_seq;
+	
+	//Paging
+	@Transient
+	private int limit = 5;
+	
+	@Transient
+	private int offset = 0;
+
+	@Transient
+	private int init_offset;
 }

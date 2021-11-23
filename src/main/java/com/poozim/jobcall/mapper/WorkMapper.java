@@ -30,4 +30,6 @@ public interface WorkMapper {
 	public String getCreatedWorkCode(String title);
 	
 	public Comment getCommentOne(Comment comment);
+	
+	public List<Comment> getCommentList(Comment comment);
 }

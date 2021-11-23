@@ -303,7 +303,7 @@ function reloadBoard(board_seq, parent){
 		data : {seq : board_seq},
 		dataType : 'JSON',
 		success : function(res) {
-			var html = getBoardHtml(res.Board, false);
+			var html = getBoardHtml(res.Board, false, "");
 			parent.html(html);
 		},
 		error : function(request, status, error){
@@ -312,11 +312,11 @@ function reloadBoard(board_seq, parent){
 	})
 }
 
-function getBoardHtml(board, coverFlag){
+function getBoardHtml(board, coverFlag, coverClass){
 	var memberseq = $("#member_seq").val();
 	var html = "";
 	if(coverFlag){ //가장 바깥 태그 포함 여부
-		html += '<div class="wall-board-item">';
+		html += '<div class="wall-board-item ' + coverClass + '">';
 	}
 	html += '<form action="/work/board/"' + board.seq + ' class="updateBoardForm" method="post">';
 	html += '<input type="hidden" name="seq" value="' + board.seq + '" />';
@@ -397,8 +397,16 @@ function getBoardHtml(board, coverFlag){
 				html += 'on';
 			}
 			html += '">';
-			html += '<div class="poll-attachment__item-no-seq" onclick="voteCheck('+vote.seq+', '+board.seq+', this)"><i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i></div>';
-			html += '<span class="vote-info-body-item-name" onclick="voteCheck('+vote.seq+', '+board.seq+', this)">'+vote.name+'</span>';
+			html += '<div class="poll-attachment__item-no-seq" ';
+				if(board.status == 'process'){
+					html += 'onclick="voteCheck('+vote.seq+', '+board.seq+', this)"';
+				}
+			html += '><i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i></div>';
+			html += '<span class="vote-info-body-item-name" ';
+				if(board.status == 'process'){
+					html += 'onclick="voteCheck('+vote.seq+', '+board.seq+', this)"';
+				}
+			html += '>'+vote.name+'</span>';
 			html += '<span class="vote-info-body-item-count" onclick="$(this).parent().siblings(\'.vote-member-list\').toggleClass(\'hide\')">'+vote.boardVoteMemberList.length+'</span>';
 			html += '</div>';
 			html += '<div class="vote-member-list hide">';
@@ -566,9 +574,11 @@ function getBoardHtml(board, coverFlag){
 	html += '</div></div></form>';
 	
 	//start comment
+	html += '<div class="wall-comment-list">';
 	for(var i=0; i<board.commentList.length; i++){
 		html += getCommentHtml(board.commentList[i], true);
 	}
+	html += '</div>';
 	//end comment
 	
 	html += '<form action="/work/comment" class="comment-insert-form" method="post">';

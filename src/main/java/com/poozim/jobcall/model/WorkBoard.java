@@ -56,6 +56,12 @@ public class WorkBoard {
 	@Transient
 	private int offset = 0;
 	
+	@Transient
+	private int comment_limit = 5;
+	
+	@Transient
+	private int comment_offset = 0;
+	
 	//action
 	@Transient
 	private List<ActionLog> likeList;
@@ -89,4 +95,8 @@ public class WorkBoard {
 	
 	@Transient
 	private List<String> voteList;
+	
+	@Transient
+	private int first_comment_seq;
+	
 }

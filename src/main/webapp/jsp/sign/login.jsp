@@ -12,11 +12,11 @@
 		<div class="login-container">
 			<h3 class="login-title">로그인</h3>
 			<div class="login-help guide-msg">로그인을 위해 아래에 정보를 입력해주세요.</div>
-			<form id="loginForm" action="/sign/login" method="post">
+			<form id="loginForm" action="/sign/login" method="post" onsubmit="showLoading()">
 				<fieldset class="fieldset-group">
 					<fieldset class="field-input field-id">
 						<label for="login-id">아이디</label>
-						<input type="text" name="id" id="login-id" value="" placeholder="아이디를 입력해주세요." oninput="this.value = this.value.replace(/[^0-9a-zA-Z]/g, '');">
+						<input type="text" name="id" id="login-id" value="" placeholder="아이디를 입력해주세요.">
 					</fieldset>
 					<fieldset class="field-input field-password">
 						<label for="login-password">비밀번호</label>

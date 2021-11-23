@@ -384,6 +384,15 @@ public class WorkController {
 		return jsonView;
 	}
 	
+	@RequestMapping(value = "/comment", method = RequestMethod.GET)
+	public View getCommentList(HttpServletRequest request, HttpServletResponse response, Model model,
+			Comment comment) {
+		comment.setSearch_member_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		List<Comment> commentList = workService.getCommentList(comment);
+		model.addAttribute("commentList", commentList);
+		return jsonView;
+	}
+	
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
 	public View insertComment(HttpServletRequest request, HttpServletResponse response, Model model,
 			 @RequestParam("attachFiles") List<MultipartFile> attachFiles) {
@@ -588,6 +597,13 @@ public class WorkController {
 		int res = 0;
 		Member member = LoginUtil.getLoginMember(request, response);
 		
+		WorkBoard workBoard = workService.getWorkBoardOne(boardVoteMember.getBoard_seq());
+		if(workBoard.getStatus().equals("complete")) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "이미 마감된 투표입니다.");
+			return jsonView;
+		}
+		
 		boardVoteMember.setMember_seq(member.getSeq());
 		boardVoteMember.setMember_id(member.getId());
 		boardVoteMember.setMember_name(member.getName());
@@ -616,11 +632,20 @@ public class WorkController {
 		
 		if(boardVoteMember == null) {
 			model.addAttribute("msg", "투표 정보가 잘못되었습니다.");
+			model.addAttribute("res", res);
 			return jsonView;
 		}
 		
 		if(member.getSeq() != boardVoteMember.getMember_seq()) {
+			model.addAttribute("res", res);
 			model.addAttribute("msg", "본인만 가능합니다.");
+			return jsonView;
+		}
+		
+		WorkBoard workBoard = workService.getWorkBoardOne(boardVoteMember.getBoard_seq());
+		if(workBoard.getStatus().equals("complete")) {
+			model.addAttribute("res", res);
+			model.addAttribute("msg", "이미 마감된 투표입니다.");
 			return jsonView;
 		}
 		

@@ -83,6 +83,7 @@ public class SignService {
 		workGroup.setRegister(member.getId());
 		workGroup.setRegdate(work.getRegdate());
 		workGroup.setUseyn("Y");
+		workGroup.setContent("기본 그룹에서 내 업무와 관련된 다양한 생각들을 정리하고 기록을 남겨보세요.");
 		
 		workGroup = workGroupRepository.save(workGroup);
 		
