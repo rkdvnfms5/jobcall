@@ -191,7 +191,7 @@ function insertActionLog(target, target_seq, action, obj){
 		dataType : 'JSON',
 		success : function(res) {
 			if(target == 'board'){
-				reloadBoard(target_seq, $(obj).closest(".wall-board-item"));
+				reloadBoard(target_seq, $(obj).closest(".wall-board-item"), false);
 			} else {
 				$.ajax({
 					url : '/work/comment/' + target_seq,
@@ -227,7 +227,7 @@ function updateActionLog(target, target_seq, seq, action, obj){
 			dataType : 'JSON',
 			success : function(res) {
 				if(target == 'board'){
-					reloadBoard(target_seq, $(obj).closest(".wall-board-item"));
+					reloadBoard(target_seq, $(obj).closest(".wall-board-item"), false);
 				} else {
 					$.ajax({
 						url : '/work/comment/' + target_seq,
@@ -267,7 +267,7 @@ function deleteActionLog(target, target_seq, seq, obj){
 			dataType : 'JSON',
 			success : function(res) {
 				if(target == 'board'){
-					reloadBoard(target_seq, $(obj).closest(".wall-board-item"));
+					reloadBoard(target_seq, $(obj).closest(".wall-board-item"), false);
 				} else {
 					$.ajax({
 						url : '/work/comment/' + target_seq,
@@ -296,11 +296,27 @@ function deleteActionLog(target, target_seq, seq, obj){
 	}
 }
 
-function reloadBoard(board_seq, parent){
+function reloadBoard(board_seq, parent, commentPagingBool){
+	
+	var prev_comment = parent.find(".prev-comment");
+	var form = prev_comment.find(".comment_paging_form");
+	var offset = form.find("input[name='offset']").val();
+	
+	if(commentPagingBool == true){
+		
+		var comment_offset = (Number(offset) > 5? Number(offset)-5 : 0);
+		var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + 5;
+		var data = {comment_offset : comment_offset, comment_limit : comment_limit, seq : board_seq};
+	}
+	else {
+		var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + 5;
+		var data = {comment_offset : offset, comment_limit : comment_limit, seq : board_seq};
+	}
+	
 	$.ajax({
 		url : '/work/board/' + board_seq,
 		method : 'GET',
-		data : {seq : board_seq},
+		data : data,
 		dataType : 'JSON',
 		success : function(res) {
 			var html = getBoardHtml(res.Board, false, "");
@@ -311,6 +327,27 @@ function reloadBoard(board_seq, parent){
 		}
 	})
 }
+
+/*function reloadBoard(board_seq, parent, add_data){
+	if(add_data != undefined && add_data != null){
+		add_data.seq = board_seq;
+	} else {
+		add_data = {seq : board_seq};
+	}
+	$.ajax({
+		url : '/work/board/' + board_seq,
+		method : 'GET',
+		data : add_data,
+		dataType : 'JSON',
+		success : function(res) {
+			var html = getBoardHtml(res.Board, false, "");
+			parent.html(html);
+		},
+		error : function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	})
+}*/
 
 function getBoardHtml(board, coverFlag, coverClass){
 	var memberseq = $("#member_seq").val();
@@ -573,6 +610,16 @@ function getBoardHtml(board, coverFlag, coverClass){
 	html += '<input type="file" onchange="boardModifyAttach(this)" class="board-modify-attach hide" multiple="multiple" autocomplete="off" name="attachFiles">';
 	html += '</div></div></form>';
 	
+	if(board.commentList.length > 0 && board.first_comment_seq < board.commentList[0].seq){
+		html += '<div class="prev-comment">';
+		html += '<button type="button" onclick="scrollPaging(\'comment\', $(this).closest(\'.wall-board-item\').find(\'.wall-comment-list\'))">이전 댓글 더보기</button>';
+		html += '<form action="" class="comment_paging_form">';
+		html += '<input type="hidden" name="limit" value="' + board.comment_limit + '" />';
+		html += '<input type="hidden" name="offset" value="' + board.comment_offset + '" />';
+		html += '<input type="hidden" name="board_seq" value="' + board.seq + '" />';
+		html += '<input type="hidden" name="first_comment_seq" value="' + board.first_comment_seq + '" />';
+		html += '</form></div>';
+	}
 	//start comment
 	html += '<div class="wall-comment-list">';
 	for(var i=0; i<board.commentList.length; i++){
@@ -1027,7 +1074,7 @@ function updateBoardStatus(board_seq, status, obj){
 			contentType : false,
 			dataType : 'JSON',
 			success : function(res) {
-				reloadBoard(board_seq, $(obj).closest(".wall-board-item"));
+				reloadBoard(board_seq, $(obj).closest(".wall-board-item"), false);
 				hideLoading();
 			},
 			error : function(request, status, error){
@@ -1117,7 +1164,7 @@ function insertVoteMember(vote_seq, board_seq, obj){
 		dataType : 'JSON',
 		success : function(res) {
 			if(res.res == 1){
-				reloadBoard(board_seq, $(obj).closest(".wall-board-item"));
+				reloadBoard(board_seq, $(obj).closest(".wall-board-item"), false);
 			} else {
 				alert(res.msg)
 			}
@@ -1138,7 +1185,7 @@ function deleteVoteMember(vote_seq, board_seq, obj){
 		dataType : 'JSON',
 		success : function(res) {
 			if(res.res == 1){
-				reloadBoard(board_seq, $(obj).closest(".wall-board-item"));
+				reloadBoard(board_seq, $(obj).closest(".wall-board-item"), false);
 			} else {
 				alert(res.msg)
 			}
@@ -1169,7 +1216,7 @@ function deadLineVote(board_seq, obj){
 			dataType : 'JSON',
 			success : function(res) {
 				if(res.res == 1){
-					reloadBoard(board_seq, $(obj).closest(".wall-board-item"));
+					reloadBoard(board_seq, $(obj).closest(".wall-board-item"), false);
 				}
 				else {
 					alert((res.msg == ''? '업데이트 에러' : res.msg));

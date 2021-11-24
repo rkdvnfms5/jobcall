@@ -461,7 +461,7 @@
 								<button type="button" onclick="scrollPaging('comment', $(this).closest('.wall-board-item').find('.wall-comment-list'))">이전 댓글 더보기</button>
 								<form action="" class="comment_paging_form">
 									<input type="hidden" name="limit" value="${Board.comment_limit}" />
-									<input type="hidden" name="offset" value="${Board.comment_offset - Board.comment_limit}" />
+									<input type="hidden" name="offset" value="${Board.comment_offset}" />
 									<input type="hidden" name="board_seq" value="${Board.seq}" />
 									<input type="hidden" name="first_comment_seq" value="${Board.first_comment_seq}" />
 								</form>
@@ -800,7 +800,6 @@ function scrollPaging(type, obj){
 		var prev_comment = obj.siblings(".prev-comment");
 		var form = prev_comment.find(".comment_paging_form");
 		var data = form.serialize();
-		console.log(prev_comment.length)
 		showLoading();
 		$.ajax({
 			url : '/work/comment',
@@ -809,18 +808,13 @@ function scrollPaging(type, obj){
 			dataType : 'JSON',
 			success : function(res){
 				if(res.commentList.length > 0){
-					for(var i=0; i<res.commentList.length; i++){
-						var html = getCommentHtml(res.commentList[i], true);
-						obj.prepend(html);
-					}
+					/* var offset = form.find("input[name='offset']").val();
+					var comment_offset = Number(offset) - Number(res.commentList.length);
+					var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + Number(res.commentList.length);*/
+					var board_seq = res.commentList[0].board_seq;
+					var board_obj = $(prev_comment).closest(".wall-board-item");
 					
-					var offset = form.find("input[name='offset']").val();
-					form.find("input[name='offset']").val(Number(offset) + Number(res.commentList.length));
-					
-					var first_comment_seq = form.find("input[name='first_comment_seq']").val();
-					if(first_comment_seq != 0 && res.commentList[0].seq > first_comment_seq){
-						prev_comment.remove();
-					}
+					reloadBoard(board_seq, board_obj, true);
 				}
 				hideLoading();
 			},
