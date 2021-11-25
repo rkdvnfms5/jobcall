@@ -4,6 +4,11 @@
 	<div class="navbar">
 		<div class="navbar-myprofile">
 			<div class="navbar-myprofile-wrap">
+				<!-- <span class="ra-popover__trigger navbar__myprofile-setting" title="">
+					<button type="button" class="icon-button">
+						<i class="ico ico-set_status" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 30 30"><g fill="none" fill-rule="evenodd" opacity="0.9"><circle cx="3" cy="3" r="2.2" stroke="#888" stroke-width="1.6" transform="translate(10 6)"></circle><path fill="#888" d="M19 14c0-.552.444-1 1-1 .552 0 1 .444 1 1v1.126c.367.094.714.24 1.032.428l.797-.797a.997.997 0 0 1 1.414 0 .997.997 0 0 1 0 1.414l-.797.797c.188.318.334.665.428 1.032H25c.552 0 1 .444 1 1 0 .552-.444 1-1 1h-1.126c-.094.367-.24.714-.428 1.032l.797.797a.997.997 0 0 1 0 1.414.997.997 0 0 1-1.414 0l-.797-.797a3.976 3.976 0 0 1-1.032.428V24c0 .552-.444 1-1 1-.552 0-1-.444-1-1v-1.126a3.976 3.976 0 0 1-1.032-.428l-.797.797a.997.997 0 0 1-1.414 0 .997.997 0 0 1 0-1.414l.797-.797A3.976 3.976 0 0 1 16.126 20H15c-.552 0-1-.444-1-1 0-.552.444-1 1-1h1.126c.094-.367.24-.714.428-1.032l-.797-.797a.997.997 0 0 1 0-1.414.997.997 0 0 1 1.414 0l.797.797A3.976 3.976 0 0 1 19 15.126V14zm1 7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM15.298 13.631L14.22 14.71A5.25 5.25 0 0 0 7.506 20H6.019a6.5 6.5 0 0 1 9.279-6.369z"></path><circle cx="15" cy="15" r="14.5" stroke="#DEE0E4"></circle></g></svg></i>
+					</button>
+				</span> -->
 				<a class="navbar-myprofile-image">
 					<span class="avatar navbar-myprofile-avatar" style="width:54px; height: 54px; background-image: url('https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png');">
 					
@@ -13,7 +18,7 @@
 					<a href="#">
 						<div class="navbar-myprofile-id">${member.id}</div>
 						<div class="navbar-myprofile-nickname">
-							<a href="#">프로필 입력하기</a>
+							<a href="/work/member/modify">프로필 입력하기</a>
 						</div>
 					</a>
 				</div>

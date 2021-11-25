@@ -654,4 +654,11 @@ public class WorkController {
 		model.addAttribute("res", res);
 		return jsonView;
 	}
+	
+	@RequestMapping(value = "/member/modify", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String memberModifyPage() {
+		
+		return "/work/member_modify";
+	}
 }

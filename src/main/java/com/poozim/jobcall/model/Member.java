@@ -25,7 +25,12 @@ public class Member implements Serializable{
 	private String name;
 	private String department;
 	private String email;
+	private String position;
+	private String tel;
+	private String worktime;
+	private String description;
 	private String useyn;
 	private String auth;
+	private String profile;
 	private String regdate;
 }

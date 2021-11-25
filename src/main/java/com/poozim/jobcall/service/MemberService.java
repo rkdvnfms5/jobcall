@@ -42,4 +42,9 @@ public class MemberService {
 	public List<Member> getGroupMemberList(WorkGroupMember wgm){
 		return memberRepository.getWorkGroupMemberList(wgm);
 	}
+	
+	public int updateMember(Member member) {
+		memberRepository.save(member);
+		return 1;
+	}
 }
