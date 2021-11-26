@@ -1,5 +1,11 @@
 package com.poozim.jobcall.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -279,6 +285,7 @@ public class WorkController {
 		workBoard.setMember_seq(member.getSeq());
 		workBoard.setMember_id(member.getId());
 		workBoard.setMember_name(member.getName());
+		workBoard.setMember_profile(member.getProfile());
 		workBoard.setWork_seq(member.getWork_seq());
 		workBoard.setRegister(member.getId());
 		workBoard.setRegdate(TimeUtil.getDateTime());
@@ -409,6 +416,7 @@ public class WorkController {
 			comment.setMember_seq(member.getSeq());
 			comment.setMember_id(member.getId());
 			comment.setMember_name(member.getName());
+			comment.setMember_profile(member.getProfile());
 			comment.setAttachFileList(attachFiles);
 			comment.setContent(content);
 			comment.setBoard_seq(board_seq);
@@ -661,4 +669,61 @@ public class WorkController {
 		
 		return "/work/member_modify";
 	}
+	
+	@RequestMapping(value = "/group/{group_seq}/member", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupMemberPage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		WorkGroupMember wgm = new WorkGroupMember();
+		wgm.setGroup_seq(group_seq);
+		model.addAttribute("MemberList", memberService.getGroupMemberList(wgm));
+		
+		return "/work/group_member";
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/file", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupFilePage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		List<Map<String, Object>> fileList = workService.getGroupFileList(group_seq);
+		model.addAttribute("FileList", fileList);
+		
+		return "/work/group_file";
+	}
+	
+	@RequestMapping(value ="/file_down")
+	public void fileDownLoad(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String filepath = ServletRequestUtils.getStringParameter(request, "filepath", "");
+		String fileOriginalName = filepath.substring(filepath.lastIndexOf('/')+1);
+		String browser = request.getHeader("User-Agent");
+		filepath = filepath.replace("files", "www/douclass_file");
+		if (browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")) {
+			fileOriginalName = URLEncoder.encode(fileOriginalName, "UTF-8").replaceAll("\\+", "%20");
+		} else {
+			fileOriginalName = new String(fileOriginalName.getBytes("UTF-8"), "iso-8859-1");
+		}
+		
+		response.setContentType("application/octet-stream");	//다운로드 창이 뜬다
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileOriginalName + "\"");	//다운받는 파일명 지정한다
+		
+		File file = new File(filepath);
+		OutputStream os = response.getOutputStream();
+		FileInputStream fis = new FileInputStream(file.getAbsolutePath()); //위에꺼로 바꿔야함
+		int n = 0;
+		byte[] b = new byte[512];
+		while ((n = fis.read(b)) != -1) {
+			os.write(b, 0, n);
+		}
+		fis.close();
+		os.close();
+	}
+	
 }

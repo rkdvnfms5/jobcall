@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.model.Member;
@@ -31,7 +33,8 @@ public class MemberController {
 	
 	@RequestMapping(value = "/{seq}", method = RequestMethod.PUT)
 	public View modifyMember(HttpServletRequest request, HttpServletResponse response, Model model, Member param,
-			@PathVariable("seq") int seq) {
+			@PathVariable("seq") int seq, 
+			@RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
 		if(LoginUtil.getLoginMember(request, response).getSeq() != seq) {
 			
 			model.addAttribute("msg", "본인만 수정가능합니다.");
@@ -41,6 +44,8 @@ public class MemberController {
 		int res = 0;
 		
 		Member member = memberService.getMemberOne(seq);
+		
+		//필수
 		if(param.getName() != null && !param.getName().equals("")) {
 			member.setName(param.getName());
 		}
@@ -49,23 +54,17 @@ public class MemberController {
 			member.setDepartment(param.getDepartment());
 		}
 		
-		if(param.getPosition() != null && !param.getPosition().equals("")) {
-			member.setPosition(param.getPosition());
+		//선택
+		member.setPosition(param.getPosition());
+		member.setTel(param.getTel());
+		member.setWorktime(param.getWorktime());
+		member.setDescription(param.getDescription());
+		
+		if(profileImage != null && !profileImage.isEmpty()) {
+			member.setProfileImage(profileImage);
 		}
 		
-		if(param.getTel() != null && !param.getTel().equals("")) {
-			member.setTel(param.getTel());
-		}
-		
-		if(param.getWorktime() != null && !param.getWorktime().equals("")) {
-			member.setWorktime(param.getWorktime());
-		}
-		
-		if(param.getDescription() != null && !param.getDescription().equals("")) {
-			member.setDescription(param.getDescription());
-		}
-		
-		res = memberService.updateMember(member);
+		res = memberService.updateMember(member, request, response);
 		
 		model.addAttribute("res", res);
 		return jsonView;

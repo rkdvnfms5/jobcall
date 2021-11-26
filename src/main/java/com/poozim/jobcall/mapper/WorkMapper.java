@@ -1,6 +1,7 @@
 package com.poozim.jobcall.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.WorkBoard;
@@ -32,4 +33,6 @@ public interface WorkMapper {
 	public Comment getCommentOne(Comment comment);
 	
 	public List<Comment> getCommentList(Comment comment);
+	
+	public List<Map<String, Object>> getGroupFileList(int group_seq);
 }

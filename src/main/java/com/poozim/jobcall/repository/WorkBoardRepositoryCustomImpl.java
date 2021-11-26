@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
+import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.QComment;
 import com.poozim.jobcall.model.QCommentFile;
+import com.poozim.jobcall.model.QWorkBoard;
 import com.poozim.jobcall.model.QWorkBoardFile;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
@@ -40,6 +42,15 @@ private JPAQueryFactory queryFactory;
 		} else {
 			return (int) queryFactory.delete(workBoardFile).where(workBoardFile.board_seq.eq(workBoard.getSeq())).execute();
 		}
+	}
+
+	@Override
+	public int updateMemberProfile(Member member) {
+		QWorkBoard workBoard = QWorkBoard.workBoard;
+		return (int) queryFactory.update(workBoard)
+				.set(workBoard.member_profile, member.getProfile())
+				.set(workBoard.member_name, member.getName())
+				.where(workBoard.member_seq.eq(member.getSeq())).execute();
 	}
 
 	

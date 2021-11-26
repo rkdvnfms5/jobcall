@@ -226,4 +226,19 @@
 		<collection property="boardVoteMemberList" column="{vote_seq=seq}" javaType="java.util.ArrayList" ofType="BoardVoteMember" select="getBoardVoteMemberList"></collection>
 	</resultMap>
 	
+	<select id="getGroupFileList" resultType="Map">
+		SELECT wbf.seq, wbf.board_seq as target_seq, wbf.name, wbf.`size`, wbf.src, wbf.regdate , 'board' as type, wb.member_id, wb.member_name 
+		FROM WorkBoard wb, WorkBoardFile wbf 
+		WHERE wb.seq = wbf.board_seq 
+		AND wb.group_seq = #{group_seq}
+		
+		UNION 
+		
+		SELECT cf.seq, cf.comment_seq as target_seq, cf.name, cf.`size`, cf.src, cf.regdate, 'comment' as type, c.member_id, c.member_name 
+		FROM WorkBoard wb, Comment c, CommentFile cf 
+		WHERE wb.seq = c.board_seq 
+		AND c.seq = cf.comment_seq 
+		AND wb.group_seq = #{group_seq}
+	</select>
+	
 </mapper>

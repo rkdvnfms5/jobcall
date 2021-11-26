@@ -3,6 +3,7 @@ package com.poozim.jobcall.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -557,5 +558,9 @@ public class WorkService {
 	public int deleteVoteMember(BoardVoteMember boardVoteMember) {
 		boardVoteMemberRepository.delete(boardVoteMember);
 		return 1;
+	}
+	
+	public List<Map<String,Object>> getGroupFileList(int group_seq){
+		return workMapper.getGroupFileList(group_seq);
 	}
 }

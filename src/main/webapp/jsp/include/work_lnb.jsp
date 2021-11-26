@@ -10,15 +10,15 @@
 					</button>
 				</span> -->
 				<a class="navbar-myprofile-image">
-					<span class="avatar navbar-myprofile-avatar" style="width:54px; height: 54px; background-image: url('https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png');">
-					
+					<span class="avatar navbar-myprofile-avatar" 
+					style="width:54px; height: 54px; background-image: url('${empty member.profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png':member.profile}');">
 					</span>
 				</a>
 				<div class="navbar-myprofile-name">
 					<a href="#">
 						<div class="navbar-myprofile-id">${member.id}</div>
 						<div class="navbar-myprofile-nickname">
-							<a href="/work/member/modify">프로필 입력하기</a>
+							<a href="/work/member/modify">프로필 관리</a>
 						</div>
 					</a>
 				</div>

@@ -22,6 +22,7 @@ public class Comment {
 	private int member_seq;
 	private String member_id;
 	private String member_name;
+	private String member_profile;
 	private String content;
 	private String noticeyn = "N";
 	private String regdate;

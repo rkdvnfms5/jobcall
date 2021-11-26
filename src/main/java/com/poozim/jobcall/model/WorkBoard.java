@@ -21,6 +21,7 @@ public class WorkBoard {
 	private int member_seq;
 	private String member_id;
 	private String member_name;
+	private String member_profile;
 	private int work_seq;
 	private int group_seq;
 	private String title;

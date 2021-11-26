@@ -6,8 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
 
@@ -33,4 +35,7 @@ public class Member implements Serializable{
 	private String auth;
 	private String profile;
 	private String regdate;
+	
+	@Transient
+	private MultipartFile profileImage;
 }

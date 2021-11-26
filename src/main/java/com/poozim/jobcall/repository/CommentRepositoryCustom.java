@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
+import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.WorkBoard;
 
 public interface CommentRepositoryCustom {
@@ -12,4 +13,6 @@ public interface CommentRepositoryCustom {
 	
 	public List<CommentFile> getCommentFileList(Comment comment);
 	public int deleteCommentFiles(Comment comment);
+	
+	public int updateMemberProfile(Member member);
 }

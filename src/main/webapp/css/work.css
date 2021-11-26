@@ -2438,3 +2438,142 @@ button {
 	color: #5985dc;
 	font-size: 13px;
 }
+
+.group-members-page {
+	position: relative;
+	margin-top: 11px;
+}
+
+.group-members-page .group-members-page-body {
+	background-color: #fff;
+    font-size: 12px;
+    color: #7e7e7e;
+    line-height: 16px;
+    border: solid 1px #DCDFE4;
+    outline: none;
+    min-height: 481px;
+    box-sizing: border-box;
+    direction: ltr;
+    height: auto;
+    position: relative;
+    width: 733px;
+    will-change: transform;
+    overflow: hidden;
+}
+
+.group-members-page .group-members-page-body ul {
+	
+}
+
+.group-members-page .group-members-page-body ul li{
+	position: relative;
+	display: inline-block;
+	margin: 0;
+	border-bottom: solid 1px #DCDFE4;
+	
+	padding: 11px 14px;
+    min-width: 218px;
+    font-size: 13px;
+    line-height: 15px;
+    
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: #333333;
+    white-space: nowrap;
+	
+	width: 337px;
+}
+
+.group-members-page .group-members-page-body ul li:nth-child(2n-1) {
+	float: left;
+	border-right: solid 1px #DCDFE4;
+}
+
+.group-members-page .group-members-page-body ul li:nth-child(2n) {
+	float: right;
+}
+
+.group-members-page .group-members-page-body ul li .group-member-meta{
+	padding-left: 11px;
+}
+
+.group-members-page .group-members-page-body ul li .group-member-meta .group-member-id {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 22px;
+    color: #333333;
+    font-weight: 600;
+}
+
+.group-members-page .group-members-page-body ul li .group-member-meta .group-member-department {
+	max-width: 200px;
+    color: #999999;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 16px;
+}
+
+.group-file-page {
+	margin-top: 20px;
+}
+
+.table-list {
+	width: 100%;
+	border: solid 1px #DCDFE4;
+	background-color: #fff;
+}
+
+.table-list .title {
+	background-color: #f9f9f9;
+	border-bottom: solid 1px #DCDFE4;
+	text-align: left;
+	height: 30px;
+}
+
+.table-list tr.title td{
+	height: 30px;
+    line-height: 12px;
+    font-size: 12px;
+    letter-spacing: -.5px;
+    color: gray;
+    font-weight: normal;
+}
+
+.table-list tr{
+	height: 58px;
+    width: 100%;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.table-list tr .file-name {
+	cursor: pointer;
+}
+
+.table-list tr .file-name:hover {
+	text-decoration: underline;
+}
+
+.table-list tr .file-size {
+	font-size: 12px;
+    line-height: 16px;
+    color: #717171;
+}
+
+.table-list tr .file-icon {
+	width: 22px;
+    height: 28px;
+    float: left;
+    margin: 4px 8px 0 0;
+	display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    text-align: center;
+    text-indent: 0;
+    vertical-align: middle;
+}

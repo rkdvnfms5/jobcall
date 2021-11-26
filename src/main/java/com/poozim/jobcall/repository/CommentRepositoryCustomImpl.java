@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
+import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.QComment;
 import com.poozim.jobcall.model.QCommentFile;
 import com.poozim.jobcall.model.WorkBoard;
@@ -50,5 +51,16 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 			return (int) queryFactory.delete(commentFile).where(commentFile.comment_seq.eq(comment.getSeq())).execute();
 		}
 	}
+
+	@Override
+	public int updateMemberProfile(Member member) {
+		QComment comment = QComment.comment;
+		return (int) queryFactory.update(comment)
+				.set(comment.member_profile, member.getProfile())
+				.set(comment.member_name, member.getName())
+				.where(comment.member_seq.eq(member.getSeq())).execute();
+	}
+	
+	
 
 }

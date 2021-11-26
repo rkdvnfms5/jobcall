@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -163,8 +164,14 @@ public class OciUtil {
         	objectName = file.getOriginalFilename();
         }
         String ext = objectName.substring(objectName.lastIndexOf(".") + 1);
-        File object = new File(file.getName());
-        object.setWritable(true);
+        
+        String tempDir = "/temp/";
+        
+        //File object = new File(tempDir + file.getName());
+        File object = File.createTempFile(file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")), "."+ext);
+        
+        FileUtils.copyInputStreamToFile(file.getInputStream(), object);
+        file.getInputStream().close();
     	file.transferTo(object);
         
         PutObjectRequest request =

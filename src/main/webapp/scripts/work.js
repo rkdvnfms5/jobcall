@@ -328,27 +328,6 @@ function reloadBoard(board_seq, parent, commentPagingBool){
 	})
 }
 
-/*function reloadBoard(board_seq, parent, add_data){
-	if(add_data != undefined && add_data != null){
-		add_data.seq = board_seq;
-	} else {
-		add_data = {seq : board_seq};
-	}
-	$.ajax({
-		url : '/work/board/' + board_seq,
-		method : 'GET',
-		data : add_data,
-		dataType : 'JSON',
-		success : function(res) {
-			var html = getBoardHtml(res.Board, false, "");
-			parent.html(html);
-		},
-		error : function(request, status, error){
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-		}
-	})
-}*/
-
 function getBoardHtml(board, coverFlag, coverClass){
 	var memberseq = $("#member_seq").val();
 	var html = "";
@@ -358,9 +337,13 @@ function getBoardHtml(board, coverFlag, coverClass){
 	html += '<form action="/work/board/"' + board.seq + ' class="updateBoardForm" method="post">';
 	html += '<input type="hidden" name="seq" value="' + board.seq + '" />';
 	html += '<div class="wall-board"><div class="board-header"><div class="board-header-profile">';
-	html += '<span class="avatar" url="https://t1.daumcdn.net/agit_resources/images/empty_profile.png" style="width: 50px; height: 50px; background-image: url(&quot;https://t1.daumcdn.net/agit_resources/images/empty_profile.png&quot;);"></span>';
+	html += '<span class="avatar" style="width: 50px; height: 50px; background-image: url(&quot;';
+	
+	html += (board.member_profile == '' || board.member_profile == undefined? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png' : board.member_profile);
+		
+	html += '&quot;);"></span>';
 	html += '</div><div class="board-header-meta">';
-	html += '<div class="board-header-meta-id">' + board.member_id + '</div>';
+	html += '<div class="board-header-meta-id">' + board.member_id + ' (' + board.member_name + ')</div>';
 	html += '<div class="board-header-meta-date">' + board.regdate + '</div></div></div>';
 	html += '<div class="board-body">';
 	html += '<div class="board-body-meta">';
@@ -658,10 +641,13 @@ function getCommentHtml(comment, coverFlag){
 	html += '<form action="/work/comment/' + comment.seq + '" class="updateCommentForm" method="post">';
 	html += '<div class="comment-header">';
 	html += '<div class="comment-header-profile">';
-	html += '<span class="avatar" url="https://t1.daumcdn.net/agit_resources/images/empty_profile.png" style="width: 36px; height: 36px; background-image: url(&quot;https://t1.daumcdn.net/agit_resources/images/empty_profile.png&quot;);"></span>';
+	html += '<span class="avatar" style="width: 36px; height: 36px; background-image: url(&quot;';
+	html += (comment.member_profile == '' || comment.member_profile == undefined? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png' : comment.member_profile);
+	html += '&quot;);"></span>';
+	
 	html += '</div>';
 	html += '<div class="comment-header-meta">';
-	html += '<div class="comment-header-meta-id">' + comment.member_id + '</div>';
+	html += '<div class="comment-header-meta-id">' + comment.member_id + ' (' + comment.member_name + ')</div>';
 	html += '<div class="comment-header-meta-date">' + comment.regdate + '</div>';
 	html += '</div></div>';
 	html += '<div class="comment-body">';
