@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -697,6 +698,53 @@ public class WorkController {
 		model.addAttribute("FileList", fileList);
 		
 		return "/work/group_file";
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/{board_seq}", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupPageBoard(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq,
+			@PathVariable("board_seq") int board_seq) {
+		//get WorkGroup
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		if(workGroup == null || workGroup.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
+			return "/util/alert";
+		}
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, member.getSeq());
+		
+		if(wgm == null) {
+			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
+			return "/util/alert";
+		}
+		
+		//get group member list
+		List<Member> groupMemberList = memberService.getGroupMemberList(wgm);
+		model.addAttribute("GroupMemberList", groupMemberList);
+		
+		//get Work Boards
+		WorkBoard workBoard = new WorkBoard();
+		workBoard.setMember_seq(member.getSeq());
+		workBoard.setGroup_seq(group_seq);
+		workBoard.setSeq(board_seq);
+		workBoard = workService.getWorkBoardOneMapper(workBoard);
+		List<WorkBoard> workBoardList = new ArrayList<WorkBoard>();
+		workBoardList.add(workBoard);
+		
+		model.addAttribute("WorkBoardList", workBoardList);
+		model.addAttribute("BoardOnly","Y");
+		
+		model.addAttribute("limit", workBoard.getLimit());
+		model.addAttribute("offset",workBoard.getOffset());
+		model.addAttribute("total", workService.getWorkBoardCount(workBoard));
+		
+		return "/work/group";
 	}
 	
 	@RequestMapping(value ="/file_down")

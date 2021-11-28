@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	
-	<div class="group-header__footer group-header__desc--open">
+	<div class="group-header__footer group-header__desc--open" style="margin-bottom: 15px;">
 		<pre class="group-header__desc group-header__desc--premode">${WorkGroup.content}</pre>
 		<button type="button" class="group-header__desc-button" onclick="toggleGroupDesc(this)">설명 접기</button>
 		<strong class="screen-out">그룹 탭 메뉴</strong>

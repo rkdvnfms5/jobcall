@@ -13,7 +13,8 @@
 	
 	<%@include file="/jsp/include/group_header.jsp" %>	
 	
-	<form action="/work/board" id="insertBoardForm" method="post" enctype="multipart/form-data">
+	<c:if test="${BoardOnly ne 'Y'}">
+		<form action="/work/board" id="insertBoardForm" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="group_seq" id="group_seq" value="${WorkGroup.seq}">
 		<input type="hidden" name="type" id="type" value="plain">
 		<div class="wall-list-page">
@@ -100,6 +101,7 @@
     			</div>
 			</div>
 		</form>
+	</c:if>
 		<div class="scroll-container scroll-container--window wall__wall-message-list" tabindex="-1">
 			<div class="wall-list-wrap">
 				<c:forEach items="${WorkBoardList}" var="Board" varStatus="board_status">

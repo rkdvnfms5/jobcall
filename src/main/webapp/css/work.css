@@ -2577,3 +2577,14 @@ button {
     text-indent: 0;
     vertical-align: middle;
 }
+
+.table-list tr .file-origin {
+    min-width: 40px;
+    height: auto;
+    margin: 5px;
+    padding-top: 9px;
+    padding-bottom: 7px;
+    font-size: 12px;
+    line-height: 14px;
+    color: #808080;
+}
