@@ -3,6 +3,8 @@ package com.poozim.jobcall.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
@@ -34,5 +36,5 @@ public interface WorkMapper {
 	
 	public List<Comment> getCommentList(Comment comment);
 	
-	public List<Map<String, Object>> getGroupFileList(int group_seq);
+	public List<Map<String, Object>> getGroupFileList(@Param("group_seq")int group_seq, @Param("limit")int limit, @Param("offset")int offset);
 }

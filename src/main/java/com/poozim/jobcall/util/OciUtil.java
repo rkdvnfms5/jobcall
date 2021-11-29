@@ -226,7 +226,7 @@ public class OciUtil {
 
         // use the stream contents; make sure to close the stream, e.g. by using try-with-resources
         InputStream stream = response.getInputStream();
-        OutputStream outputStream = new FileOutputStream(saveFileName);
+        OutputStream outputStream = new FileOutputStream("/www/"+saveFileName);
         try {
         	// use fileStream
             byte[] buf = new byte[8192];
@@ -239,6 +239,10 @@ public class OciUtil {
         	stream.close();
         	outputStream.close();
 		}
+        
+     // or even simpler, if targetting a file:
+        response = downloadManager.downloadObjectToFile(request, new File(saveFileName));
+        client.close();
 	}
 	
 	/**
@@ -324,4 +328,37 @@ public class OciUtil {
 		return objectList.get(0);
 	}
 	
+	/**
+	 * 다운로드 오브젝트 인풋스트림 가져오는 메서드
+	 * 
+	 * @param bucketName 버킷명
+	 * @param objectName 파일명
+	 * @throws Exception
+	 */
+	public static InputStream getDownloadInputStream(String bucketName, String objectName) throws Exception {
+		DownloadConfiguration downloadConfiguration =
+                DownloadConfiguration.builder()
+                        .parallelDownloads(3)
+                        .maxRetries(3)
+                        .multipartDownloadThresholdInBytes(6 * 1024 * 1024)
+                        .partSizeInBytes(4 * 1024 * 1024)
+                        .build();
+
+        DownloadManager downloadManager = new DownloadManager(client, downloadConfiguration);
+		
+        GetObjectRequest request =
+                GetObjectRequest.builder()
+                        .namespaceName(namespaceName)
+                        .bucketName(bucketName)
+                        .objectName(objectName)
+                        .build();
+        
+        // download request and print result
+        GetObjectResponse response = downloadManager.getObject(request);
+        System.out.println("Content length: " + response.getContentLength() + " bytes");
+
+        // use the stream contents; make sure to close the stream, e.g. by using try-with-resources
+        InputStream stream = response.getInputStream();
+        return stream;
+	}
 }

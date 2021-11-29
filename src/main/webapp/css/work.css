@@ -2521,6 +2521,7 @@ button {
 
 .group-file-page {
 	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 .table-list {
@@ -2587,4 +2588,8 @@ button {
     font-size: 12px;
     line-height: 14px;
     color: #808080;
+}
+
+.group-file-page .group-file-page-header {
+	margin-bottom: 15px;
 }

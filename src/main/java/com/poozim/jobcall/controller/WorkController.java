@@ -3,6 +3,7 @@ package com.poozim.jobcall.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,6 +49,8 @@ import com.poozim.jobcall.service.MemberService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.MailUtil;
+import com.poozim.jobcall.util.OciUtil;
+import com.poozim.jobcall.util.SessionUtil;
 import com.poozim.jobcall.util.TimeUtil;
 
 @Controller
@@ -694,10 +699,27 @@ public class WorkController {
 		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
 		model.addAttribute("WorkGroup", workGroup);
 		
-		List<Map<String, Object>> fileList = workService.getGroupFileList(group_seq);
+		int limit = ServletRequestUtils.getIntParameter(request, "limit", 10);
+		int offset = ServletRequestUtils.getIntParameter(request, "offset", 0);
+		model.addAttribute("limit", limit);
+		model.addAttribute("offset", offset);
+		
+		List<Map<String, Object>> fileList = workService.getGroupFileList(group_seq, limit, offset);
 		model.addAttribute("FileList", fileList);
 		
 		return "/work/group_file";
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/fileList", method = RequestMethod.GET)
+	public View getGroupFile(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		int limit = ServletRequestUtils.getIntParameter(request, "limit", 10);
+		int offset = ServletRequestUtils.getIntParameter(request, "offset", 0);
+		
+		List<Map<String, Object>> fileList = workService.getGroupFileList(group_seq, limit, offset);
+		model.addAttribute("fileList", fileList);
+		
+		return jsonView;
 	}
 	
 	@RequestMapping(value = "/group/{group_seq}/{board_seq}", method = RequestMethod.GET)
@@ -748,30 +770,31 @@ public class WorkController {
 	}
 	
 	@RequestMapping(value ="/file_down")
-	public void fileDownLoad(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String filepath = ServletRequestUtils.getStringParameter(request, "filepath", "");
-		String fileOriginalName = filepath.substring(filepath.lastIndexOf('/')+1);
+	public void fileDownLoad(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String object_name = ServletRequestUtils.getStringParameter(request, "object_name", "");
+		Work work = SessionUtil.getWorkInfo(request, response);
+		String download_name = object_name;
 		String browser = request.getHeader("User-Agent");
-		filepath = filepath.replace("files", "www/douclass_file");
 		if (browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")) {
-			fileOriginalName = URLEncoder.encode(fileOriginalName, "UTF-8").replaceAll("\\+", "%20");
+			download_name = URLEncoder.encode(download_name, "UTF-8").replaceAll("\\+", "%20");
 		} else {
-			fileOriginalName = new String(fileOriginalName.getBytes("UTF-8"), "iso-8859-1");
+			download_name = new String(download_name.getBytes("UTF-8"), "iso-8859-1");
 		}
 		
 		response.setContentType("application/octet-stream");	//다운로드 창이 뜬다
-		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileOriginalName + "\"");	//다운받는 파일명 지정한다
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + download_name + "\"");	//다운받는 파일명 지정한다
 		
-		File file = new File(filepath);
 		OutputStream os = response.getOutputStream();
-		FileInputStream fis = new FileInputStream(file.getAbsolutePath()); //위에꺼로 바꿔야함
+		InputStream fis = OciUtil.getDownloadInputStream(work.getBucket_name(), object_name);
+		
 		int n = 0;
-		byte[] b = new byte[512];
+		byte[] b = new byte[8192];
 		while ((n = fis.read(b)) != -1) {
 			os.write(b, 0, n);
 		}
 		fis.close();
 		os.close();
+		
 	}
 	
 }

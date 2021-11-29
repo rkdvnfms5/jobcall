@@ -668,12 +668,11 @@ $(document).scroll(function() {
 		
 		var appendObj = $("div.wall-list-wrap");
 		
-		var offset = $("#pagingForm")
 		if(current_scroll >= event_scroll){
 			
 			//paging 호출
 			$(".observed").removeClass("observed");
-			scrollPaging("board", $("div.wall-list-wrap"));
+			scrollPaging("board", appendObj);
 		}
 	}
 });

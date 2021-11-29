@@ -560,7 +560,7 @@ public class WorkService {
 		return 1;
 	}
 	
-	public List<Map<String,Object>> getGroupFileList(int group_seq){
-		return workMapper.getGroupFileList(group_seq);
+	public List<Map<String,Object>> getGroupFileList(int group_seq, int limit, int offset){
+		return workMapper.getGroupFileList(group_seq, limit, offset);
 	}
 }

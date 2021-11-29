@@ -256,6 +256,7 @@ public class OciUtilTest {
         client.close();
 	}
 	
+	@Test
 	public void DownloadObjectTest() throws Exception {
 		//basic setting
         final String bucket = "bucket-20210728-1124";
@@ -280,7 +281,7 @@ public class OciUtilTest {
 		
         String namespaceName = "cnwovahmge5s";
         String bucketName = bucket;
-        String objectName = "test_object2.jpg";
+        String objectName = "login-image_20211122144444.jpg";
         String outputFileName = "/www/test_out_object.jpg";
         
         GetObjectRequest request =
@@ -518,7 +519,7 @@ public class OciUtilTest {
 		System.out.println("@@@@@@@@@@@@@ str : " + str);
 	}
 
-	@Test
+	
 	public void getExt() {
 		String str = "test.jpg";
 		System.out.println(str.substring(0, str.lastIndexOf(".")) + "2020202020" + str.substring(str.lastIndexOf(".")));
