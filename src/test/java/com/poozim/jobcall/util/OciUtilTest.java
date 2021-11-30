@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -256,7 +258,6 @@ public class OciUtilTest {
         client.close();
 	}
 	
-	@Test
 	public void DownloadObjectTest() throws Exception {
 		//basic setting
         final String bucket = "bucket-20210728-1124";
@@ -529,6 +530,28 @@ public class OciUtilTest {
 	public void whereJar() {
 		System.out.println(org.glassfish.jersey.internal.LocalizationMessages.WARNING_PROPERTIES());
 		System.out.println("@@@@@@@@@@@@@@@@@@@@ : " + mapper.getCreatedWorkCode("태스트"));
+	}
+	
+	@Test
+	public void dateTest() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2021, 10, 20);
+		System.out.println(cal.get(Calendar.YEAR));
+		System.out.println(cal.get(Calendar.MONTH));
+		System.out.println(cal.get(Calendar.DATE));
+		System.out.println(cal.get(Calendar.DAY_OF_MONTH));
+		System.out.println(cal.get(Calendar.DAY_OF_WEEK));
+		
+		System.out.println(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		System.out.println("===============================");
+		LocalDate now = LocalDate.of(2021, 11, 28);
+		System.out.println(now.getYear());
+		System.out.println(now.getMonthValue());
+		System.out.println(now.getMonth());
+		System.out.println(now.getDayOfMonth());
+		System.out.println(now.getDayOfWeek());
+		System.out.println(now.getDayOfWeek().getValue());
+		System.out.println(now.lengthOfMonth());
 	}
 	
 }

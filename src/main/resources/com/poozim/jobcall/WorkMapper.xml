@@ -7,6 +7,9 @@
 		<if test="work_seq != null and work_seq != ''"> AND b.work_seq = #{work_seq}</if>
 		<if test="group_seq != null and group_seq != ''"> AND b.group_seq = #{group_seq}</if>
 		<if test="seq != null and seq != ''"> AND b.seq = #{seq}</if>
+		<if test="type != null and type != ''"> AND b.type = #{type}</if>
+		<if test="startdate != null and startdate != ''"> AND b.startdate &gt;= #{startdate}</if>
+		<if test="enddate != null and enddate != ''"> AND b.enddate &lt;= #{enddate}</if>
 	</sql>
 
 	<sql id="selectActionLog">
@@ -49,7 +52,9 @@
 		AND gm.member_seq = #{member_seq}
 		<include refid="selectBoard" />
 		ORDER BY b.regdate DESC
-		LIMIT #{limit} OFFSET #{offset}
+		<if test='allyn == "N"'>
+			LIMIT #{limit} OFFSET #{offset}
+		</if>
 	</select>
 	
 	<select id="getWorkBoardCount" parameterType="WorkBoard" resultType="int">

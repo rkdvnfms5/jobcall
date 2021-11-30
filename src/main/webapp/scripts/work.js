@@ -140,7 +140,7 @@ function checkBoardValue(obj){
 		}
 	}
 	
-	if(board_type == 'schedule'){
+	if(board_type == 'vote'){
 		if($.trim(form.find("input[name='title']").val()) == ''){
 			return false;
 		}

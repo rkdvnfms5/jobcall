@@ -2,7 +2,7 @@
 <header class="work-header">
 	<div class="work-header-contents">
 		<h2 class="work-header-logo">
-			<a href="/work/${LnbWork.seq}/home">잡콜센터</a>
+			<a href="/work/${LnbWork.seq}/home">${LnbWork.title} 업무방</a>
 		</h2>
 		<div class="work-header-search">
 			<h2 class="screen-out"><span>검색창</span></h2>

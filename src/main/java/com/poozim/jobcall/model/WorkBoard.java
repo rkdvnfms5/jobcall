@@ -100,4 +100,7 @@ public class WorkBoard {
 	@Transient
 	private int first_comment_seq;
 	
+	@Transient
+	private String allyn = "N";
+	
 }

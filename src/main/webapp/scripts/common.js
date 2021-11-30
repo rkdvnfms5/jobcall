@@ -9,3 +9,32 @@ function hideLoading(){
 function replaceAll(str, searchStr, replaceStr) {
 	return str.split(searchStr).join(replaceStr);
 }
+
+function getIconName(ext){
+	switch (ext.toLowerCase()) {
+	case "docx":
+		ext = "docx";
+		break;
+	case "png":
+	case "jpg":
+	case "jpeg":
+	case "gif":
+		ext = "image";
+		break;
+	case "pdf":
+		ext = "pdf";
+		break;
+	case "zip":
+		ext = "zip";
+		break;
+	case "ppt":
+	case "pptx":
+		ext = "ppt";
+		break;
+	default:
+		ext = "etc";
+		break;
+	}
+	
+	return ext;
+}

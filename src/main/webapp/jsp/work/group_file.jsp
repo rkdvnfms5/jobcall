@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/jsp/include/taglib.jsp"%>
+<%@ page import="com.poozim.jobcall.util.StringUtil"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,6 +40,7 @@
 						<td></td>
 					</tr>
 					<c:forEach items="${FileList}" var="file" varStatus="status">
+						<c:set var="fileNameArr" value="${fn:split(file.name, '.')}" />
 						<tr class="${status.last? 'observed':''}">
 							<td>
 								<span class="ra-checkbox" style="margin-left: 7px;">
@@ -47,7 +49,7 @@
 							</td>
 							<td>
 								<span class="file-icon">
-									<i class="ico ico-file_others" aria-hidden="true"><svg width="22px" height="28px" viewBox="0 0 22 28" version="1.1"><g id="file_others" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><path d="M0,0 L14,0 L22,8 L22,28 L0,28 L0,0 L0,0 Z" fill="#BFBFBF"></path><path d="M14,0 L22,8 L14,8 L14,0 L14,0 Z" fill="#A2A2A2"></path></g></svg></i>
+									<img alt="" src="/images/icon_${StringUtil.getIconName(fileNameArr[fn:length(fileNameArr)-1])}.png">
 								</span>
 								<div class="file-name"><a href="${file.src}" target="_blank">${file.name}</a></div>
 								<div class="file-size">${file.size}</div>
@@ -56,7 +58,6 @@
 								${file.member_id} (${file.member_name})
 							</td>
 							<td>
-								<c:set var="fileNameArr" value="${fn:split(file.name, '.')}" />
 								${fileNameArr[fn:length(fileNameArr)-1]}
 							</td>
 							<td>
@@ -92,10 +93,10 @@ $(document).scroll(function() {
 		var current_scroll = $(this).scrollTop();
 		var event_scroll = observed.offset().top - observed.outerHeight();
 		
-		var appendObj = $("group-file-page-body table.table-list");
+		var appendObj = $(".group-file-page-body table.table-list");
 		var scrollBottom = $(document).height() - current_scroll;
 		console.log("scrollBottom : " + scrollBottom + " / event_scroll : " + event_scroll);
-		if(scrollBottom >= event_scroll){
+		if(scrollBottom <= event_scroll){
 			
 			//paging 호출
 			$(".observed").removeClass("observed");
@@ -105,9 +106,8 @@ $(document).scroll(function() {
 });
 
 function scrollPaging(obj){
-	console.log("d");
 	var data = $("#pagingForm").serialize();
-	var group_seq = data.get("group_seq");
+	var group_seq = "${WorkGroup.seq}";
 	
 	showLoading();
 	$.ajax({
@@ -116,9 +116,10 @@ function scrollPaging(obj){
 		data : data,
 		dataType : 'JSON',
 		success : function(res){
-			if(res.workBoardList.length > 0){
+			if(res.fileList.length > 0){
 				for(var i=0; i<res.fileList.length; i++){
 					var html = getGroupFileHtml(res.fileList[i], (i==(res.fileList.length-1)? "observed" : ""));
+					console.log(obj.length);
 					obj.append(html);
 				}
 				
@@ -138,6 +139,7 @@ function scrollPaging(obj){
 
 function getGroupFileHtml(file, coverClass){
 	var html = "";
+	var fileNameArr = file.name.split(".");
 	html += '<tr class="' + coverClass + '">';
 	html += '<td>';
 	html += '<span class="ra-checkbox" style="margin-left: 7px;">';
@@ -146,7 +148,7 @@ function getGroupFileHtml(file, coverClass){
 	html += '</td>';
 	html += '<td>';
 	html += '<span class="file-icon">';
-	html += '<i class="ico ico-file_others" aria-hidden="true"><svg width="22px" height="28px" viewBox="0 0 22 28" version="1.1"><g id="file_others" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><path d="M0,0 L14,0 L22,8 L22,28 L0,28 L0,0 L0,0 Z" fill="#BFBFBF"></path><path d="M14,0 L22,8 L14,8 L14,0 L14,0 Z" fill="#A2A2A2"></path></g></svg></i>';
+	html += '<img src="/images/icon_' + getIconName(fileNameArr[fileNameArr.length-1]) + '.png">';
 	html += '</span>';
 	html += '<div class="file-name"><a href="' + file.src + '" target="_blank">' + file.name + '</a></div>';
 	html += '<div class="file-size">' + file.size + '</div>';
@@ -155,7 +157,6 @@ function getGroupFileHtml(file, coverClass){
 	html += '' + file.member_id + ' (' + file.member_name + ')';
 	html += '</td>';
 	html += '<td>';
-	var fileNameArr = file.name.split(".");
 	html += fileNameArr[fileNameArr.length-1];
 	html += '</td>';
 	html += '<td>';

@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -286,7 +288,10 @@ public class WorkController {
 //		String type = ServletRequestUtils.getStringParameter(request, "type", "");
 //		int group_seq = ServletRequestUtils.getIntParameter(request, "group_seq", 0);
 		
-		String content = workBoard.getContent().replaceAll("(\r\n|\r|\n|\n\r)", "\\<br\\>");
+		String content = "";
+		if(workBoard.getContent() != null && !workBoard.getContent().equals("")) {
+			content = workBoard.getContent().replaceAll("(\r\n|\r|\n|\n\r)", "\\<br\\>");
+		}
 		workBoard.setContent(content);
 		workBoard.setMember_seq(member.getSeq());
 		workBoard.setMember_id(member.getId());
@@ -795,6 +800,70 @@ public class WorkController {
 		fis.close();
 		os.close();
 		
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/schedule", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupSchedulePage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		LocalDate now = LocalDate.now();
+		int year = ServletRequestUtils.getIntParameter(request, "year",	now.getYear());
+		int month = ServletRequestUtils.getIntParameter(request, "month", now.getMonthValue());
+		int day = ServletRequestUtils.getIntParameter(request, "day", now.getDayOfMonth());
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		// get draw calendar info
+		LocalDate date = LocalDate.of(year, month, 1);
+		int startBlank = (date.getDayOfWeek().getValue() == 7? 0 : date.getDayOfWeek().getValue());
+		
+		date = LocalDate.of(year, month, date.lengthOfMonth());
+		int endBlank = (date.getDayOfWeek().getValue() == 7? 6 : 6-date.getDayOfWeek().getValue());
+		
+		model.addAttribute("lastDay", date.lengthOfMonth());
+		model.addAttribute("startBlank", startBlank);
+		model.addAttribute("endBlank", endBlank);
+		
+		date = LocalDate.of(year, month, day);
+		model.addAttribute("cur_monthYear", date.getYear() + "-" + date.getMonthValue());
+		
+		//search date
+		LocalDate prev = date.minusMonths(1);
+		int prev_startdate = prev.lengthOfMonth()-(startBlank-1);
+		String startdate = prev.getYear() + "-" + prev.getMonthValue() + "-" + prev_startdate;
+		model.addAttribute("prev_monthYear", prev.getYear() + "-" + prev.getMonthValue());
+		model.addAttribute("pre_lastDay", prev.lengthOfMonth());
+		
+		LocalDate next = date.plusMonths(1);
+		String enddate = next.getYear() + "-" + next.getMonthValue() + "-" + (endBlank < 10? "0":"") + endBlank;
+		model.addAttribute("next_monthYear", next.getYear() + "-" + next.getMonthValue());
+		
+		//get schedule list
+		WorkBoard workBoard = new WorkBoard();
+		workBoard.setType("schedule");
+		workBoard.setStartdate(startdate);
+		workBoard.setEnddate(enddate);
+		workBoard.setGroup_seq(group_seq);
+		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		workBoard.setAllyn("Y");
+		model.addAttribute("workBoardList", workService.getWorkBoardList(workBoard));
+		
+		return "/work/group_schedule";
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/request", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupRequestPage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		return "/work/group_schedule";
 	}
 	
 }

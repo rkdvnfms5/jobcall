@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/jsp/include/taglib.jsp"%>
 <c:set var="path" value="${requestScope['javax.servlet.forward.servlet_path']}"></c:set>
 <header class="group-header">
 	<div class="group-header__image">
@@ -43,7 +44,7 @@
 		<button type="button" class="group-header__desc-button" onclick="toggleGroupDesc(this)">설명 접기</button>
 		<strong class="screen-out">그룹 탭 메뉴</strong>
 		<ul class="ra-tab-menu tab-menu__group" role="tablist">
-			<li class="ra-tab-menu__item ${not fn:contains(path, '/member') and not fn:contains(path, '/file')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="true">
+			<li class="ra-tab-menu__item ${not fn:contains(path, '/member') and not fn:contains(path, '/file') and not fn:contains(path, '/schedule') and not fn:contains(path, '/request')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="true">
 				<a href="/work/group/${WorkGroup.seq}">전체</a>
 			</li>
 			<li class="ra-tab-menu__item ${fn:contains(path, '/member')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">
@@ -55,11 +56,11 @@
 			<li class="ra-tab-menu__item ${fn:contains(path, '/file')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">
 				<a href="/work/group/${WorkGroup.seq}/file">파일</a>
 			</li>
-			<li class="ra-tab-menu__item" role="tab" aria-selected="false">
-				<a href="#">일정</a>
+			<li class="ra-tab-menu__item ${fn:contains(path, '/schedule')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">
+				<a href="/work/group/${WorkGroup.seq}/schedule">일정</a>
 			</li>
-			<li class="ra-tab-menu__item" role="tab" aria-selected="false">
-				<a href="#">요청</a>
+			<li class="ra-tab-menu__item ${fn:contains(path, '/request')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">
+				<a href="/work/group/${WorkGroup.seq}/request">요청</a>
 			</li>
 		</ul>
 	</div>
