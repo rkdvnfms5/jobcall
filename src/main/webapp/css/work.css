@@ -2803,6 +2803,9 @@ button {
     text-align: center;
 }
 
+.group-image-page{
+	margin-bottom: 40px;
+}
 
 .group-image-page .group-image-page-body .group-image-list {
 	overflow: visible !important;
@@ -2850,12 +2853,20 @@ button {
     font-size: 70px;
 }
 
+.viewer .viewer-prevBtn:hover {
+	color: #45a0ff;
+}
+
 .viewer .viewer-nextBtn{
 	box-sizing: content-box;
     padding: 20px;
     cursor: pointer;
     color: #fff;
     font-size: 70px;
+}
+
+.viewer .viewer-nextBtn:hover {
+	color: #45a0ff;
 }
 
 .viewer .viewer-content {
@@ -2874,8 +2885,8 @@ button {
     height: 24px;
     line-height: 24px;
     color: #fff;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 700;
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2892,6 +2903,8 @@ button {
 
 .viewer .viewer-content .viewer-content-header .download-btn .ico {width: 20px; height: 20px;}
 
+.viewer .viewer-content .viewer-content-header .download-btn .ico svg {width: 20px; height: 20px;}
+
 .viewer .viewer-content .viewer-content-header .download-btn .ico svg g {fill:#eff4f7;}
 
 .viewer .viewer-content .viewer-content-header .close-btn {
@@ -2902,6 +2915,8 @@ button {
 }
 
 .viewer .viewer-content .viewer-content-header .close-btn .ico {width: 20px; height: 20px;}
+
+.viewer .viewer-content .viewer-content-header .close-btn .ico svg {width: 20px; height: 20px;}
 
 .viewer .viewer-content .viewer-content-header .close-btn .ico svg g {fill:#eff4f7;}
 
@@ -2929,8 +2944,14 @@ button {
     height: 24px;
     line-height: 24px;
     color: #fff;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     text-align: center;
+}
+
+.viewer .viewer-content .viewer-content-footer a {
+	color: #45a0ff;
+    margin-left: 10px;
+    text-decoration: underline;
 }
 
