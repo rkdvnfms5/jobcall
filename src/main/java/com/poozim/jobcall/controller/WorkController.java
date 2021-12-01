@@ -46,6 +46,7 @@ import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.model.WorkGroupFile;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.service.MemberService;
 import com.poozim.jobcall.service.WorkService;
@@ -709,7 +710,12 @@ public class WorkController {
 		model.addAttribute("limit", limit);
 		model.addAttribute("offset", offset);
 		
-		List<Map<String, Object>> fileList = workService.getGroupFileList(group_seq, limit, offset);
+		//get file list
+		WorkGroupFile wgf = new WorkGroupFile();
+		wgf.setGroup_seq(group_seq);
+		wgf.setLimit(limit);
+		wgf.setOffset(offset);
+		List<Map<String, Object>> fileList = workService.getGroupFileList(wgf);
 		model.addAttribute("FileList", fileList);
 		
 		return "/work/group_file";
@@ -720,8 +726,16 @@ public class WorkController {
 			@PathVariable("group_seq") int group_seq) {
 		int limit = ServletRequestUtils.getIntParameter(request, "limit", 10);
 		int offset = ServletRequestUtils.getIntParameter(request, "offset", 0);
+		String file_type = ServletRequestUtils.getStringParameter(request, "file_type", "");
 		
-		List<Map<String, Object>> fileList = workService.getGroupFileList(group_seq, limit, offset);
+		WorkGroupFile wgf = new WorkGroupFile();
+		wgf.setGroup_seq(group_seq);
+		wgf.setLimit(limit);
+		wgf.setOffset(offset);
+		if(file_type != null && !file_type.equals("")) {
+			wgf.setFile_type(file_type);
+		}
+		List<Map<String, Object>> fileList = workService.getGroupFileList(wgf);
 		model.addAttribute("fileList", fileList);
 		
 		return jsonView;
@@ -863,7 +877,56 @@ public class WorkController {
 		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
 		model.addAttribute("WorkGroup", workGroup);
 		
-		return "/work/group_schedule";
+		String searchOpt = ServletRequestUtils.getStringParameter(request, "searchOpt", "");
+		String status = ServletRequestUtils.getStringParameter(request, "status", "");
+		
+		model.addAttribute("searchOpt", searchOpt);
+		model.addAttribute("status", status);
+		
+		//get schedule list
+		WorkBoard workBoard = new WorkBoard();
+		workBoard.setType("request");
+		workBoard.setStatus(status);
+		workBoard.setGroup_seq(group_seq);
+		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		
+		if(searchOpt.equals("worker")) {
+			workBoard.setWorker(LoginUtil.getLoginMember(request, response).getId());
+		}
+		else if(searchOpt.equals("register")) {
+			workBoard.setRegister(LoginUtil.getLoginMember(request, response).getId());
+		}
+		
+		model.addAttribute("WorkBoardList", workService.getWorkBoardList(workBoard));
+		model.addAttribute("limit", workBoard.getLimit());
+		model.addAttribute("offset",workBoard.getOffset());
+		
+		return "/work/group_request";
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/image", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupImagePage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		int limit = ServletRequestUtils.getIntParameter(request, "limit", 20);
+		int offset = ServletRequestUtils.getIntParameter(request, "offset", 0);
+		model.addAttribute("limit", limit);
+		model.addAttribute("offset", offset);
+		
+		//get file list
+		WorkGroupFile wgf = new WorkGroupFile();
+		wgf.setGroup_seq(group_seq);
+		wgf.setLimit(limit);
+		wgf.setOffset(offset);
+		wgf.setFile_type("image");
+		List<Map<String, Object>> fileList = workService.getGroupFileList(wgf);
+		model.addAttribute("FileList", fileList);
+		
+		return "/work/group_image";
 	}
 	
 }

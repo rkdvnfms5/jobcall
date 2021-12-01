@@ -394,6 +394,13 @@
 			<version>2.5.3</version>
 	  	</dependency>
 	  	<!-- end redis -->	
+	  	
+	  	<!-- websocket -->
+	  	<dependency>
+	  		<groupId>org.springframework</groupId>
+	  		<artifactId>spring-websocket</artifactId>
+	  		<version>${org.springframework-version}</version>
+	  	</dependency>
 	</dependencies>
 	
     <build>

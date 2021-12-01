@@ -6,6 +6,14 @@ function hideLoading(){
 	$(".lodingDim").addClass('hide');
 }
 
+function showWorkHeader(){
+	$(".work-header").css("z-index", 10);
+}
+
+function hideWorkHeader(){
+	$(".work-header").css("z-index", 0);
+}
+
 function replaceAll(str, searchStr, replaceStr) {
 	return str.split(searchStr).join(replaceStr);
 }

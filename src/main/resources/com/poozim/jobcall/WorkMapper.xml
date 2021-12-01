@@ -10,6 +10,9 @@
 		<if test="type != null and type != ''"> AND b.type = #{type}</if>
 		<if test="startdate != null and startdate != ''"> AND b.startdate &gt;= #{startdate}</if>
 		<if test="enddate != null and enddate != ''"> AND b.enddate &lt;= #{enddate}</if>
+		<if test="worker != null and worker != ''"> AND b.worker LIKE CONCAT('%', #{worker}, '%')</if>
+		<if test="status != null and status != ''"> AND b.status = #{status}</if>
+		<if test="register != null and register != ''"> AND b.register = #{register}</if>
 	</sql>
 
 	<sql id="selectActionLog">
@@ -231,7 +234,7 @@
 		<collection property="boardVoteMemberList" column="{vote_seq=seq}" javaType="java.util.ArrayList" ofType="BoardVoteMember" select="getBoardVoteMemberList"></collection>
 	</resultMap>
 	
-	<select id="getGroupFileList" resultType="Map">
+	<select id="getGroupFileList" parameterType="WorkGroupFile" resultType="Map">
 		SELECT *
 		FROM 
 		(
@@ -239,6 +242,33 @@
 			FROM WorkBoard wb, WorkBoardFile wbf 
 			WHERE wb.seq = wbf.board_seq 
 			AND wb.group_seq = #{group_seq}
+			<if test='file_type != null and file_type != ""'>
+				<choose>
+					<when test='file_type == "image"'>
+						AND (
+							wbf.name LIKE CONCAT('%', '.png') 
+							OR wbf.name LIKE CONCAT('%', '.PNG') 
+							OR wbf.name LIKE CONCAT('%', '.JPG') 
+							OR wbf.name LIKE CONCAT('%', '.jpg') 
+							OR wbf.name LIKE CONCAT('%', '.JPEG') 
+							OR wbf.name LIKE CONCAT('%', '.jpeg') 
+							OR wbf.name LIKE CONCAT('%', '.GIF') 
+							OR wbf.name LIKE CONCAT('%', '.gif') 
+						)
+					</when>
+					<when test='file_type == "ppt"'>
+						AND (
+							wbf.name LIKE CONCAT('%', '.ppt') 
+							OR wbf.name LIKE CONCAT('%', '.PPT') 
+							OR wbf.name LIKE CONCAT('%', '.pptx')
+							OR wbf.name LIKE CONCAT('%', '.PPTX')
+						)
+					</when>
+					<otherwise>
+						AND wbf.name LIKE CONCAT('%', '.', #{file_type})
+					</otherwise>
+				</choose>
+			</if>
 			UNION 
 			
 			SELECT cf.seq, c.board_seq, cf.name, cf.object_name, cf.`size`, cf.src, cf.regdate, 'comment' as type, c.member_id, c.member_name 
@@ -246,6 +276,33 @@
 			WHERE wb.seq = c.board_seq 
 			AND c.seq = cf.comment_seq 
 			AND wb.group_seq = #{group_seq}
+			<if test='file_type != null and file_type != ""'>
+				<choose>
+					<when test='file_type == "image"'>
+						AND (
+								cf.name LIKE CONCAT('%', '.png') 
+							OR	cf.name LIKE CONCAT('%', '.PNG') 
+							OR	cf.name LIKE CONCAT('%', '.JPG') 
+							OR	cf.name LIKE CONCAT('%', '.jpg') 
+							OR 	cf.name LIKE CONCAT('%', '.JPEG') 
+							OR 	cf.name LIKE CONCAT('%', '.jpeg') 
+							OR 	cf.name LIKE CONCAT('%', '.GIF') 
+							OR 	cf.name LIKE CONCAT('%', '.gif') 
+						)
+					</when>
+					<when test='file_type == "ppt"'>
+						AND (
+								cf.name LIKE CONCAT('%', '.ppt') 
+							OR 	cf.name LIKE CONCAT('%', '.PPT') 
+							OR 	cf.name LIKE CONCAT('%', '.pptx')
+							OR 	cf.name LIKE CONCAT('%', '.PPTX')
+						)
+					</when>
+					<otherwise>
+						AND wbf.name LIKE CONCAT('%', '.', #{file_type})
+					</otherwise>
+				</choose>
+			</if>
 		) a
 		ORDER BY a.regdate desc
 		LIMIT #{limit} OFFSET #{offset}

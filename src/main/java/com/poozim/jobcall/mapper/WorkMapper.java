@@ -11,6 +11,7 @@ import com.poozim.jobcall.model.WorkBoardFile;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.model.WorkGroupFile;
 import com.poozim.jobcall.model.WorkGroupMember;
 
 public interface WorkMapper {
@@ -36,5 +37,5 @@ public interface WorkMapper {
 	
 	public List<Comment> getCommentList(Comment comment);
 	
-	public List<Map<String, Object>> getGroupFileList(@Param("group_seq")int group_seq, @Param("limit")int limit, @Param("offset")int offset);
+	public List<Map<String, Object>> getGroupFileList(WorkGroupFile wgf);
 }

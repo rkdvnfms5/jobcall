@@ -27,6 +27,7 @@ import com.poozim.jobcall.model.WorkBoardFile;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.model.WorkGroupFile;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.ActionLogRepository;
 import com.poozim.jobcall.repository.BoardVoteMemberRepository;
@@ -560,7 +561,7 @@ public class WorkService {
 		return 1;
 	}
 	
-	public List<Map<String,Object>> getGroupFileList(int group_seq, int limit, int offset){
-		return workMapper.getGroupFileList(group_seq, limit, offset);
+	public List<Map<String,Object>> getGroupFileList(WorkGroupFile wgf){
+		return workMapper.getGroupFileList(wgf);
 	}
 }
