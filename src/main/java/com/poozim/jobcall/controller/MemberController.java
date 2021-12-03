@@ -2,6 +2,7 @@ package com.poozim.jobcall.controller;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,6 +68,59 @@ public class MemberController {
 		res = memberService.updateMember(member, request, response);
 		
 		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public View getMemberList(HttpServletRequest request, HttpServletResponse response, Model model, Member member) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		Member loginMember = LoginUtil.getLoginMember(request, response);
+		
+		if(loginMember.getAuth() != null && !(loginMember.getAuth().equals("master") || loginMember.getAuth().equals("manager"))) {
+			//마스터나 운영자가 아니면
+			model.addAttribute("msg", "마스터 혹은 매니저만 조회 가능합니다.");
+			return jsonView;
+		}
+		
+		if(member.getWork_seq() == 0) {
+			model.addAttribute("msg", "업무 정보가 없습니다.");
+			return jsonView;
+		}
+		
+		if(member.getWork_seq() != loginMember.getWork_seq()) {
+			model.addAttribute("msg", "같은 업무 멤버만 조회 가능합니다.");
+			return jsonView;
+		}
+		
+		List<Member> memberList = memberService.getMemberList(member);
+		model.addAttribute("list", memberList);
+		
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/{seq}", method = RequestMethod.GET)
+	public View getMemberList(HttpServletRequest request, HttpServletResponse response, Model model, Member member,
+			@PathVariable("seq") int seq) {
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return jsonView;
+		}
+		
+		member = memberService.getMemberOne(seq);
+		
+		Member loginMember = LoginUtil.getLoginMember(request, response);
+		
+		if(member.getWork_seq() != loginMember.getWork_seq()) {
+			model.addAttribute("msg", "같은 업무의 멤버만 조회 가능합니다.");
+			return jsonView;
+		}
+		
+		model.addAttribute("member", member);
+		
 		return jsonView;
 	}
 }

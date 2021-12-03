@@ -336,7 +336,7 @@ function getBoardHtml(board, coverFlag, coverClass){
 	}
 	html += '<form action="/work/board/"' + board.seq + ' class="updateBoardForm" method="post">';
 	html += '<input type="hidden" name="seq" value="' + board.seq + '" />';
-	html += '<div class="wall-board"><div class="board-header"><div class="board-header-profile">';
+	html += '<div class="wall-board"><div class="board-header"><div class="board-header-profile" onclick="showMemberProfile(' + board.member_seq + ', this)">';
 	html += '<span class="avatar" style="width: 50px; height: 50px; background-image: url(&quot;';
 	
 	html += (board.member_profile == '' || board.member_profile == undefined? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png' : board.member_profile);
@@ -640,7 +640,7 @@ function getCommentHtml(comment, coverFlag){
 	}
 	html += '<form action="/work/comment/' + comment.seq + '" class="updateCommentForm" method="post">';
 	html += '<div class="comment-header">';
-	html += '<div class="comment-header-profile">';
+	html += '<div class="comment-header-profile" onclick="showMemberProfile(' + comment.member_seq + ', this)">';
 	html += '<span class="avatar" style="width: 36px; height: 36px; background-image: url(&quot;';
 	html += (comment.member_profile == '' || comment.member_profile == undefined? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png' : comment.member_profile);
 	html += '&quot;);"></span>';
@@ -1215,4 +1215,39 @@ function deadLineVote(board_seq, obj){
 			}
 		})
 	}
+}
+
+function showMemberProfile(member_seq, obj){
+	$.ajax({
+		url : '/member/' + member_seq,
+		method : 'GET',
+		data : {seq : member_seq},
+		dataType : 'JSON',
+		success : function(res){
+			if(res.member != null && res.member != undefined && res.member.seq > 0){
+				setMemberMiniProfile(res.member);
+				var profile = $(".member-mini-profile");
+				profile.css("top", $(obj).offset().top-100);
+				profile.css("left", $(obj).offset().left-200);
+				profile.show();
+			} else {
+				alert(res.msg);
+			}
+		},
+		error : function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	});
+}
+
+function setMemberMiniProfile(member){
+	var profile = $(".member-mini-profile");
+	profile.find(".member-auth").html(member.auth);
+	profile.find(".member-id span").html(member.id);
+	profile.find(".member-name").html(member.name);
+	profile.find(".member-email").html(member.email);
+	profile.find(".member-department").html(member.department);
+	profile.find(".member-tel").html(member.tel);
+	profile.find(".member-worktime").html(member.worktime);
+	profile.find(".member-avatar").css("background-image", "url('" + member.profile + "')");
 }

@@ -20,7 +20,7 @@
 				<ul class="group-members-list">
 					<c:forEach items="${MemberList}" var="member">
 						<li>
-							<div class="group-member-profile">
+							<div class="group-member-profile" onclick="showMemberProfile(${Board.member_seq}, this);" >
 								<span class="avatar" style="width: 36px; height: 36px; background-image:
 								 url('${empty member.profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png':member.profile}');"></span>
 							</div>

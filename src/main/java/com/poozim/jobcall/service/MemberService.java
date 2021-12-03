@@ -40,6 +40,10 @@ public class MemberService {
 	@Autowired
 	private BCryptPasswordEncoder bcryEncoder;
 	
+	public List<Member> getMemberList(Member member) {
+		return memberRepository.getWorkMemberList(member);
+	}
+	
 	public Member getMemberOne(int seq) {
 		return memberRepository.findById(seq).get();
 	}

@@ -65,3 +65,28 @@
 		</ul>
 	</div>
 </header>
+
+<div class="member-mini-profile" style="display: none;">
+	<div class="member-mini-profile-header">
+		<span class="member-avatar"></span>
+		<div class="member-mini-profile-header-info">
+			<label class="member-auth">마스터</label>
+			<button class="close-btn" onclick="$(this).closest('.member-mini-profile').hide()">X</button>
+			<dl class="info-list">
+				<dt class="member-id">
+					<span>rkdvnfms5</span>
+				</dt>
+				<dd class="member-name">강푸른</dd>
+				<dd class="member-email">xxxxxxx@xxxxx.com</dd>
+			</dl>
+		</div>
+	</div>
+	<div class="member-mini-profile-body">
+		<dt>소속</dt>
+		<dd class="member-department">여기저기팀</dd>
+		<dt>전화</dt>
+		<dd class="member-tel">xxx-xxxx-xxxx</dd>
+		<dt>근무 시간</dt>
+		<dd class="member-worktime">11:00 AM-01:30 PM</dd>
+	</div>
+</div>

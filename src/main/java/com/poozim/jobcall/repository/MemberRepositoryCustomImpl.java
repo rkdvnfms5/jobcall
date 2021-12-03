@@ -19,7 +19,32 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 	
 	public List<Member> getWorkMemberList(Member param) {
 		QMember member = QMember.member;
-		return queryFactory.selectFrom(member).where(member.work_seq.eq(param.getWork_seq()), member.useyn.eq("Y")).fetch();
+		
+		BooleanBuilder builder = new BooleanBuilder();
+        if(param.getSeq() > 0){
+            builder.and(member.seq.eq(param.getSeq()));
+        }
+        if(param.getWork_seq() > 0){
+            builder.and(member.work_seq.eq(param.getWork_seq()));
+        }
+        if(param.getId() != null && !param.getId().equals("")){
+            builder.and(member.id.like(param.getId()));
+        }
+        if(param.getName() != null && !param.getName().equals("")){
+            builder.and(member.name.like(param.getName()));
+        }
+        if (param.getDepartment() != null && !param.getDepartment().equals("")){
+            builder.and(member.department.like(param.getDepartment()));
+        }
+        if (param.getEmail() != null&& !param.getEmail().equals("")){
+            builder.and(member.email.like(param.getEmail()));
+        }
+        if (param.getAuth() != null&& !param.getAuth().equals("")){
+            builder.and(member.auth.eq(param.getAuth()));
+        }
+        builder.and(member.useyn.eq("Y"));
+		
+		return queryFactory.selectFrom(member).where(builder).fetch();
 	}
 
 	@Override

@@ -46,7 +46,7 @@
 									<input type="hidden" name="seq" value="${Board.seq}" />
 									<div class="wall-board">
 										<div class="board-header">
-											<div class="board-header-profile">
+											<div class="board-header-profile" onclick="showMemberProfile(${Board.member_seq}, this)">
 												<span class="avatar"
 												style="width: 50px; height: 50px; 
 												background-image: url('${empty Board.member_profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png':Board.member_profile}');">
@@ -228,7 +228,7 @@
 										<div class="wall-comment">
 											<form action="/work/comment/${Comment.seq}" class="updateCommentForm" method="post">
 												<div class="comment-header">
-													<div class="comment-header-profile">
+													<div class="comment-header-profile" onclick="showMemberProfile(${Comment.member_seq}, this)">
 														<span class="avatar" 
 														style="width: 36px; height: 36px; background-image: url('${empty Comment.member_profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png':Comment.member_profile}');"></span>
 													</div>
