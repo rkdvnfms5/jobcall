@@ -50,7 +50,7 @@
 				<a href="#">멤버 &amp; 팀</a>
 			</li>
 			<li>
-				<a href="#">참여가능한 그룹</a>
+				<a href="javascript:alert('준비 중입니다.')">참여가능한 그룹</a>
 			</li>
 		</ul>
 		<div class="navbar-groups">

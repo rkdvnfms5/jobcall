@@ -13,6 +13,13 @@
 		<if test="worker != null and worker != ''"> AND b.worker LIKE CONCAT('%', #{worker}, '%')</if>
 		<if test="status != null and status != ''"> AND b.status = #{status}</if>
 		<if test="register != null and register != ''"> AND b.register = #{register}</if>
+		<if test='search != null and search != ""'> 
+			AND (b.member_id = #{search} OR 
+				b.member_name = #{search} OR 
+				b.title LIKE CONCAT('%', #{search}, '%') OR
+				b.content LIKE CONCAT('%', #{search}, '%')
+				)
+		</if>
 	</sql>
 
 	<sql id="selectActionLog">
@@ -40,7 +47,8 @@
 		SELECT *, 'board' as target, 'like' as `like`, 'dislike' as dislike, #{member_seq} as search_member_seq, #{comment_limit} as comment_limit,
 		(SELECT c.seq FROM Comment c WHERE c.board_seq = b.seq ORDER BY c.seq ASC LIMIT 1) as first_comment_seq,
 		(SELECT action FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as action,
-		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq,
+		(SELECT name FROM WorkGroup wg WHERE wg.seq = b.group_seq) as group_name
 		<choose>
 			<when test="comment_offset != null and comment_offset != ''">
 				, #{comment_offset} as comment_offset
@@ -51,7 +59,9 @@
 		</choose>
 		FROM WorkBoard b, WorkGroupMember gm
 		WHERE b.group_seq = gm.group_seq
-		AND b.group_seq = #{group_seq}
+		<if test="group_seq != null and group_seq != ''">
+			AND b.group_seq = #{group_seq}
+		</if>
 		AND gm.member_seq = #{member_seq}
 		<include refid="selectBoard" />
 		ORDER BY b.regdate DESC
@@ -73,7 +83,8 @@
 		SELECT *, 'board' as target, 'like' as `like`, 'dislike' as dislike, #{member_seq} as search_member_seq, #{comment_limit} as comment_limit,
 		(SELECT c.seq FROM Comment c WHERE c.board_seq = b.seq ORDER BY c.seq ASC LIMIT 1) as first_comment_seq,
 		(SELECT action FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as action,
-		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq
+		(SELECT al.seq FROM ActionLog al WHERE al.member_seq = #{member_seq} AND al.target LIKE 'board' AND al.target_seq = b.seq) as actionLog_seq,
+		(SELECT name FROM WorkGroup wg WHERE wg.seq = b.group_seq) as group_name
 		<choose>
 			<when test="comment_offset != null and comment_offset != ''">
 				, #{comment_offset} as comment_offset

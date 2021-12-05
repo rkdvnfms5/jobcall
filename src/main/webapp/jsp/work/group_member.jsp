@@ -14,7 +14,11 @@
 	
 		<div class="group-members-page">
 			<div class="group-members-page-header">
-			
+				<c:if test="${member.auth eq 'master' or member.auth eq 'manager'}">
+					<a class="ra-button" href="/work/group/${WorkGroup.seq}/invite">
+						멤버 초대
+					</a>
+				</c:if>
 			</div>
 			<div class="group-members-page-body">
 				<ul class="group-members-list">

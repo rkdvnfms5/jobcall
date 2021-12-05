@@ -3062,3 +3062,41 @@ button {
     overflow: hidden;
     word-wrap: break-word;
 }
+
+
+.wall-board .wall-board-group-info {padding-bottom:10px; margin-bottom: 15px; position: relative; border-bottom: 1px solid #e5e5e5;}
+
+.wall-board .wall-board-group-info a {font-weight: 500; font-size: 16px;}
+
+.wall-board .wall-board-group-info a:hover {
+	text-decoration: underline !important;
+}
+
+
+.no-search-result {
+	display:block;
+    width: 100%;
+    height: 500px;
+    padding-top: 140px;
+    border: 1px solid #E5E5E5;
+    background: #fff;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.no-search-result .no-search-result-message {
+	padding-top: 26px;
+    font-size: 20px;
+    color: #ccc;
+}
+
+.group-members-page .group-members-page-header {
+	margin-bottom: 15px;
+}
+
+.group-members-page .group-members-page-footer {
+	margin-top: 15px;
+	margin-bottom: 30px;
+}

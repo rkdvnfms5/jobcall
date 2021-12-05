@@ -11,9 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.poozim.jobcall.mapper.MemberMapper;
+import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoardFile;
+import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.MemberRepository;
@@ -36,6 +39,9 @@ public class MemberService {
 	
 	@Autowired
 	private CommentRepository commentRepository;
+	
+	@Autowired
+	private MemberMapper memberMapper;
 	
 	@Autowired
 	private BCryptPasswordEncoder bcryEncoder;
@@ -108,5 +114,9 @@ public class MemberService {
 		LoginUtil.setLoginSession(request, response, member);
 		
 		return 1;
+	}
+	
+	public List<Member> getInviteList(WorkGroup workGroup) {
+		return memberMapper.getInviteList(workGroup);
 	}
 }

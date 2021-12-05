@@ -19,6 +19,7 @@
 					<button type="button" class="ra-button" onclick="downLoadFiles()">
 						다운로드
 					</button>
+					<span>*팝업 허용이 필요합니다.</span>
 				</div>
 			</div>
 			<div class="group-file-page-body">
@@ -175,18 +176,15 @@ function downLoadFiles(){
 	var checkArr = new Array();
 	
 	$("input[name='donwload_file']:checked").each(function(index, item){
-		checkArr.push(item.value);
+		downLoadFile(item.value);
 	});
-	
-	for(var i=0; i<checkArr.length; i++){
-		downLoadFile(checkArr[i]);
-	}
 	
 	$("input[name='donwload_file']").prop("checked", false);
 } 
 
 function downLoadFile(object_name){
 	window.open("/work/file_down?object_name=" + object_name);
+
 } 
 </script>
 </body>

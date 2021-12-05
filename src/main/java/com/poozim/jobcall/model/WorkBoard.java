@@ -103,4 +103,10 @@ public class WorkBoard {
 	@Transient
 	private String allyn = "N";
 	
+	@Transient
+	private String group_name;
+	
+	@Transient
+	private String search;
+	
 }

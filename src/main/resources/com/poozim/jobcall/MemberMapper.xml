@@ -15,4 +15,13 @@
 		AND work_seq = #{work_seq}
 		<include refid="search" />
 	</select>
+	
+	<select id="getInviteList" parameterType="WorkGroup" resultType="Member">
+		SELECT *
+		FROM Member m
+		WHERE useyn = 'Y'
+		AND m.work_seq = #{work_seq}
+		AND m.seq NOT IN (SELECT member_seq FROM WorkGroupMember wgm WHERE group_seq = ${seq})
+		<!-- AND m.seq NOT IN (SELECT member_seq FROM GroupInviteLog gil WHERE group_seq = ${seq}) -->
+	</select>
 </mapper>

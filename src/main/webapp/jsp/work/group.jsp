@@ -586,7 +586,7 @@ var comment_modify_files = new Array();
 $(document).ready(function(){
 	//board insert
 	$("#contentTextArea").on('focusin focusout propertychange change keyup paste input', function(){
-		var check = checkBoardValue();
+		var check = checkBoardValue(this);
 		if(check){
 			$("#insert-submit").attr("disabled", false);
 		} else {
@@ -704,7 +704,7 @@ function scrollPaging(type, obj){
 				hideLoading();
 			},
 			error : function(request, status, error){
-				alert(request);
+				alert("error");
 				hideLoading();
 			}
 		});
@@ -732,7 +732,7 @@ function scrollPaging(type, obj){
 				hideLoading();
 			},
 			error : function(request, status, error){
-				alert(request);
+				alert("error");
 				hideLoading();
 			}
 		});

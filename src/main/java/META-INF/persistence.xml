@@ -17,6 +17,7 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 		<class>com.poozim.jobcall.model.ActionLog</class>
 		<class>com.poozim.jobcall.model.BoardVote</class>
 		<class>com.poozim.jobcall.model.BoardVoteMember</class>
+		<class>com.poozim.jobcall.model.GroupInviteLog</class>
 		
 		<properties>
 			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->

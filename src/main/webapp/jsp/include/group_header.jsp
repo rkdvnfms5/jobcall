@@ -44,10 +44,10 @@
 		<button type="button" class="group-header__desc-button" onclick="toggleGroupDesc(this)">설명 접기</button>
 		<strong class="screen-out">그룹 탭 메뉴</strong>
 		<ul class="ra-tab-menu tab-menu__group" role="tablist">
-			<li class="ra-tab-menu__item ${not fn:contains(path, '/image') and not fn:contains(path, '/member') and not fn:contains(path, '/file') and not fn:contains(path, '/schedule') and not fn:contains(path, '/request')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="true">
+			<li class="ra-tab-menu__item ${not fn:contains(path, '/invite') and not fn:contains(path, '/image') and not fn:contains(path, '/member') and not fn:contains(path, '/file') and not fn:contains(path, '/schedule') and not fn:contains(path, '/request')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="true">
 				<a href="/work/group/${WorkGroup.seq}">전체</a>
 			</li>
-			<li class="ra-tab-menu__item ${fn:contains(path, '/member')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">
+			<li class="ra-tab-menu__item ${fn:contains(path, '/member') or fn:contains(path, '/invite')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">
 				<a href="/work/group/${WorkGroup.seq}/member">멤버</a>
 			</li>
 			<li class="ra-tab-menu__item ${fn:contains(path, '/image')? 'ra-tab-menu__item--active':''}" role="tab" aria-selected="false">

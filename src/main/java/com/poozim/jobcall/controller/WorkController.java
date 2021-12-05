@@ -102,7 +102,8 @@ public class WorkController {
 		workBoard.setWork_seq(work.getSeq());
 		List<WorkBoard> workBoardList = workService.getWorkBoardList(workBoard);
 		model.addAttribute("WorkBoardList", workBoardList);
-		
+		model.addAttribute("limit", workBoard.getLimit());
+		model.addAttribute("offset",workBoard.getOffset());
 		//get Work Members
 		
 		return "/work/view";
@@ -697,6 +698,30 @@ public class WorkController {
 		return "/work/group_member";
 	}
 	
+	@RequestMapping(value = "/group/{group_seq}/invite", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupMemberInvitePage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+		model.addAttribute("WorkGroup", workGroup);
+		
+		List<Member> inviteList = memberService.getInviteList(workGroup);
+		model.addAttribute("MemberList", inviteList);
+		
+		return "/work/group_member_invite";
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/invite", method = RequestMethod.POST)
+	public View groupMemberInvite(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq,
+			@RequestParam("member_seq[]") List<Integer> memberSeqList) {
+		int res = 0;
+		res = workService.inviteGroupMembers(memberSeqList, group_seq);
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
 	@RequestMapping(value = "/group/{group_seq}/file", method = RequestMethod.GET)
 	@WorkLnbSet
 	public String groupFilePage(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -927,6 +952,37 @@ public class WorkController {
 		model.addAttribute("FileList", fileList);
 		
 		return "/work/group_image";
+	}
+	
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String searchPage(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard) {
+		if(workBoard.getGroup_seq() > 0) {
+			//get WorkGroup
+			WorkGroup workGroup = workService.getWorkGroupOne(workBoard.getGroup_seq());
+			workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
+			model.addAttribute("WorkGroup", workGroup);
+			
+			if(workGroup == null || workGroup.getUseyn().equals("N")) {
+				model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
+				return "/util/alert";
+			}
+		}
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		//get Work Boards
+		workBoard.setMember_seq(member.getSeq());
+		List<WorkBoard> workBoardList = workService.getWorkBoardList(workBoard);
+		
+		model.addAttribute("WorkBoardList", workBoardList);
+		
+		model.addAttribute("limit", workBoard.getLimit());
+		model.addAttribute("offset",workBoard.getOffset());
+		model.addAttribute("total", workService.getWorkBoardCount(workBoard));
+		model.addAttribute("search", workBoard.getSearch());
+		model.addAttribute("group_seq", workBoard.getGroup_seq());
+		return "/work/search";
 	}
 	
 }

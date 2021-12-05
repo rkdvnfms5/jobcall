@@ -20,6 +20,7 @@ import com.poozim.jobcall.model.BoardVote;
 import com.poozim.jobcall.model.BoardVoteMember;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
+import com.poozim.jobcall.model.GroupInviteLog;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
@@ -34,6 +35,7 @@ import com.poozim.jobcall.repository.BoardVoteMemberRepository;
 import com.poozim.jobcall.repository.BoardVoteRepository;
 import com.poozim.jobcall.repository.CommentFileRepository;
 import com.poozim.jobcall.repository.CommentRepository;
+import com.poozim.jobcall.repository.GroupInviteLogRepository;
 import com.poozim.jobcall.repository.MemberRepository;
 import com.poozim.jobcall.repository.WorkBoardFileRepository;
 import com.poozim.jobcall.repository.WorkBoardRepository;
@@ -90,6 +92,9 @@ public class WorkService {
 	
 	@Autowired
 	private BoardVoteMemberRepository boardVoteMemberRepository;
+	
+	@Autowired
+	private GroupInviteLogRepository groupInviteLogRepository;
 	
 	//Mybatis Mappers
 	@Autowired
@@ -563,5 +568,21 @@ public class WorkService {
 	
 	public List<Map<String,Object>> getGroupFileList(WorkGroupFile wgf){
 		return workMapper.getGroupFileList(wgf);
+	}
+	
+	@Transactional
+	public int inviteGroupMembers(List<Integer> memberSeqList, int group_seq) {
+		String regdate = TimeUtil.getDateTime();
+		if(memberSeqList != null && !memberSeqList.isEmpty()) {
+			for(int i=0; i<memberSeqList.size(); i++) {
+				GroupInviteLog log = new GroupInviteLog();
+				log.setGroup_seq(group_seq);
+				log.setMember_seq(memberSeqList.get(i));
+				log.setRegdate(regdate);
+				
+				groupInviteLogRepository.save(log);
+			}
+		}
+		return 1;
 	}
 }

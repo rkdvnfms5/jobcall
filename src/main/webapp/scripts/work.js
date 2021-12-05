@@ -329,6 +329,7 @@ function reloadBoard(board_seq, parent, commentPagingBool){
 }
 
 function getBoardHtml(board, coverFlag, coverClass){
+	var search = $("input[name='search']").val();
 	var memberseq = $("#member_seq").val();
 	var html = "";
 	if(coverFlag){ //가장 바깥 태그 포함 여부
@@ -336,14 +337,22 @@ function getBoardHtml(board, coverFlag, coverClass){
 	}
 	html += '<form action="/work/board/"' + board.seq + ' class="updateBoardForm" method="post">';
 	html += '<input type="hidden" name="seq" value="' + board.seq + '" />';
-	html += '<div class="wall-board"><div class="board-header"><div class="board-header-profile" onclick="showMemberProfile(' + board.member_seq + ', this)">';
+	html += '<div class="wall-board">';
+	
+	if($(".wall-board-group-info").length > 0){
+		html += '<div class="wall-board-group-info">';
+		html += '<a href="/work/group/' + board.group_seq + '">' + board.group_name + '</a></div>';
+	
+	}
+	
+	html += '<div class="board-header"><div class="board-header-profile" onclick="showMemberProfile(' + board.member_seq + ', this)">';
 	html += '<span class="avatar" style="width: 50px; height: 50px; background-image: url(&quot;';
 	
 	html += (board.member_profile == '' || board.member_profile == undefined? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png' : board.member_profile);
 		
 	html += '&quot;);"></span>';
 	html += '</div><div class="board-header-meta">';
-	html += '<div class="board-header-meta-id">' + board.member_id + ' (' + board.member_name + ')</div>';
+	html += '<div class="board-header-meta-id">' + (search == board.member_id? '<mark>':'') + board.member_id + (search == board.member_id? '</mark>':'') + ' (' + (search == board.member_name? '<mark>':'') + board.member_name + (search == board.member_name? '</mark>':'') + ')</div>';
 	html += '<div class="board-header-meta-date">' + board.regdate + '</div></div></div>';
 	html += '<div class="board-body">';
 	html += '<div class="board-body-meta">';
@@ -391,7 +400,7 @@ function getBoardHtml(board, coverFlag, coverClass){
 		html += '<div class="day">' + monthday[2] + '</div>';
 		html += '</div>';
 		html += '<div class="schedule-text">';
-		html += '<div class="schedule-title">' + board.title + '</div>';
+		html += '<div class="schedule-title">' + (search == board.title? '<mark>':'') + board.title + (search == board.title? '</mark>':'') + '</div>';
 		html += '<div class="schedule-date">' + board.startdate + ' ' + board.starttime + ' - ' + board.enddate + ' ' + board.endtime + '</div>';
 		html += '</div></div>';
 	
@@ -400,7 +409,7 @@ function getBoardHtml(board, coverFlag, coverClass){
 		html += '<div class="vote-info">';
 		html += '<div class="vote-info-header">';
 		html += '<div class="vote-info-header-q">Q</div>';
-		html += '<div class="vote-info-header-title">' + board.title;
+		html += '<div class="vote-info-header-title">' + (search == board.title? '<mark>':'') + board.title + (search == board.title? '</mark>':'') ;
 		html += '</div>';
 		html += '<div class="vote-info-header-desc"> ' + (board.status == 'process'? '진행 중인':'마감된') + '투표 ';
 		html += '</div>';
@@ -449,7 +458,7 @@ function getBoardHtml(board, coverFlag, coverClass){
 	}
 	
 	html += '</div>';
-	html += '<div class="board-body-content">' + board.content + '</div>';
+	html += '<div class="board-body-content">' + replaceAll(board.content, search, "<mark>"+search+"</mark>") + '</div>';
 	if(board.workBoardFileList.length > 0){
 		html += '<div class="board-body-attach"><div class="board-body-attach-header">';
 		html += '<label class=""><span class="ra-checkbox">';
