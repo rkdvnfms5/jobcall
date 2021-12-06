@@ -38,4 +38,7 @@ public class Member implements Serializable{
 	
 	@Transient
 	private MultipartFile profileImage;
+	
+	@Transient
+	private int inviteLog_seq;
 }

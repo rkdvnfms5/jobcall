@@ -9,4 +9,6 @@ public interface MemberMapper {
 	public List<Member> getMemberList(Member member);
 	
 	public List<Member> getInviteList(WorkGroup workGroup);
+	
+	public List<Member> getInviteLogList(WorkGroup workGroup);
 }

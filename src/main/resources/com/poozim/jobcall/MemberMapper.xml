@@ -22,6 +22,16 @@
 		WHERE useyn = 'Y'
 		AND m.work_seq = #{work_seq}
 		AND m.seq NOT IN (SELECT member_seq FROM WorkGroupMember wgm WHERE group_seq = ${seq})
-		<!-- AND m.seq NOT IN (SELECT member_seq FROM GroupInviteLog gil WHERE group_seq = ${seq}) -->
+		AND m.seq NOT IN (SELECT member_seq FROM GroupInviteLog gil WHERE group_seq = ${seq})
+	</select>
+	
+	<select id="getInviteLogList" parameterType="WorkGroup" resultType="Member">
+		SELECT m.*, 
+			(SELECT gil.seq FROM GroupInviteLog gil WHERE group_seq = ${seq} AND member_seq = m.seq) as inviteLog_seq
+		FROM Member m
+		WHERE useyn = 'Y'
+		AND m.work_seq = #{work_seq}
+		AND m.seq NOT IN (SELECT member_seq FROM WorkGroupMember wgm WHERE group_seq = ${seq})
+		AND m.seq IN (SELECT member_seq FROM GroupInviteLog gil WHERE group_seq = ${seq})
 	</select>
 </mapper>

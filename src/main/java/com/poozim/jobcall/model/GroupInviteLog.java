@@ -18,5 +18,6 @@ public class GroupInviteLog {
 	private int seq;
 	private int group_seq;
 	private int member_seq;
+	private String code;
 	private String regdate;
 }

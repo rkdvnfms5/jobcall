@@ -2461,6 +2461,14 @@ button {
     overflow: hidden;
 }
 
+.group-members-page .group-members-list-title {
+    border-bottom: 1px solid #cacaca;
+    padding: 7px 0 6px 16px;
+    font-size: 12px;
+    color: #7d7d89;
+    background-color: #f6f6f7;
+}
+
 .group-members-page .group-members-page-body ul {
 	
 }
@@ -3099,4 +3107,61 @@ button {
 .group-members-page .group-members-page-footer {
 	margin-top: 15px;
 	margin-bottom: 30px;
+}
+
+.group-members-page .group-members-invited-page-body {
+	background-color: #fff;
+    font-size: 12px;
+    color: #7e7e7e;
+    line-height: 16px;
+    border: solid 1px #DCDFE4;
+    outline: none;
+    box-sizing: border-box;
+    direction: ltr;
+    height: auto;
+    position: relative;
+    width: 733px;
+    will-change: transform;
+    overflow: hidden;
+    margin-bottom: 70px;
+}
+
+.group-members-page .group-members-invited-page-body ul li {
+	display: block;
+	padding: 8px 10px;
+}
+
+.group-members-page .group-members-invited-page-body ul li .group-member-profile {
+	float: left;
+	margin-right: 10px;
+}
+
+.group-members-page .group-members-invited-page-body ul li .groupo-member-invite {
+	float: right;
+}
+
+.group-members-page .group-members-invited-page-body ul li .group-member-meta{
+	padding-left: 11px;
+	display: inline-block;
+}
+
+.group-members-page .group-members-invited-page-body ul li .group-member-meta .group-member-id {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 22px;
+    color: #333333;
+    font-weight: 600;
+}
+
+.group-members-page .group-members-invited-page-body ul li .group-member-meta .group-member-department {
+	max-width: 200px;
+    color: #999999;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 16px;
 }

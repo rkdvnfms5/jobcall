@@ -119,4 +119,8 @@ public class MemberService {
 	public List<Member> getInviteList(WorkGroup workGroup) {
 		return memberMapper.getInviteList(workGroup);
 	}
+	
+	public List<Member> getInviteLogList(WorkGroup workGroup) {
+		return memberMapper.getInviteLogList(workGroup);
+	}
 }

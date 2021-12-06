@@ -23,6 +23,7 @@ import javax.ws.rs.Consumes;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -40,6 +41,7 @@ import com.poozim.jobcall.aop.WorkLnbSet;
 import com.poozim.jobcall.model.ActionLog;
 import com.poozim.jobcall.model.BoardVoteMember;
 import com.poozim.jobcall.model.Comment;
+import com.poozim.jobcall.model.GroupInviteLog;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
@@ -68,6 +70,9 @@ public class WorkController {
 	
 	@Autowired
 	private View jsonView;
+	
+	@Autowired
+	private BCryptPasswordEncoder bcryEncoder;
 	
 	@RequestMapping(value = "/{seq}/home", method = RequestMethod.GET)
 	@WorkLnbSet
@@ -709,6 +714,9 @@ public class WorkController {
 		List<Member> inviteList = memberService.getInviteList(workGroup);
 		model.addAttribute("MemberList", inviteList);
 		
+		List<Member> inviteLogList = memberService.getInviteLogList(workGroup);
+		model.addAttribute("InviteLogList", inviteLogList);
+		
 		return "/work/group_member_invite";
 	}
 	
@@ -717,7 +725,83 @@ public class WorkController {
 			@PathVariable("group_seq") int group_seq,
 			@RequestParam("member_seq[]") List<Integer> memberSeqList) {
 		int res = 0;
-		res = workService.inviteGroupMembers(memberSeqList, group_seq);
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		
+		if(workGroup == null || workGroup.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
+			return jsonView;
+		}
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, member.getSeq());
+		
+		if(wgm == null) {
+			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
+			return jsonView;
+		}
+		
+		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
+			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+			return jsonView;
+		}
+		
+		res = workService.inviteGroupMembers(memberSeqList, workGroup, request);
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/invite", method = RequestMethod.PUT)
+	public View groupMemberInviteUpdate(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq,
+			GroupInviteLog param) {
+		int res = 0;
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		
+		if(workGroup == null || workGroup.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
+			return jsonView;
+		}
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, member.getSeq());
+		
+		if(wgm == null) {
+			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
+			return jsonView;
+		}
+		
+		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
+			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+			return jsonView;
+		}
+		
+		GroupInviteLog gil = workService.getGroupInviteLog(param.getSeq());
+		gil.setRegdate(TimeUtil.getDateTime());
+		
+		res = workService.updateGroupInviteLog(gil);
+		
+		if(res == 1) {
+			String code = bcryEncoder.encode(gil.getMember_seq() + gil.getRegdate()).replaceAll("\\/", "");
+			//send mail
+			String title = "잡콜센터 그룹 : " + workGroup.getName() + "로 초대합니다.";
+			String from = "rkdvnfms5@naver.com";
+			String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
+			String to = memberService.getMemberOne(gil.getMember_seq()).getEmail();
+			String cc = "";
+			res = MailUtil.mailSend(title, from, text, to, cc);
+		}
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/group/{group_seq}/invite", method = RequestMethod.DELETE)
+	public View groupMemberInviteDelete(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq,
+			GroupInviteLog gil) {
+		int res = 0;
+		res = workService.deleteGroupInviteLog(gil);
 		model.addAttribute("res", res);
 		return jsonView;
 	}
@@ -985,4 +1069,17 @@ public class WorkController {
 		return "/work/search";
 	}
 	
+	@RequestMapping(value = "/group/{group_seq}/attend/{code}", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupMemberAttendPage(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq,
+			@PathVariable("code") String code) {
+		
+		if(true) {
+			model.addAttribute("msg", "존재하지 않는 아이디입니다.");
+			return "/util/alert";
+		}
+		
+		return "redirect:/work/group/" + group_seq;
+	}
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -44,6 +45,7 @@ import com.poozim.jobcall.repository.WorkCategoryRepository;
 import com.poozim.jobcall.repository.WorkGroupMemberRepository;
 import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
+import com.poozim.jobcall.util.MailUtil;
 import com.poozim.jobcall.util.OciUtil;
 import com.poozim.jobcall.util.RedisUtil;
 import com.poozim.jobcall.util.SessionUtil;
@@ -100,6 +102,8 @@ public class WorkService {
 	@Autowired
 	private WorkMapper workMapper;
 	
+	@Autowired
+	private BCryptPasswordEncoder bcryEncoder;
 	
 	public Work getWorkOne(int seq) {
 		return workRepository.findById(seq).get();
@@ -571,18 +575,43 @@ public class WorkService {
 	}
 	
 	@Transactional
-	public int inviteGroupMembers(List<Integer> memberSeqList, int group_seq) {
+	public int inviteGroupMembers(List<Integer> memberSeqList, WorkGroup workGroup, HttpServletRequest request) {
 		String regdate = TimeUtil.getDateTime();
 		if(memberSeqList != null && !memberSeqList.isEmpty()) {
 			for(int i=0; i<memberSeqList.size(); i++) {
+				Member member = memberRepository.findById(memberSeqList.get(i)).get();
 				GroupInviteLog log = new GroupInviteLog();
-				log.setGroup_seq(group_seq);
+				log.setGroup_seq(workGroup.getSeq());
 				log.setMember_seq(memberSeqList.get(i));
 				log.setRegdate(regdate);
-				
+				String code = bcryEncoder.encode(memberSeqList.get(i) + regdate).replaceAll("\\/", "");
+				log.setCode(code);
 				groupInviteLogRepository.save(log);
+				
+				//send mail
+				String title = "잡콜센터 그룹 : " + workGroup.getName() + "로 초대합니다.";
+				String from = "rkdvnfms5@naver.com";
+				String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
+				String to = member.getEmail();
+				String cc = "";
+				MailUtil.mailSend(title, from, text, to, cc);
 			}
 		}
+		return 1;
+	}
+	
+	public GroupInviteLog getGroupInviteLog(int seq) {
+		
+		return groupInviteLogRepository.findById(seq).get();
+	}
+	
+	public int updateGroupInviteLog(GroupInviteLog gil) {
+		groupInviteLogRepository.save(gil);
+		return 1;
+	}
+	
+	public int deleteGroupInviteLog(GroupInviteLog gil) {
+		groupInviteLogRepository.deleteById(gil.getSeq());
 		return 1;
 	}
 }

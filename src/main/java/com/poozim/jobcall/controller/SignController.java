@@ -224,7 +224,7 @@ public class SignController {
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String goLogin(HttpServletRequest request, HttpServletResponse response, Model model) {
-		
+		model.addAttribute("rtnUrl", ServletRequestUtils.getStringParameter(request, "rtnUrl", ""));
 		return "/sign/login";
 	}
 	
@@ -232,6 +232,7 @@ public class SignController {
 	public String doLogin(HttpServletRequest request, HttpServletResponse response, Model model,
 			Member member) {
 		String password = ServletRequestUtils.getStringParameter(request, "password", "");
+		String rtnUrl = ServletRequestUtils.getStringParameter(request, "rtnUrl", "");
 		
 		member = memberService.getMemberById(member);
 		
@@ -249,6 +250,6 @@ public class SignController {
 		
 		LoginUtil.setLoginSession(request, response, member);
 		
-		return "redirect:/work/" + member.getWork_seq() + "/home";
+		return (rtnUrl.equals("")? "redirect:/work/" + member.getWork_seq() + "/home" : rtnUrl);
 	}
 }
