@@ -584,7 +584,7 @@ public class WorkService {
 				log.setGroup_seq(workGroup.getSeq());
 				log.setMember_seq(memberSeqList.get(i));
 				log.setRegdate(regdate);
-				String code = bcryEncoder.encode(memberSeqList.get(i) + regdate).replaceAll("\\/", "");
+				String code = bcryEncoder.encode(memberSeqList.get(i) + regdate).replaceAll("\\/", "").replaceAll("\\.", "");
 				log.setCode(code);
 				groupInviteLogRepository.save(log);
 				
@@ -605,6 +605,10 @@ public class WorkService {
 		return groupInviteLogRepository.findById(seq).get();
 	}
 	
+	public GroupInviteLog getGroupInviteLogByCode(GroupInviteLog gil) {
+		return groupInviteLogRepository.getGroupInviteLogByCode(gil);
+	}
+	
 	public int updateGroupInviteLog(GroupInviteLog gil) {
 		groupInviteLogRepository.save(gil);
 		return 1;
@@ -612,6 +616,24 @@ public class WorkService {
 	
 	public int deleteGroupInviteLog(GroupInviteLog gil) {
 		groupInviteLogRepository.deleteById(gil.getSeq());
+		return 1;
+	}
+	
+	@Transactional
+	public int attendGroup(GroupInviteLog gil) {
+		WorkGroupMember workGroupMember = new WorkGroupMember();
+		workGroupMember.setGroup_seq(gil.getGroup_seq());
+		workGroupMember.setMember_seq(gil.getMember_seq());
+		workGroupMember.setRegdate(TimeUtil.getDateTime());
+		
+		workGroupMember = workGroupMemberRepository.save(workGroupMember);
+		
+		groupInviteLogRepository.deleteById(gil.getSeq());
+		return 1;
+	}
+	
+	public int deleteWorkGroupMember(WorkGroupMember wgm) {
+		workGroupMemberRepository.deleteById(wgm.getSeq());
 		return 1;
 	}
 }

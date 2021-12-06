@@ -2527,6 +2527,12 @@ button {
     line-height: 16px;
 }
 
+.group-members-page .group-members-page-body ul li .group-member-edit {
+	position: absolute;
+	right: 5px;
+	top: 15px;
+}
+
 .group-file-page {
 	margin-top: 20px;
 	margin-bottom: 20px;

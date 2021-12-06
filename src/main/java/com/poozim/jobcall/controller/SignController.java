@@ -250,6 +250,6 @@ public class SignController {
 		
 		LoginUtil.setLoginSession(request, response, member);
 		
-		return (rtnUrl.equals("")? "redirect:/work/" + member.getWork_seq() + "/home" : rtnUrl);
+		return (rtnUrl.equals("")? "redirect:/work/" + member.getWork_seq() + "/home" : "redirect:"+rtnUrl);
 	}
 }

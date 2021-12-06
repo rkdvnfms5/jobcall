@@ -31,7 +31,7 @@
 
 	<select id="getWorkGroupList" parameterType="WorkGroup" resultType="WorkGroup">
 		SELECT wg.*, 
-		(SELECT category_seq FROM WorkCategoryGroup wcg WHERE wcg.group_seq = wg.seq AND wcg.member_seq = #{member_seq}) as category_seq
+		(SELECT category_seq FROM WorkCategoryGroup wcg WHERE wcg.group_seq = wg.seq) as category_seq
 		FROM WorkGroup wg
 		WHERE wg.useyn = 'Y'
 		AND wg.work_seq = #{work_seq}
@@ -134,10 +134,17 @@
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
 		SELECT wc.*, 
-			(SELECT COUNT(*) FROM WorkCategoryGroup wcg WHERE wcg.category_seq = wc.seq AND wcg.member_seq = #{member_seq}) as group_count
+			(SELECT COUNT(*) FROM WorkCategoryGroup wcg WHERE wcg.category_seq = wc.seq) as group_count
 		FROM WorkCategory wc
-		WHERE wc.defaultyn = 'Y'
-		OR wc.member_seq = #{member_seq}
+		WHERE wc.work_seq = #{work_seq}
+		AND
+		<if test="member_seq != null and member_seq != ''">
+			(wc.seq IN (SELECT category_seq FROM WorkCategoryGroup wcg 
+						WHERE wcg.group_seq IN (
+							SELECT group_seq FROM WorkGroupMember wgm WHERE wgm.member_seq = #{member_seq}
+						)) 
+			OR wc.member_seq = #{member_seq})
+		</if>
 	</select>
 	
 	<update id="moveWorkGroupList" parameterType="WorkCategoryGroup">

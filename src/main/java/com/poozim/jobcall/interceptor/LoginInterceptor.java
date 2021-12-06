@@ -19,7 +19,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
 			throws Exception {
 		log.info("------------------------LoginInterCeptor");
 		if(!LoginUtil.getLoginCheck(request, response) || LoginUtil.getLoginMember(request, response) == null) {
-			response.sendRedirect("/sign/login");
+			response.sendRedirect("/sign/login?rtnUrl="+request.getRequestURI());
 			return false;
 		}
 		return super.preHandle(request, response, handler);

@@ -99,7 +99,7 @@ public class SignService {
 		WorkCategory workCategory = new WorkCategory();
 		workCategory.setWork_seq(work.getSeq());
 		workCategory.setMember_seq(member.getSeq());
-		workCategory.setTitle("미분류 그룹");
+		workCategory.setTitle("기본 카테고리");
 		workCategory.setDefaultyn("Y");
 		workCategory.setRegdate(work.getRegdate());
 		

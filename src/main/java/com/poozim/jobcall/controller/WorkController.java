@@ -703,10 +703,52 @@ public class WorkController {
 		return "/work/group_member";
 	}
 	
+	@RequestMapping(value = "/group/{group_seq}/member", method = RequestMethod.DELETE)
+	@WorkLnbSet
+	public View groupMemberDelete(HttpServletRequest request, HttpServletResponse response, Model model,
+			@PathVariable("group_seq") int group_seq) {
+		Member member = LoginUtil.getLoginMember(request, response);
+		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
+			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+			return jsonView;
+		}
+		
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		model.addAttribute("WorkGroup", workGroup);
+		
+		if(workGroup == null || workGroup.getSeq() == 0 || workGroup.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
+			return jsonView;
+		}
+		
+		int delete_member_seq = ServletRequestUtils.getIntParameter(request, "delete_seq", 0);
+		int res = 0;
+		
+		if(delete_member_seq > 0) {
+			WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, delete_member_seq);
+			if(wgm == null) {
+				model.addAttribute("msg", "참여한 멤버가 아닙니다.");
+				return jsonView;
+			}
+			res = workService.deleteWorkGroupMember(wgm);
+		} else {
+			model.addAttribute("msg", "삭제할 회원 번호 정보가 없습니다.");
+			return jsonView;
+		}
+		
+		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
 	@RequestMapping(value = "/group/{group_seq}/invite", method = RequestMethod.GET)
 	@WorkLnbSet
 	public String groupMemberInvitePage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("group_seq") int group_seq) {
+		Member member = LoginUtil.getLoginMember(request, response);
+		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
+			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+			return "/util/alert";
+		}
 		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
 		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
 		model.addAttribute("WorkGroup", workGroup);
@@ -779,11 +821,13 @@ public class WorkController {
 		
 		GroupInviteLog gil = workService.getGroupInviteLog(param.getSeq());
 		gil.setRegdate(TimeUtil.getDateTime());
+		String code = bcryEncoder.encode(gil.getMember_seq() + gil.getRegdate()).replaceAll("\\/", "").replaceAll("\\.", "");
+		gil.setCode(code);
 		
 		res = workService.updateGroupInviteLog(gil);
 		
 		if(res == 1) {
-			String code = bcryEncoder.encode(gil.getMember_seq() + gil.getRegdate()).replaceAll("\\/", "");
+			
 			//send mail
 			String title = "잡콜센터 그룹 : " + workGroup.getName() + "로 초대합니다.";
 			String from = "rkdvnfms5@naver.com";
@@ -1074,11 +1118,45 @@ public class WorkController {
 	public String groupMemberAttendPage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("group_seq") int group_seq,
 			@PathVariable("code") String code) {
+//		
+//		if(true) {
+//			model.addAttribute("msg", "존재하지 않는 아이디입니다.");
+//			return "/util/alert";
+//		}
 		
-		if(true) {
-			model.addAttribute("msg", "존재하지 않는 아이디입니다.");
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		
+		if(workGroup == null || workGroup.getUseyn().equals("N")) {
+			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
 			return "/util/alert";
 		}
+		
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		if(!LoginUtil.getLoginCheck(request, response)) {
+			model.addAttribute("msg", "로그인이 필요합니다.");
+			return "/util/alert";
+		}
+		
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, member.getSeq());
+		
+		if(wgm != null) {
+			model.addAttribute("msg", "이미 그룹에 참여한 멤버입니다.");
+			return "/util/alert";
+		}
+		
+		GroupInviteLog gil = new GroupInviteLog();
+		gil.setCode(code);
+		gil = workService.getGroupInviteLogByCode(gil);
+		
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ : " + member.getSeq());
+		if(member.getSeq() != gil.getMember_seq() || gil.getGroup_seq() != group_seq) {
+			model.addAttribute("msg", "해당 그룹에 초대된 멤버가 아닙니다.");
+			return "/util/alert";
+		}
+		
+		//attend group
+		workService.attendGroup(gil);
 		
 		return "redirect:/work/group/" + group_seq;
 	}

@@ -55,6 +55,7 @@ public class WorkAspect {
 			request.setAttribute("LnbWorkGroupList", workGroupList);
 			
 			WorkCategory workCategory = new WorkCategory();
+			workCategory.setWork_seq(work.getSeq());
 			workCategory.setMember_seq(member.getSeq());
 			List<WorkCategory> workCategoryList = workService.getWorkCategoryList(workCategory);
 			request.setAttribute("LnbWorkCategoryList", workCategoryList);

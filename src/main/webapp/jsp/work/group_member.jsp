@@ -22,16 +22,24 @@
 			</div>
 			<div class="group-members-page-body">
 				<ul class="group-members-list">
-					<c:forEach items="${MemberList}" var="member">
+					<c:forEach items="${MemberList}" var="memberOne">
 						<li>
-							<div class="group-member-profile" onclick="showMemberProfile(${Board.member_seq}, this);" >
+							<div class="group-member-profile" onclick="showMemberProfile(${memberOne.seq}, this);" >
 								<span class="avatar" style="width: 36px; height: 36px; background-image:
-								 url('${empty member.profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png':member.profile}');"></span>
+								 url('${empty memberOne.profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile.png':memberOne.profile}');"></span>
 							</div>
 							<div class="group-member-meta">
-								<div class="group-member-id">${member.id} (${member.name})</div>
-								<div class="group-member-department">${member.department}</div>
+								<div class="group-member-id">${memberOne.id} (${memberOne.name})</div>
+								<div class="group-member-department">${memberOne.department}</div>
 							</div>
+							<c:if test="${member.seq ne memberOne.seq}">
+								<c:if test="${member.auth eq 'master' or member.auth eq 'manager'}">
+									<div class="group-member-edit">
+										<button type="button" class="ra-button" onclick="deleteGroupMember(${memberOne.seq})">내보내기</button>
+									</div>
+								</c:if>
+							</c:if>
+							
 						</li>
 					</c:forEach>
 				</ul>
@@ -44,6 +52,29 @@ $(document).ready(function(){
 	
 })
 
+function deleteGroupMember(member_seq){
+	if(member_seq > 0 && confirm("정말 내보내겠습니까?")){
+		showLoading();
+		$.ajax({
+			url : '/work/group/${WorkGroup.seq}/member',
+			method : 'DELETE',
+			data : {delete_seq : member_seq},
+			dataType : 'JSON',
+			success : function(res) { 
+				if(res.res == 1){
+					location.reload();
+				} else {
+					alert(res.msg);
+				}
+				hideLoading();
+			},
+			error : function(error){
+				alert(error);
+				hideLoading();
+			}
+		})
+	}
+}
 </script>
 </body>
 </html>
