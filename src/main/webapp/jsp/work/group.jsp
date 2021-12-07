@@ -508,7 +508,7 @@
 			    							</div>
 			    							<div class="message-form-submit-control">
 			    								<button type="button" class="ra-button message-form-submit-control__cancel-button" onclick="cancelModifyComment(this)">취소</button>
-			    								<button type="button" id="update-comment-submit" onclick="modifyComment(this)" disabled class="ra-button message-form-submit-control__submit-button ra-button--accent">수정하기</button>
+			    								<button type="button" id="update-comment-submit" onclick="modifyComment(this)" disabled class="update-comment-submit ra-button message-form-submit-control__submit-button ra-button--accent">수정하기</button>
 			    							</div>
 			    							<input type="file" class="comment-modify-attach hide" multiple="multiple" autocomplete="off" name="attachFiles">
 										</div>

@@ -252,4 +252,10 @@ public class SignController {
 		
 		return (rtnUrl.equals("")? "redirect:/work/" + member.getWork_seq() + "/home" : "redirect:"+rtnUrl);
 	}
+	
+	@RequestMapping(value = "/logout")
+	public String doLogout(HttpServletRequest request, HttpServletResponse response, Model model) {
+		LoginUtil.setLogoutSession(request, response);
+		return "redirect:/sign/login";
+	}
 }

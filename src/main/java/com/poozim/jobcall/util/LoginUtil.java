@@ -14,6 +14,12 @@ public class LoginUtil {
 		session.setAttribute("loginCheck", true);
 	}
 	
+	public static void setLogoutSession(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		session.setAttribute("member", null);
+		session.setAttribute("loginCheck", false);
+	}
+	
 	public static boolean getLoginCheck(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		if(session.getAttribute("loginCheck") == null || !(boolean)session.getAttribute("loginCheck")) {

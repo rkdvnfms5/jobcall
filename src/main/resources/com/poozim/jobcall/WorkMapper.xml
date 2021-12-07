@@ -134,7 +134,13 @@
 	
 	<select id="getWorkCategoryList" parameterType="WorkCategory" resultType="WorkCategory">
 		SELECT wc.*, 
-			(SELECT COUNT(*) FROM WorkCategoryGroup wcg WHERE wcg.category_seq = wc.seq) as group_count
+			(SELECT COUNT(*) 
+			FROM WorkCategoryGroup wcg 
+			WHERE wcg.category_seq = wc.seq
+			AND wcg.group_seq IN (
+					SELECT group_seq FROM WorkGroupMember wgm WHERE wgm.member_seq = #{member_seq}
+				)
+			) as group_count
 		FROM WorkCategory wc
 		WHERE wc.work_seq = #{work_seq}
 		AND

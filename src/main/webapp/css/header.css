@@ -43,3 +43,31 @@ button {border: 0 none; border-radius: 0; background-color: transparent; cursor:
     position: relative;
 }
 
+.work-header .work-header-contents .work-header-nav {
+	display: block;
+    position: absolute;
+    top: 25px;
+    right: 280px;
+}
+
+.work-header .work-header-contents .work-header-nav a{
+	padding: 9px 15px 8px; 
+	text-align: center; 
+	font-size: 16px; 
+	line-height: 19px; 
+	font-weight: 500; 
+	color: #757575; 
+	text-decoration: none; 
+	transition : color 0.2s;
+}
+
+.work-header .work-header-contents .work-header-nav .btn-logout a {
+	max-width: 92px; 
+	box-sizing: border-box; 
+	border-radius: 50px; 
+	border: solid 1px #5491f5; 
+	font-size: 14px; 
+	line-height: 17px; 
+	font-weight: 600; 
+	color: #5491f5; 
+}

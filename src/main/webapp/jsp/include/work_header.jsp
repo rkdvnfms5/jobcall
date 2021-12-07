@@ -25,5 +25,12 @@
 				</div>
 			</form>
 		</div>
+		<div class="work-header-nav">
+			<ul>
+				<li class="btn-logout">
+					<a href="/sign/logout">로그아웃</a>
+				</li>
+			</ul>
+		</div>
 	</div>
 </header>

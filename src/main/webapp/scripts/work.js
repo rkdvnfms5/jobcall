@@ -1,3 +1,6 @@
+var mention = "";
+var mentionFlag = false;
+
 function insertCategory(){
 	var title = $(".tmp-cate-editor-cates__item-input").val();
 	
@@ -534,7 +537,7 @@ function getBoardHtml(board, coverFlag, coverClass){
 	} else {
 		
 	}
-	html += '<textarea rows="8" cols="" name="content" id="" class="board-modify-textArea">' + board.content + '</textarea>';
+	html += '<textarea rows="8" cols="" name="content" id="" oninput="checkBoard(this)" class="board-modify-textArea">' + board.content + '</textarea>';
 	html += '<ul class="board-modify-attach-list">';
 	for(var i=0; i<board.workBoardFileList.length; i++){
 		html += '<li><span class="file-name">' + board.workBoardFileList[i].name + ' (' + board.workBoardFileList[i].size + ')</span>';
@@ -678,7 +681,7 @@ function getCommentHtml(comment, coverFlag){
 			html += '</ul></div>';
 		}
 		html += '<div class="comment-body-modify hide">';
-		html += '<textarea rows="8" cols="" name="content" id="" class="comment-modify-textArea">' + comment.content + '</textarea>';
+		html += '<textarea rows="8" cols="" name="content" id="" oninput="checkComment(this)" class="comment-modify-textArea">' + comment.content + '</textarea>';
 		html += '<ul class="comment-modify-attach-list">';
 		for(var i=0; i<comment.commentFileList.length; i++){
 			html += '<li><span class="file-name">' + comment.commentFileList[i].name + ' (' + comment.commentFileList[i].size + ')</span>';
@@ -754,9 +757,9 @@ function getCommentHtml(comment, coverFlag){
 		html += '</span></div>';
 		html += '<div class="message-form-submit-control">';
 		html += '<button type="button" class="ra-button message-form-submit-control__cancel-button" onclick="cancelModifyComment(this)">취소</button>';
-		html += '<button type="button" id="update-comment-submit" onclick="modifyComment(this)" disabled class="ra-button message-form-submit-control__submit-button ra-button--accent">수정하기</button>';
+		html += '<button type="button" id="update-comment-submit" onclick="modifyComment(this)" disabled class="update-comment-submit ra-button message-form-submit-control__submit-button ra-button--accent">수정하기</button>';
 		html += '</div>';
-		html += '<input type="file" class="comment-modify-attach hide" multiple="multiple" autocomplete="off" name="attachFiles">';
+		html += '<input type="file" class="comment-modify-attach hide" multiple="multiple" autocomplete="off" name="attachFiles" onchange="commentModifyAttach(this)">';
 		html += '</div>';
 	}
 	
@@ -1052,6 +1055,25 @@ function checkWorker(obj){
 	}
 }
 
+function checkMention(obj){
+	var inputedKey = $(obj).val().substring($(obj)[0].selectionStart-1);
+	
+	//멘션 입력중인 상태면
+	if(mentionFlag == true){
+		mention += inputedKey;
+	}
+	
+	//멘션 입력중이 아니고 골뱅이 입력하면
+	if(mentionFlag == false && inputedKey == '@'){
+		mentionFlag = true;
+	}
+	
+	//멘션 입력중에 공백이 나오면
+	if(mentionFlag == true && inputedKey == ' '){
+		mentionFlag = false;
+	}
+}
+
 function updateBoardStatus(board_seq, status, obj){
 	if(confirm($(obj).html() + " 상태로 바꾸시겠습니까?")){
 		showLoading();
@@ -1096,6 +1118,8 @@ function checkBoard(obj){
 	} else {
 		$(obj).closest('form').find(".message-form-submit-control__submit-button").attr("disabled", true);
 	}
+	
+	checkMention(obj);
 }
 
 function checkDateType(obj){
@@ -1123,11 +1147,23 @@ function toggleGroupDesc(obj){
 
 function checkComment(obj){
 	var form = $(obj).closest("form");
-	if($.trim(form.find(".comment-input-textArea").val()).length > 0){
-		form.find(".comment-input-btn").attr("disabled", false);
+	
+	if(form.attr("class").indexOf("insert") > -1){
+		if($.trim(form.find(".comment-input-textArea").val()).length > 0){
+			form.find(".comment-input-btn").attr("disabled", false);
+		} else {
+			form.find(".comment-input-btn").attr("disabled", true);
+		}
 	} else {
-		form.find(".comment-input-btn").attr("disabled", true);
+		if($.trim(form.find(".comment-modify-textArea").val()).length > 0){
+			form.find(".update-comment-submit").attr("disabled", false);
+		} else {
+			form.find(".update-comment-submit").attr("disabled", true);
+		}
 	}
+	
+	
+	
 }
 
 function addInputVote(obj){
