@@ -1123,6 +1123,18 @@ body {background-color: #f5f5f5;}
     width: 100%;
 }
 
+div.textarea {
+    background-color: #fcfcfc;
+    width: 100%;
+    border : 1px solid #e3e3e3;
+    height: 150px;
+    overflow-y : scroll;
+}
+
+.wall-comment div.textarea {
+	height: 90px;
+}
+
 .message-form .ProseMirror {
     width: calc(100% - 22px);
     padding: 9px 11px;
@@ -3170,4 +3182,69 @@ button {
     white-space: nowrap;
     text-overflow: ellipsis;
     line-height: 16px;
+}
+
+.textarea-mention-list {
+	position: absolute;
+	width: 250px;
+	border: 1px solid #D5D5D5;
+    border-radius: 2px;
+    background-color: #fff;
+    max-height: 250px;
+    z-index: 13;
+    left: 11px;
+    top: 35px;
+}
+
+.textarea-metion-list ul {
+	overflow-y: auto;
+}
+
+.textarea-mention-list ul li {
+	display: block;
+	cursor: pointer;
+	padding: 7px 8px;
+    min-width: 218px;
+    font-size: 13px;
+    line-height: 15px;
+    border-bottom: 1px solid #D5D5D5;
+}
+
+.textarea-mention-list ul li.hide {display: none;}
+
+.textarea-mention-list ul li:hover {
+	background-color: #ececec;
+}
+
+.textarea-mention-list ul li:last-child {
+	border-bottom: none;
+}
+
+.textarea-mention-list ul li .user-info {
+	display: inline-block;
+}
+
+.textarea-mention-list ul li .user-info .user-info-title{
+	max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 15px;
+    color: #333333;
+}
+
+.textarea-mention-list ul li .user-info .user-info-subtitle{
+	max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    line-height: 15px;
+    color: #999999;
+}
+
+div.textarea span.mention {
+	background-color: #8080c0;
+	font-weight: bold;
 }

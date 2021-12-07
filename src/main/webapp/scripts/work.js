@@ -1,6 +1,3 @@
-var mention = "";
-var mentionFlag = false;
-
 function insertCategory(){
 	var title = $(".tmp-cate-editor-cates__item-input").val();
 	
@@ -114,7 +111,9 @@ function checkBoardValue(obj){
 	var form = $(obj).closest("form");
 	var board_type = form.find("input[name='type']").val();
 	var content = form.find("textarea[name='content']").val();
-	
+	if(form.find("textarea[name='content']").length == 0) {
+		content = form.find("input[name='content']").val();
+	}
 	if($.trim(content) == ''){
 		return false;
 	}
@@ -1056,21 +1055,22 @@ function checkWorker(obj){
 }
 
 function checkMention(obj){
-	var inputedKey = $(obj).val().substring($(obj)[0].selectionStart-1);
+	var text = $(obj).val();	//textarea 내용
+	var cursorIdx = $(obj)[0].selectionStart;	//커서 인덱스
 	
-	//멘션 입력중인 상태면
-	if(mentionFlag == true){
-		mention += inputedKey;
-	}
+	var startIdx = (text.substring(0, cursorIdx).lastIndexOf(" ") == -1? 0 : text.substring(0, cursorIdx).lastIndexOf(" "));
+	//커서 이전에 공백 위치, 없으면 인덱스 0
 	
-	//멘션 입력중이 아니고 골뱅이 입력하면
-	if(mentionFlag == false && inputedKey == '@'){
-		mentionFlag = true;
-	}
+	var endIdx = (text.substring(cursorIdx).indexOf(" ") == -1? text.length : text.substring(cursorIdx).indexOf(" "));
+	//커서 이후에 공백 위치, 없으면 문장의 끝
 	
-	//멘션 입력중에 공백이 나오면
-	if(mentionFlag == true && inputedKey == ' '){
-		mentionFlag = false;
+	var word = $.trim(text.substring(startIdx, endIdx));
+	//커서가 있는 단어
+	
+	var mentionReg = /^@{1}[a-zA-Z0-9]/;
+	
+	if(mentionReg.test(word)){
+		
 	}
 }
 
