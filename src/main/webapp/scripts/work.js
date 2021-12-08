@@ -1,3 +1,6 @@
+var textAreaObj;
+var textAreaRange;
+
 function insertCategory(){
 	var title = $(".tmp-cate-editor-cates__item-input").val();
 	
@@ -337,7 +340,7 @@ function getBoardHtml(board, coverFlag, coverClass){
 	if(coverFlag){ //가장 바깥 태그 포함 여부
 		html += '<div class="wall-board-item ' + coverClass + '">';
 	}
-	html += '<form action="/work/board/"' + board.seq + ' class="updateBoardForm" method="post">';
+	html += '<form action="/work/board/' + board.seq + '" class="updateBoardForm" method="post">';
 	html += '<input type="hidden" name="seq" value="' + board.seq + '" />';
 	html += '<div class="wall-board">';
 	
@@ -460,7 +463,12 @@ function getBoardHtml(board, coverFlag, coverClass){
 	}
 	
 	html += '</div>';
-	html += '<div class="board-body-content">' + replaceAll(board.content, search, "<mark>"+search+"</mark>") + '</div>';
+	if(search.length > 0){
+		html += '<div class="board-body-content">' + replaceAll(decryptXSSHtml(board.content), search, "<mark>"+search+"</mark>") + '</div>';
+	} else {
+		html += '<div class="board-body-content">' + decryptXSSHtml(board.content) + '</div>';
+	}
+	
 	if(board.workBoardFileList.length > 0){
 		html += '<div class="board-body-attach"><div class="board-body-attach-header">';
 		html += '<label class=""><span class="ra-checkbox">';
@@ -536,7 +544,10 @@ function getBoardHtml(board, coverFlag, coverClass){
 	} else {
 		
 	}
-	html += '<textarea rows="8" cols="" name="content" id="" oninput="checkBoard(this)" class="board-modify-textArea">' + board.content + '</textarea>';
+	//html += '<textarea rows="8" cols="" name="content" id="" oninput="checkBoard(this)" class="board-modify-textArea">' + board.content + '</textarea>';
+	html += '<div class="textarea board-modify-textArea" contenteditable="true" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkBoard(this);">' + decryptXSSHtml(board.content) + '</div>';
+	html += '<input type="hidden" name="content" value="">';
+	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '<ul class="board-modify-attach-list">';
 	for(var i=0; i<board.workBoardFileList.length; i++){
 		html += '<li><span class="file-name">' + board.workBoardFileList[i].name + ' (' + board.workBoardFileList[i].size + ')</span>';
@@ -625,7 +636,10 @@ function getBoardHtml(board, coverFlag, coverClass){
 	html += '<form action="/work/comment" class="comment-insert-form" method="post">';
 	html += '<input type="hidden" name="board_seq" value="' + board.seq + '">';
 	html += '<div class="comment-input">';
-	html += '<textarea rows="5" cols="" class="comment-input-textArea" oninput="checkComment(this)" name="content"></textarea>';
+	//html += '<textarea rows="5" cols="" class="comment-input-textArea" oninput="checkComment(this)" name="content"></textarea>';
+	html += '<div class="textarea comment-input-textArea" contenteditable="true" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkComment(this);"></div>';
+	html += '<input type="hidden" name="content" value="">';
+		html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '<ul class="comment-insert-attach-list"></ul>';
 	html += '<div class="comment-input-footer">';
 	html += '<span class="message-form__attach-file" onclick="$(this).siblings(\'.comment-input-attach\').click();">';
@@ -662,7 +676,7 @@ function getCommentHtml(comment, coverFlag){
 	html += '<div class="comment-header-meta-date">' + comment.regdate + '</div>';
 	html += '</div></div>';
 	html += '<div class="comment-body">';
-	html += '<div class="comment-body-content">' + comment.content + '</div>';
+	html += '<div class="comment-body-content">' + decryptXSSHtml(comment.content) + '</div>';
 	if(comment.noticeyn == 'N'){
 		html += '<br>';
 		if(comment.commentFileList.length > 0){
@@ -680,7 +694,10 @@ function getCommentHtml(comment, coverFlag){
 			html += '</ul></div>';
 		}
 		html += '<div class="comment-body-modify hide">';
-		html += '<textarea rows="8" cols="" name="content" id="" oninput="checkComment(this)" class="comment-modify-textArea">' + comment.content + '</textarea>';
+		//html += '<textarea rows="8" cols="" name="content" id="" oninput="checkComment(this)" class="comment-modify-textArea">' + comment.content + '</textarea>';
+		html += '<div class="textarea comment-modify-textArea" contenteditable="true" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkComment(this);">' + decryptXSSHtml(comment.content) + '</div>';
+		html += '<input type="hidden" name="content" value="">';
+		html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 		html += '<ul class="comment-modify-attach-list">';
 		for(var i=0; i<comment.commentFileList.length; i++){
 			html += '<li><span class="file-name">' + comment.commentFileList[i].name + ' (' + comment.commentFileList[i].size + ')</span>';
@@ -818,7 +835,10 @@ function getInsertPlainBoardHtml(){
 	html += '<div class="message-form__body">';
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
-	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<input type="hidden" name="content" value="">';
+	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
 	html += '<ul class="board-insert-attach-list" id="board-insert-attach-list"></ul>';
 	html += '<div class="message-form__footer">';
@@ -872,7 +892,10 @@ function getInsertScheduleBoardHtml(){
 	html += '<div class="message-form__body">';
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
-	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<input type="hidden" name="content" value="">';
+	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
 	html += '<ul class="board-insert-attach-list" id="board-insert-attach-list"></ul>';
 	html += '<div class="message-form__footer">';
@@ -909,7 +932,10 @@ function getInsertRequestBoardHtml(){
 	html += '<div class="message-form__body">';
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
-	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<input type="hidden" name="content" value="">';
+	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
 				
 	html += '<ul class="board-insert-attach-list" id="board-insert-attach-list">';
@@ -960,7 +986,10 @@ function getInsertVoteBoardHtml(){
 	html += '<div class="message-form__body">';
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
-	html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<input type="hidden" name="content" value="">';
+	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
 				
 	html += '<ul class="board-insert-attach-list" id="board-insert-attach-list">';
@@ -1035,6 +1064,16 @@ function getRequestWorkerList(str){
 	return html;
 }
 
+function getMentionList(str){
+	var html = "";
+	$("#worker_list li[class^='" + str + "']").each(function(index, item){
+		
+		$(item).attr("onclick", "setMention('"+$(item).attr("class")+"', '"+str+"')");
+		html += $(item).prop("outerHTML");
+	});
+	return html;
+}
+
 function checkWorker(obj){
 	var worker = $.trim($(obj).val());
 	var form = $(obj).closest('form');
@@ -1055,10 +1094,13 @@ function checkWorker(obj){
 }
 
 function checkMention(obj){
-	var text = $(obj).val();	//textarea 내용
-	var cursorIdx = $(obj)[0].selectionStart;	//커서 인덱스
-	
-	var startIdx = (text.substring(0, cursorIdx).lastIndexOf(" ") == -1? 0 : text.substring(0, cursorIdx).lastIndexOf(" "));
+	//var text = window.getSelection().anchorNode.data;	//멘션 이후 textarea 내용
+	//var cursorIdx = $(obj)[0].selectionStart;	//커서 인덱스
+	//console.log(window.getSelection());
+	//var cursorIdx = window.getSelection().anchorOffset;	//커서 인덱스
+	var text = $(obj).text();
+	var cursorIdx = getCaretIndex(obj);
+	var startIdx = (text.substring(0, cursorIdx).lastIndexOf(" ") == -1? 0 : text.substring(0, cursorIdx).lastIndexOf(" ")+1);
 	//커서 이전에 공백 위치, 없으면 인덱스 0
 	
 	var endIdx = (text.substring(cursorIdx).indexOf(" ") == -1? text.length : text.substring(cursorIdx).indexOf(" "));
@@ -1066,12 +1108,53 @@ function checkMention(obj){
 	
 	var word = $.trim(text.substring(startIdx, endIdx));
 	//커서가 있는 단어
-	
 	var mentionReg = /^@{1}[a-zA-Z0-9]/;
-	
+	var mention_list = $(obj).siblings(".textarea-mention-list");
 	if(mentionReg.test(word)){
+		var html = getMentionList(word.replace("@", ""));
+		textAreaObj = obj;
+		if(html.length > 0){
+			mention_list.find("ul").html(html);
+			mention_list.removeClass("hide");
+		}
 		
+	} else {
+		mention_list.find("ul").empty();
+		mention_list.addClass("hide");
 	}
+	
+	//visible mention list
+	/*if(mention_list.find("li").not(".hide").length == 0){
+		mention_list.hide();
+	} else {
+		mention_list.show();
+	}*/
+}
+
+function setMention(member_id, word){
+//	var html = $(textAreaObj).html();
+//	var text = $(textAreaObj).text();
+//	var preText = text.substring(0, startIdx);
+//	var postText = text.substring(endIdx);
+//	
+//	$(textAreaObj).html(preText + "<span class='mention' contenteditable='false'>@"+member_id+"</span>&nbsp;" + postText);
+	
+	var range = textAreaRange;
+	var mention = document.createElement("span");
+	$(mention).addClass("mention")
+	$(mention).attr("contenteditable", false);
+	$(mention).html("@"+member_id);
+	range.insertNode(mention);
+	
+	$(textAreaObj).siblings(".textarea-mention-list ul").empty();
+	$(textAreaObj).siblings(".textarea-mention-list").addClass("hide");
+	//커서 이동시키기
+	var selection = window.getSelection();
+    selection.collapseToEnd();
+    selection.removeAllRanges();
+    
+    //input hidden값 갱신
+    $(textAreaObj).siblings("input[name='content']").val($(textAreaObj).html());
 }
 
 function updateBoardStatus(board_seq, status, obj){
@@ -1149,13 +1232,13 @@ function checkComment(obj){
 	var form = $(obj).closest("form");
 	
 	if(form.attr("class").indexOf("insert") > -1){
-		if($.trim(form.find(".comment-input-textArea").val()).length > 0){
+		if($.trim(form.find("input[name='content']").val()).length > 0){
 			form.find(".comment-input-btn").attr("disabled", false);
 		} else {
 			form.find(".comment-input-btn").attr("disabled", true);
 		}
 	} else {
-		if($.trim(form.find(".comment-modify-textArea").val()).length > 0){
+		if($.trim(form.find("input[name='content']").val()).length > 0){
 			form.find(".update-comment-submit").attr("disabled", false);
 		} else {
 			form.find(".update-comment-submit").attr("disabled", true);
@@ -1296,3 +1379,21 @@ function setMemberMiniProfile(member){
 	profile.find(".member-worktime").html(member.worktime);
 	profile.find(".member-avatar").css("background-image", "url('" + member.profile + "')");
 }
+
+function getCaretIndex(element) {
+  let position = 0;
+  const isSupported = typeof window.getSelection !== "undefined";
+  if (isSupported) {
+    const selection = window.getSelection();
+    if (selection.rangeCount !== 0) {
+      const range = window.getSelection().getRangeAt(0);
+      textAreaRange = range.cloneRange();
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      position = preCaretRange.toString().length;
+    }
+  }
+  return position;
+}
+

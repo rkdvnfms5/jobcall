@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/jsp/include/taglib.jsp"%>
+<%@ page import="com.poozim.jobcall.util.StringUtil"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -75,27 +76,9 @@
 								<div class="message-form__text-wrap">
 									<div class="react-measure-wrap">
 										<!-- <textarea rows="8" cols="" name="content" id="contentTextArea">@rkdvnfms5</textarea> -->
-										<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings('input[name=content]').val($(this).text())"></div>
+										<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings('input[name=content]').val($(this).html());checkMention(this);"></div>
 										<input type="hidden" name="content" value="">
-										<div class="textarea-mention-list hide">
-											<ul>
-												<li class="rkdvnfms5" onclick="">
-													<span class="avatar" url="https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png" subdomain="poozim" style="width: 30px; height: 30px; background-image: url(&quot;https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png&quot;);">
-														<button class="user-type-badge user-type-badge--x-small user-type-badge--master">
-															<i class="ico ico-master" aria-hidden="true"><svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1"><g id="master" stroke="none" stroke-width="1" fill="#B6B6B6" fill-rule="evenodd"><path d="M6.58747854,2.8805897 C6.59128227,2.89232338 6.59506039,2.90419325 6.59881229,2.91619933 L7.60714286,6.14285714 L9.52356702,2.73588085 C9.53622026,2.7133862 9.5488478,2.69147966 9.56144477,2.67016037 C9.21912618,2.39524243 9,1.97321105 9,1.5 C9,0.671572875 9.67157288,0 10.5,0 C11.3284271,0 12,0.671572875 12,1.5 C12,2.28644211 11.3947734,2.93152596 10.6246794,2.99489219 C10.6247471,2.99596099 10.6248144,2.9970307 10.6248813,2.99810135 L10.9376856,8.00296986 C10.9721009,8.5536144 10.5562834,9 10.0001925,9 L7.25,9 L4.75,9 L1.99980749,9 C1.44762906,9 1.02831477,8.54696369 1.06231438,8.00296986 L1.37511867,2.99810135 C1.37518558,2.9970307 1.3752529,2.99596098 1.37532062,2.9948922 C0.605226663,2.93152597 0,2.28644212 0,1.5 C0,0.671572875 0.671572875,0 1.5,0 C2.32842712,0 3,0.671572875 3,1.5 C3,1.97321634 2.78086892,2.39525187 2.43854375,2.67016959 C2.45114724,2.69148088 2.46377867,2.7133843 2.47643298,2.73588085 L4.39285714,6.14285714 L5.40118771,2.91619933 C5.40493953,2.90419351 5.40871772,2.89232366 5.41252169,2.8805898 C4.87607153,2.65202468 4.5,2.11993044 4.5,1.5 C4.5,0.671572875 5.17157288,0 6,0 C6.82842712,0 7.5,0.671572875 7.5,1.5 C7.5,2.11993036 7.12392858,2.65202453 6.58747854,2.8805897 Z M0,11 C0,10.4477153 0.455760956,10 1.00247329,10 L10.9975267,10 C11.5511774,10 12,10.4438648 12,11 C12,11.5522847 11.544239,12 10.9975267,12 L1.00247329,12 C0.448822582,12 0,11.5561352 0,11 Z"></path></g></svg></i>
-														</button>
-													</span>
-													<div class="user-info">
-														<div class="user-info-title">
-															rkdvnfms5 (김개명)
-														</div>
-														<div class="user-info-subtitle">
-															푸퍼레이션
-														</div>
-													</div>
-												</li>
-											</ul>
-										</div>
+										<div class="textarea-mention-list hide"><ul></ul></div>
    									</div>
 	    						</div>
 	    						<ul class="board-insert-attach-list" id="board-insert-attach-list">
@@ -218,7 +201,7 @@
 									</c:choose>
 								</div>
 								<div class="board-body-content">
-								${Board.content}
+								${StringUtil.decryptXSSHtml(Board.content)}
 								</div>
 								<c:if test="${not empty Board.workBoardFileList}">
 									<div class="board-body-attach">
@@ -295,7 +278,10 @@
 										</c:when>
 										<c:otherwise></c:otherwise>
 									</c:choose>
-									<textarea rows="8" cols="" name="content" id="" class="board-modify-textArea">${Board.content}</textarea>
+									<%-- <textarea rows="8" cols="" name="content" id="" class="board-modify-textArea">${Board.content}</textarea> --%>
+									<div class="textarea board-modify-textArea" contenteditable="true" oninput="$(this).siblings('input[name=content]').val($(this).html());checkMention(this);">${StringUtil.decryptXSSHtml(Board.content)}</div>
+									<input type="hidden" name="content" value="">
+									<div class="textarea-mention-list hide"><ul></ul></div>
 									<ul class="board-modify-attach-list">
 										<c:forEach items="${Board.workBoardFileList}" var="BoardFile">
 											<li>
@@ -417,7 +403,7 @@
 									</div>
 									<div class="comment-body">
 										<div class="comment-body-content">
-										${Comment.content}
+										${StringUtil.decryptXSSHtml(Comment.content)}
 										</div>
 										<c:if test="${Comment.noticeyn eq 'N'}">
 											<br>
@@ -445,7 +431,10 @@
 											</c:if>
 											
 											<div class="comment-body-modify hide">
-												<textarea rows="8" cols="" name="content" id="" class="comment-modify-textArea">${Comment.content}</textarea>
+												<%-- <textarea rows="8" cols="" name="content" id="" class="comment-modify-textArea">${Comment.content}</textarea> --%>
+												<div class="textarea comment-modify-textArea" contenteditable="true" oninput="$(this).siblings('input[name=content]').val($(this).html());checkMention(this);">${StringUtil.decryptXSSHtml(Comment.content)}</div>
+												<input type="hidden" name="content" value="">
+												<div class="textarea-mention-list hide"><ul></ul></div>
 												<ul class="comment-modify-attach-list">
 													<c:forEach items="${Comment.commentFileList}" var="CommentFile">
 														<li>
@@ -542,8 +531,10 @@
 						<form action="/work/comment" class="comment-insert-form" method="post">
 						<input type="hidden" name="board_seq" value="${Board.seq}">
 						<div class="comment-input">
-							<textarea rows="5" cols="" class="comment-input-textArea" name="content"></textarea>
-							
+							<!-- <textarea rows="5" cols="" class="comment-input-textArea" name="content"></textarea> -->
+							<div class="textarea comment-input-textArea" contenteditable="true" oninput="$(this).siblings('input[name=content]').val($(this).html());checkMention(this);"></div>
+							<input type="hidden" name="content" value="">
+							<div class="textarea-mention-list hide"><ul></ul></div>
 							<ul class="comment-insert-attach-list">
 	   						</ul>
 		    						
@@ -622,7 +613,7 @@ $(document).ready(function(){
 	
 	//board modify
 	$(".board-modify-textArea").on('focusin focusout propertychange change keyup paste input', function(){
-		var updateTextArea = $(this).closest(".updateBoardForm").find(".board-modify-textArea");
+		var updateTextArea = $(this).closest(".updateBoardForm").find("input[name='content']");
 		if($.trim(updateTextArea.val()) != ''){
 			$(this).closest(".updateBoardForm").find("#update-submit").attr("disabled", false);
 		} else {
@@ -641,7 +632,7 @@ $(document).ready(function(){
 	
 	//comment insert
 	$(".comment-input-textArea").on('focusin focusout propertychange change keyup paste input', function(){
-		if($.trim($(this).val()) != ''){
+		if($.trim($(this).siblings("input[name='content']").val()) != ''){
 			$(this).closest(".comment-input").find(".comment-input-btn").attr("disabled", false);
 		} else {
 			$(this).closest(".comment-input").find(".comment-input-btn").attr("disabled", true);
@@ -661,7 +652,7 @@ $(document).ready(function(){
 	
 	//comment modify
 	$(".comment-modify-textArea").on('focusin focusout propertychange change keyup paste input', function(){
-		var updateTextArea = $(this).closest(".updateCommentForm").find(".comment-modify-textArea");
+		var updateTextArea = $(this).closest(".updateCommentForm").find("input[name='content']");
 		if($.trim(updateTextArea.val()) != ''){
 			$(this).closest(".updateCommentForm").find("#update-comment-submit").attr("disabled", false);
 		} else {

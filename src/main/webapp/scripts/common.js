@@ -46,3 +46,9 @@ function getIconName(ext){
 	
 	return ext;
 }
+
+function decryptXSSHtml(html){
+	html = html.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#40;/g, "(").replace(/&#41;/g, ")");
+	return html;
+}
+

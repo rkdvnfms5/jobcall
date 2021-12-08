@@ -17,7 +17,10 @@
 			AND (b.member_id = #{search} OR 
 				b.member_name = #{search} OR 
 				b.title LIKE CONCAT('%', #{search}, '%') OR
-				b.content LIKE CONCAT('%', #{search}, '%')
+				<!-- b.content LIKE CONCAT('%', #{search}, '%') -->
+				<![CDATA[
+				REPLACE(REPLACE(b.content, '&lt;span class="mention" contenteditable="false"&gt;', ''), '&lt;/span&gt;', '') LIKE CONCAT('%', ]]>#{search}<![CDATA[, '%')
+				]]>
 				)
 		</if>
 	</sql>

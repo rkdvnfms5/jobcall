@@ -3244,7 +3244,11 @@ button {
     color: #999999;
 }
 
-div.textarea span.mention {
-	background-color: #8080c0;
+div.textarea span.mention, .board-body-content span.mention, .comment-body-content span.mention {
+	background-color: #E7EBF3;
 	font-weight: bold;
+}
+
+.comment-input div.textarea {
+	height: 90px;
 }

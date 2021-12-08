@@ -51,4 +51,9 @@ public class StringUtil {
 		
 		return ext;
 	}
+	
+	public static String decryptXSSHtml(String html) {
+		html = html.replaceAll("&lt;", "\\<").replaceAll("&gt;", "\\>").replaceAll("&#40;", "\\(").replaceAll("&#41;", "\\)");
+		return html;
+	}
 }

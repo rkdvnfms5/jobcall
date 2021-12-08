@@ -109,7 +109,12 @@ public class WorkController {
 		model.addAttribute("WorkBoardList", workBoardList);
 		model.addAttribute("limit", workBoard.getLimit());
 		model.addAttribute("offset",workBoard.getOffset());
+		
 		//get Work Members
+		Member workMember = new Member();
+		workMember.setWork_seq(work.getSeq());
+		List<Member> WorkMemberList = memberService.getMemberList(workMember);
+		model.addAttribute("WorkMemberList", WorkMemberList);
 		
 		return "/work/view";
 	}
@@ -1054,6 +1059,18 @@ public class WorkController {
 		model.addAttribute("limit", workBoard.getLimit());
 		model.addAttribute("offset",workBoard.getOffset());
 		
+		Member member = LoginUtil.getLoginMember(request, response);
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, member.getSeq());
+		
+		if(wgm == null) {
+			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
+			return "/util/alert";
+		}
+		
+		//get group member list
+		List<Member> groupMemberList = memberService.getGroupMemberList(wgm);
+		model.addAttribute("GroupMemberList", groupMemberList);
+		
 		return "/work/group_request";
 	}
 	
@@ -1110,6 +1127,27 @@ public class WorkController {
 		model.addAttribute("total", workService.getWorkBoardCount(workBoard));
 		model.addAttribute("search", workBoard.getSearch());
 		model.addAttribute("group_seq", workBoard.getGroup_seq());
+		
+		//get Work Members
+		if(workBoard.getGroup_seq() > 0) {
+			WorkGroupMember wgm = workService.getWorkGroupMemberOne(workBoard.getGroup_seq(), member.getSeq());
+			
+			if(wgm == null) {
+				model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
+				return "/util/alert";
+			}
+			
+			//get group member list
+			List<Member> groupMemberList = memberService.getGroupMemberList(wgm);
+			model.addAttribute("WorkMemberList", groupMemberList);
+		} else {
+			Member workMember = new Member();
+			workMember.setWork_seq(workBoard.getWork_seq());
+			List<Member> WorkMemberList = memberService.getMemberList(workMember);
+			model.addAttribute("WorkMemberList", WorkMemberList);
+		}
+		
+				
 		return "/work/search";
 	}
 	
