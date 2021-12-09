@@ -83,7 +83,7 @@ function sendAuthCode(){
 	}
 	
 	var email = $("#sign-email").val();
-	
+	showLoading();
 	$.ajax({
 		url : "/sign/get_auth",
 		method : "post",
@@ -91,9 +91,11 @@ function sendAuthCode(){
 		dataType : "json",
 		success : function(res){
 			alert("발송되었습니다.");
+			hideLoading();
 		},
 		error : function(request, status, error){
 			alert("code : " + request.status + "\nmessage : " + request.responseText + "\nerror : " + error);
+			hideLoading();
 		}
 	})
 }

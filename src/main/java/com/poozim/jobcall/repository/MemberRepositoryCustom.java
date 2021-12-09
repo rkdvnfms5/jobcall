@@ -13,4 +13,6 @@ public interface MemberRepositoryCustom{
 	public List<Member> getWorkGroupMemberList(WorkGroupMember wgm);
 	
 	public Member getMemberOne(Member member);
+	
+	public int modifyPassword(Member member);
 }

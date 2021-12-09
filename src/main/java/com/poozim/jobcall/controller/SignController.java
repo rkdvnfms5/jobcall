@@ -19,6 +19,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.View;
 
 import com.poozim.jobcall.model.Member;
@@ -257,5 +258,58 @@ public class SignController {
 	public String doLogout(HttpServletRequest request, HttpServletResponse response, Model model) {
 		LoginUtil.setLogoutSession(request, response);
 		return "redirect:/sign/login";
+	}
+	
+	@RequestMapping(value = "/find", method = RequestMethod.GET)
+	public String goFind(HttpServletRequest request, HttpServletResponse response, Model model) {
+		HttpSession session = request.getSession();
+		session.setAttribute("authYN", "N");
+		return "/sign/find";
+	}
+	
+	@RequestMapping(value = "/password/modify", method = RequestMethod.POST)
+	public View passwordModify(HttpServletRequest request, HttpServletResponse response, Model model,
+			@RequestParam(value = "current_password", required = false) String current_password,
+			@RequestParam(value = "new_password", required = true) String new_password) {
+		Member member;
+		
+		if(LoginUtil.getLoginCheck(request, response)) {
+			member = LoginUtil.getLoginMember(request, response);
+		} else {
+			HttpSession session = request.getSession();
+			String authYN = session.getAttribute("authYN").toString();
+			
+			if(authYN == null || !authYN.equals("Y")) {
+				model.addAttribute("msg", "이메일 인증이 필요합니다.");
+				return jsonView;
+			}
+			
+			member = new Member();
+			String id = ServletRequestUtils.getStringParameter(request, "id", "");
+			String email = ServletRequestUtils.getStringParameter(request, "email", "");
+			
+			member.setId(id);
+			member.setEmail(email);
+			member = memberService.getMemberOneCustom(member);
+		}
+		
+		if(member == null || member.getSeq() == 0 || member.getUseyn().equals("N")) {
+			model.addAttribute("msg", "회원정보가 존재하지 않습니다.");
+			return jsonView;
+		}
+		
+		if(current_password != null && !current_password.equals("")) {
+			if(!bcryEncoder.matches(current_password, member.getPassword())) {
+				model.addAttribute("msg", "비밀번호가 틀립니다.");
+				return jsonView;
+			}
+		}
+		
+		member.setPassword(bcryEncoder.encode(new_password));
+		
+		int res = signService.modifyPassword(member);
+		model.addAttribute("res", res);
+		
+		return jsonView;
 	}
 }

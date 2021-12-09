@@ -6,12 +6,12 @@
 		</h2>
 		<nav class="header-nav">
 			<ul>
-				<li>
+				<!-- <li>
 					<a onclick="alert('준비중입니다.')">서비스 소개</a>
 				</li>
 				<li>
 					<a onclick="alert('준비중입니다.')">도움말</a>
-				</li>
+				</li> -->
 				<li class="btn-signup">
 					<a href="/sign/login">로그인</a>
 				</li>

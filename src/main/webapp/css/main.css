@@ -65,4 +65,31 @@ fieldset.fieldset-group {margin-bottom: 10px;}
 
 .find-password {font-size: 15px; color:#888888 !important; text-decoration: underline !important; font-weight: normal;}
 
+.sign-container {margin-bottom: 100px;}
+#findForm fieldset {position: relative; text-align: left;}
+#findForm .group-label {font-size: 18px; font-weight: 500; margin-bottom: 10px; color: #222222;}
+#findForm .group-label:nth-child(n+2) {margin-top: 30px;}
+#findForm .field-input label {position: absolute; top: 20px; left: 20px; font-size: 15px; color: #444444;}
+#findForm .field-input input {width: 100%; height: 60px; padding: 22px 21px 21px 140px; border: 1px solid #e2e2e2; box-sizing: border-box; font-size: 14px;}
+#findForm .field-input .btn {position: absolute; top: 10px; right: 10px; box-sizing: border-box; padding: 11px 10px 10px; width: 110px; border: 1px solid #e2e2e2; line-height: 17px; font-size: 14px; color: #888888; height: unset; cursor: pointer;}
 
+#findForm fieldset.field-agree-all {padding: 16px 0; border-bottom: 1px solid #e2e2e2;}
+#findForm fieldset.field-agree-all input {background-color: #ffffff;}
+#findForm fieldset .label-text {font-size: 16px; color: #333333; vertical-align: top;}
+.sign-container input[type=checkbox] {position: relative; width: 28px; height: 28px; margin-right: 12px; border: 0;}
+/* .sign-container input[type=checkbox]:after {text-indent: 3px; content: '\e5ca'; font-size: 20px; line-height: 24px; color: #dddddd; display: inline-block; width: 100%; height: 100%; box-sizing: border-box; position: absolute; top: 0; left: 0; border: 1px solid #dddddd;} */
+
+.sign-container .submit-btn {width: 100%; box-sizing: border-box; height: 60px; background-color: #4778d9; border: none; box-shadow: inset 0 0 0 1px #3f6dca; font-size: 16px; font-weight: 400; cursor: pointer; color: #ffffff;}
+.sign-container .submit-btn:disabled {color: rgba(255, 255, 255, 0.5);}
+
+#findForm fieldset.field-agreements {padding: 22px 0;}
+#findForm fieldset.field-agreements li{position: relative; line-height: 24px; margin-bottom: 15px;}
+
+#findForm fieldset .error-msg {display: block; position: absolute; left: 120px; bottom: 15px; font-size: 13px; color: #f44336;}
+#findForm fieldset .success-msg {display: block; position: absolute; left: 120px; bottom: 15px; font-size: 13px; color: #18d626;}
+#findForm fieldset.field-error input {height: 90px; padding-bottom: 51px;}
+#findForm fieldset.field-success input {height: 90px; padding-bottom: 51px;}
+
+#findForm fieldset.field-submit {margin-top: 10px;}
+#findForm fieldset.field-submit .submit-btn {width: 100%; box-sizing: border-box; height: 60px; background-color: #4778d9; border: none; box-shadow: inset 0 0 0 1px #3f6dca; font-size: 16px; font-weight: 400; cursor: pointer; transition: all 3s ease; color: white;}
+#findForm fieldset.field-submit .submit-btn:disabled {color:rgba(255, 255, 255, 0.5);}

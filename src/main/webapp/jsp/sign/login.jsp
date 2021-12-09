@@ -29,7 +29,7 @@
 				</fieldset>
 			</form>
 			
-			<a href="javascript:alert('잘하는 짓이다 :(');" class="find-password">
+			<a href="/sign/find" class="find-password">
 				비밀번호를 잊어버리셨나요?
 			</a>
 			<div class="join-help guide-msg">

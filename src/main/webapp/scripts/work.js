@@ -1138,8 +1138,14 @@ function setMention(member_id, word){
 //	var postText = text.substring(endIdx);
 //	
 //	$(textAreaObj).html(preText + "<span class='mention' contenteditable='false'>@"+member_id+"</span>&nbsp;" + postText);
-	
 	var range = textAreaRange;
+	
+	//기존 word 삭제
+    var removeRange = range.cloneRange();
+    removeRange.setStart(removeRange.startContainer, Number(removeRange.startOffset) - (word.length + 1));
+    removeRange.deleteContents();
+	
+	
 	var mention = document.createElement("span");
 	$(mention).addClass("mention")
 	$(mention).attr("contenteditable", false);
@@ -1155,6 +1161,7 @@ function setMention(member_id, word){
     
     //input hidden값 갱신
     $(textAreaObj).siblings("input[name='content']").val($(textAreaObj).html());
+    
 }
 
 function updateBoardStatus(board_seq, status, obj){

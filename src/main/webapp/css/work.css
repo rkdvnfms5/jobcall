@@ -3252,3 +3252,95 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
 .comment-input div.textarea {
 	height: 90px;
 }
+
+.password-modify-btn {
+	float: right;
+    line-height: 17px;
+    color: #5a86dd;
+    text-decoration: underline;
+}
+
+.dim {
+	width: 100%;
+	height: 100%;
+	z-index: 888;
+	background-color: rgba(0,0,0,0.8);
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+.password-modify .password-modfiy-layer {
+	position:absolute;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 360px;
+    height: 330px;
+    border-radius: 3px;
+    background-color: #fff;
+} 
+
+.password-modify .password-modfiy-layer .password-modfiy-content {
+	
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-header{
+	height: 46px;
+    background-color: #485060;
+    color: #fff;
+    font-size: 15px;
+    line-height: 46px;
+    text-indent: 25px;
+    position: relative;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-header .close-btn {
+	overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 46px;
+    padding: 0 17px;
+    font-size: 18px;
+    color: #fff;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-body{
+	padding: 18px 25px 20px;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-body .input-item {
+	height: 32px;
+	margin-bottom: 5px;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-body .input-item input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 30px;
+    padding: 0 10px;
+}
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-body .info {
+	color: #222222;
+    font-size: 13px;
+    line-height: 20px;
+    margin-bottom: 20px;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-footer {
+	text-align: center;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-footer .submit-btn {
+	border-color: #5884e0;
+	background-color: #5884e0;
+	color: #fff;
+}
+
+.password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-footer .submit-btn:disabled {
+	border-color: rgba(88, 132, 224, 0.2);
+	background-color: rgba(88, 132, 224, 0.7);
+}

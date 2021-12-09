@@ -116,8 +116,6 @@ public class SignService {
 		//oci 버킷 생성
 		
 		String bucketName = work.getSeq() + "_" + TimeUtil.getDateTimeString();
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		System.out.println(LocalDateTime.now().plusYears(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		Date expireDate = new Date(2021, 11, 21);
 		System.out.println(expireDate);
 		try {
@@ -153,5 +151,10 @@ public class SignService {
 		workGroupMember = workGroupMemberRepository.save(workGroupMember);
 		
 		return member;
+	}
+	
+	@Transactional
+	public int modifyPassword(Member member) {
+		return memberRepository.modifyPassword(member);
 	}
 }

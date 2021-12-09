@@ -12,6 +12,7 @@
 	<section class="group-new-page">
 		<header class="page-header group-new-page__header">
 			<h2 class="page-header__title">프로필 관리</h2>
+			<button type="button" class="password-modify-btn" onclick="openPasswordModify()">비밀번호 변경</button>
 		</header>
 		
 		<form id="profileForm" action="/member/${member.seq}" method="post">
@@ -103,12 +104,43 @@
 		</form>
 	</section>
 </article>
+<div class="dim password-modify" style="display: none;">
+	<div class="password-modfiy-layer">
+		<div class="password-modfiy-content">
+			<form class="password-modify-form" id="password-modify-form">
+				<div class="password-modfiy-content-header">
+					<span>비밀번호 변경</span>
+					<button type="button" class="close-btn" onclick="closePasswordModify()"> X </button>
+				</div>
+				<div class="password-modfiy-content-body">
+					<div class="info" style="margin-bottom: 20px;">
+						연속하는 숫자, 생일, 전화번호 등 추측하기 쉬운 개인정보 및 아이디와 유사한 비밀번호는 사용하지 마시기 바랍니다.
+					</div>
+					<div class="password-form">
+						<div class="input-item">
+							<input type="password" name="current_password" placeholder="현재 비밀번호">
+						</div>
+						<div class="input-item">
+							<input type="password" name="new_password" placeholder="새 비밀번호">
+						</div>
+						<div class="input-item">
+							<input type="password" name="re-new_password" placeholder="새 비밀번호 확인">
+						</div>
+					</div>
+				</div>
+				<div class="password-modfiy-content-footer">
+					<button type="button" class="cancel-btn ra-button" onclick="closePasswordModify()">취소</button>
+					<button type="button" class="submit-btn ra-button" disabled="disabled" onclick="modifyPassword()">확인</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 <script>
 $(document).ready(function(){
 	//입력시 확인 버튼 활성화
 	$("#profileForm input, textarea").on('focusin focusout propertychange change keyup paste input', function(){
 		var check = checkProfileValue();
-		console.log(check);
 		if(check){
 			$("#insert-submit").attr("disabled", false);
 		} else {
@@ -121,6 +153,16 @@ $(document).ready(function(){
 	
 	$("input[name='endtime']").timepicker({
 	});
+	
+	//비밀번호 변경
+	$(".password-form input").on("focusin focusout propertychange change keyup paste input", function(){
+		var check = checkPasswordModify(this);
+		if(check){
+			$(".password-modify-form .submit-btn").attr("disabled", false);
+		} else {
+			$(".password-modify-form .submit-btn").attr("disabled", true);
+		}
+	})
 })
 
 function checkProfileValue(){
@@ -179,6 +221,85 @@ function modifyProfile(){
 	})
 }
 
+function openPasswordModify(){
+	$(".password-modify").show();
+	hideWorkHeader();
+}
+
+function closePasswordModify(){
+	$(".password-modify").hide();
+	showWorkHeader();
+}
+
+function checkPasswordModify(obj){
+	var form = $(obj).closest('form');
+	var current = form.find("input[name='current_password']").val();
+	var new_password = form.find("input[name='new_password']").val();
+	var re_password = form.find("input[name='re-new_password']").val();
+	
+	if($.trim(current) == ''){
+		return false;
+	}
+	if($.trim(new_password) == ''){
+		return false;
+	}
+	if($.trim(re_password) == ''){
+		return false;
+	}
+	
+	if(!validatePassword(new_password) || !validatePassword(new_password, re_password)){
+		
+		return false;
+	}
+	
+	return true;
+}
+
+function validatePassword(value){
+	var passwordReg = /^[0-9a-zA-Z!@#$%&]{8,}$/;
+	var bool = false;
+	if(!passwordReg.test(value)){
+		bool = false;
+	} else {
+		bool = true;
+	}
+	
+	return bool;
+}
+
+function validateRePassword(password, re_password){
+	if(password == re_password){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function modifyPassword(){
+	var data = $("#password-modify-form").serialize();
+	
+	showLoading();
+	$.ajax({
+		url : "/sign/password/modify",
+		method : "POST",
+		data : data,
+		dataType : "json",
+		success : function(res){
+			if(res.res == 1){
+				alert("설정 완료");
+				location.reload();
+			} else {
+				alert((res.msg == ''? "설정을 실패했습니다." : res.msg));
+			}
+			
+			hideLoading();
+		},
+		error : function(request, status, error){
+			alert("code : " + request.status + "\nmessage : " + request.responseText + "\nerror : " + error);
+			hideLoading();
+		}
+	})
+}
 </script>
 </body>
 </html>

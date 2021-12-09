@@ -23,7 +23,7 @@
 					</a>
 				</div>
 			</div>
-			<ul class="navbar-mylist">
+			<!-- <ul class="navbar-mylist">
 				<li>
 					<a><span class="mylist-item-text">내글</span></a>
 				</li>
@@ -36,7 +36,7 @@
 				<li>
 					<a><span class="mylist-item-text">내글</span></a>
 				</li>
-			</ul>
+			</ul> -->
 		</div>
 		<c:if test="${member.auth eq 'master' || member.auth eq 'manager'}">
 			<ul class="navbar-member-buttons transparent">
@@ -45,14 +45,14 @@
 				</li>
 			</ul>
 		</c:if>
-		<ul class="navbar-member-buttons navbar-member-buttons-dual">
+		<!-- <ul class="navbar-member-buttons navbar-member-buttons-dual">
 			<li>
 				<a href="#">멤버 &amp; 팀</a>
 			</li>
 			<li>
 				<a href="javascript:alert('준비 중입니다.')">참여가능한 그룹</a>
 			</li>
-		</ul>
+		</ul> -->
 		<div class="navbar-groups">
 			<div class="navbar-groups-new">
 				<a class="groups-new" href="/work/group/new">
@@ -62,7 +62,7 @@
 			<div class="navbar-groups-option">
 				<em class="screen-out">내 그룹목록 설정</em>
 				<a href="/work/category">그룹 카테고리 설정</a>
-				<button>새글읽음처리</button>
+				<!-- <button>새글읽음처리</button> -->
 			</div>
 			<strong class="screen-out">내 그룹목록</strong>
 			<ul class="navbar-groups-list">

@@ -2,6 +2,8 @@ package com.poozim.jobcall.repository;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.QMember;
 import com.poozim.jobcall.model.QWorkGroupMember;
@@ -64,6 +66,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 	}
 
 	@Override
+	@Transactional
 	public Member getMemberOne(Member param) {
 		QMember member = QMember.member;
 		
@@ -74,13 +77,33 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         if(param.getWork_seq() > 0){
             builder.and(member.work_seq.eq(param.getWork_seq()));
         }
-        if (param.getEmail() != null){
+        if (param.getEmail() != null && !param.getEmail().equals("")){
             builder.and(member.email.eq(param.getEmail()));
+        }
+        if (param.getId() != null && !param.getId().equals("")){
+            builder.and(member.id.eq(param.getId()));
+        }
+        if (param.getPassword() != null && !param.getPassword().equals("")){
+            builder.and(member.password.eq(param.getPassword()));
         }
         
 		return queryFactory.selectFrom(member).where(builder).fetchOne();
 	}
-	
+
+	@Transactional
+	@Override
+	public int modifyPassword(Member param) {
+		QMember member = QMember.member;
+		
+		if(param.getSeq() == 0) {
+			return 0;
+		}
+		if(param.getPassword() == null || param.getPassword().equals("")) {
+			return 0;
+		}
+		
+		return (int)queryFactory.update(member).set(member.password, param.getPassword()).where(member.seq.eq(param.getSeq()), member.useyn.eq("Y")).execute();
+	}
 	
 
 }
