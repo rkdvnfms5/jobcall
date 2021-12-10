@@ -923,7 +923,8 @@ function modifyBoard(obj){
 		contentType : false,
 		dataType : 'JSON',
 		success : function(res){
-			location.reload();
+			//location.reload();
+			reloadBoard(updateForm.find("input[name='seq']").val(), $(obj).closest(".wall-board-item"), false);
 		},
 		error : function(request, status, error){
 			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
@@ -1008,7 +1009,8 @@ function insertComment(obj){
 		contentType : false,
 		dataType : 'JSON',
 		success : function(res){
-			location.reload();
+			//location.reload();
+			reloadBoard(insertForm.find("input[name='board_seq']").val(), $(obj).closest(".wall-board-item"), false);
 		},
 		error : function(request, status, error){
 			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
@@ -1139,7 +1141,8 @@ function modifyComment(obj){
 		dataType : 'JSON',
 		success : function(res){
 			if(res.res == 1){
-				location.reload();
+				//location.reload();
+				reloadBoard($(obj).closest(".updateBoardForm").find("input[name='seq']").val(), $(obj).closest(".wall-board-item"), false);
 			}
 			else {
 				alert(res.msg);
