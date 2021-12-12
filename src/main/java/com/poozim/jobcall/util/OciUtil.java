@@ -168,7 +168,8 @@ public class OciUtil {
         String tempDir = "/temp/";
         
         //File object = new File(tempDir + file.getName());
-        File object = File.createTempFile(file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")), "."+ext);
+        //File object = File.createTempFile(file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf(".")), "."+ext);
+        File object = File.createTempFile(objectName.substring(0, objectName.lastIndexOf(".")), "."+ext);
         
         FileUtils.copyInputStreamToFile(file.getInputStream(), object);
         file.getInputStream().close();

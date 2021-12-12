@@ -31,4 +31,11 @@ public class WorkGroup {
 	
 	@Transient
 	private int member_count;
+	
+	@Transient
+	private String search;
+	
+	@Transient
+	private String attendyn;
+	
 }

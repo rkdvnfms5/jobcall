@@ -34,7 +34,11 @@
 
 	<select id="getWorkGroupList" parameterType="WorkGroup" resultType="WorkGroup">
 		SELECT wg.*, 
-		(SELECT category_seq FROM WorkCategoryGroup wcg WHERE wcg.group_seq = wg.seq) as category_seq
+		(SELECT category_seq FROM WorkCategoryGroup wcg WHERE wcg.group_seq = wg.seq) as category_seq,
+		(SELECT COUNT(*) FROM WorkGroupMember wgm WHERE wgm.group_seq = wg.seq) as member_count
+		<if test="member_seq != null and member_seq != ''">
+			,(SELECT IF(wgm.seq &gt; 0, 'Y', 'N') FROM WorkGroupMember wgm WHERE wgm.group_seq = wg.seq AND wgm.member_seq = #{member_seq}) as attendyn
+		</if>
 		FROM WorkGroup wg
 		WHERE wg.useyn = 'Y'
 		AND wg.work_seq = #{work_seq}
@@ -44,6 +48,12 @@
 			OR	
 			(wg.access like 'private' AND wg.seq IN (SELECT group_seq FROM WorkGroupMember WHERE member_seq = #{member_seq}))
 		)
+		<if test="search != null and null != ''">
+			AND (
+				wg.name LIKE CONCAT('%', #{search} ,'%') OR
+				wg.content LIKE CONCAT('%', #{search} ,'%')
+			)
+		</if>
 	</select>
 	
 	<select id="getWorkBoardList" parameterType="WorkBoard" resultMap="workBoardMap">

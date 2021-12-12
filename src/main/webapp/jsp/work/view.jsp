@@ -200,7 +200,7 @@
 									</c:choose>
 									<%-- <textarea rows="8" cols="" name="content" id="" class="board-modify-textArea">${Board.content}</textarea> --%>
 									<div class="textarea board-modify-textArea" contenteditable="true" oninput="$(this).siblings('input[name=content]').val($(this).html());checkMention(this);">${StringUtil.decryptXSSHtml(Board.content)}</div>
-									<input type="hidden" name="content" value="">
+									<input type="hidden" name="content" value="${Board.content}">
 									<div class="textarea-mention-list hide"><ul></ul></div>
 									<ul class="board-modify-attach-list">
 										<c:forEach items="${Board.workBoardFileList}" var="BoardFile">
@@ -274,7 +274,7 @@
 								<ul class="board-setting-menu hide">
 									<c:if test="${Board.member_seq eq member.seq}">
 										<li><button type="button" onclick="modifyBoardForm(this)">수정하기</button></li>
-										<li><button type="button" onclick="deleteBoard(${Board.seq})">삭제하기</button></li>
+										<li><button type="button" onclick="deleteBoard(this)">삭제하기</button></li>
 									</c:if>
 								</ul>
 							</div>
@@ -353,7 +353,7 @@
 											<div class="comment-body-modify hide">
 												<%-- <textarea rows="8" cols="" name="content" id="" class="comment-modify-textArea">${Comment.content}</textarea> --%>
 												<div class="textarea comment-modify-textArea" contenteditable="true" oninput="$(this).siblings('input[name=content]').val($(this).html());checkMention(this);">${StringUtil.decryptXSSHtml(Comment.content)}</div>
-												<input type="hidden" name="content" value="">
+												<input type="hidden" name="content" value="${Comment.content}">
 												<div class="textarea-mention-list hide"><ul></ul></div>
 												<ul class="comment-modify-attach-list">
 													<c:forEach items="${Comment.commentFileList}" var="CommentFile">
@@ -422,7 +422,7 @@
 												</span>
 												<ul class="comment-setting-menu hide">
 													<li><button type="button" onclick="modifyCommentForm(this)">수정하기</button></li>
-													<li><button type="button" onclick="deleteComment(${Comment.seq})">삭제하기</button></li>
+													<li><button type="button" onclick="deleteComment(${Comment.seq}, this)">삭제하기</button></li>
 												</ul>
 											</c:if>
 										</div>
@@ -507,14 +507,6 @@
 	</c:forEach>
 </div>
 <script>
-var board_attache_files = new Array();
-var delete_board_attach_files;
-var board_modify_files = new Array();
-
-var comment_attache_files = new Array();
-var delete_comment_attach_files;
-var comment_modify_files = new Array();
-
 $(document).ready(function(){
 	//board insert
 	$("#contentTextArea").on('focusin focusout propertychange change keyup paste input', function(){
@@ -532,7 +524,7 @@ $(document).ready(function(){
 	});
 	
 	//board modify
-	$(".board-modify-textArea").on('focusin focusout propertychange change keyup paste input', function(){
+	$(".board-modify-textArea").on('click focusin focusout propertychange change keyup paste input', function(){
 		var updateTextArea = $(this).closest(".updateBoardForm").find("input[name='content']");
 		if($.trim(updateTextArea.val()) != ''){
 			$(this).closest(".updateBoardForm").find("#update-submit").attr("disabled", false);
@@ -571,7 +563,7 @@ $(document).ready(function(){
 	});
 	
 	//comment modify
-	$(".comment-modify-textArea").on('focusin focusout propertychange change keyup paste input', function(){
+	$(".comment-modify-textArea").on('click focusin focusout propertychange change keyup paste input', function(){
 		var updateTextArea = $(this).closest(".updateCommentForm").find("input[name='content']");
 		if($.trim(updateTextArea.val()) != ''){
 			$(this).closest(".updateCommentForm").find("#update-comment-submit").attr("disabled", false);
@@ -669,438 +661,6 @@ function scrollPaging(type, obj){
 			}
 		});
 	}
-}
-
-function insertBoard(){
-	var url = $("#insertBoardForm").attr("action");
-	var data = new FormData();
-	var formData = $("#insertBoardForm").serializeArray();
-	
-	$(formData).each(function(index, obj){
-		data.append(obj.name, obj.value);
-	})
-	
-	for(var i=0; i<board_attache_files.length; i++){
-		data.append("attachFiles", board_attache_files[i]);
-	}
-	
-	showLoading();
-	$.ajax({
-		url : url,
-		type : 'POST',
-		enctype: 'multipart/form-data',
-		data : data,
-		processData: false,
-		contentType : false,
-		dataType : 'JSON',
-		success : function(res){
-			location.reload();
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
-			hideLoading();
-		}
-	})
-	
-}
-
-function setBoardInsertAttacheHtml(){
-	if(board_attache_files.length > 0){
-		var html = "";
-		for(var i=0; i<board_attache_files.length; i++){
-			html += '<li><span class="file-name">' + board_attache_files[i].name + ' ('+ board_attache_files[i].size +')</span>';
-			html += '<span class="file-delete" onclick="removeBoardInsertAttache(' + i + ')"> X </span></li>';
-			
-			$("#board-insert-attach-list").empty();
-			$("#board-insert-attach-list").append(html);
-		}
-	} else if(board_attache_files.length == 0) {
-		$("#board-insert-attach-list").empty();
-	}
-	
-}
-
-function removeBoardInsertAttache(index){
-	if(board_attache_files.length > index){
-		board_attache_files.splice(index, 1);
-		setBoardInsertAttacheHtml();
-	}
-}
-
-function deleteBoard(seq){
-	if(confirm("정말 삭제하시겠습니까?")){
-		showLoading();
-		$.ajax({
-			url : '/work/board/' + seq,
-			method : 'DELETE',
-			dataType : 'JSON',
-			success : function(res){
-				if(res.res == 1){
-					alert("삭제되었습니다.");
-					location.reload();
-				} else {
-					alert("삭제를 실패했습니다.\n본인이 작성한 글이 맞는지 확인하세요.");
-					hideLoading();
-				}
-			},
-			error : function(request, status, error){
-				alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
-				hideLoading();
-			}
-		})
-	}
-}
-
-function modifyBoardForm(obj) {
-	var board_body = $(obj).closest(".wall-board").find(".board-body");
-	
-	board_body.find(".board-body-attach").hide();
-	board_body.find(".board-body-content").hide();
-	board_body.find(".board-body-meta").hide();
-	$(obj).closest(".wall-board").find(".board-footer").hide();
-	$(obj).closest(".board-setting-menu").toggleClass("hide");
-	
-	board_body.find(".board-body-modify .board-modify-attach-list").find("li").removeClass("hide");
-	board_body.find(".board-body-modify").show();
-	$(obj).closest(".wall-board").find(".board-footer-modify").show();
-	
-	delete_board_attach_files = new Array();
-	
-	// date time picker
-	var form = $(obj).closest('form');
-	form.find("input[name='startdate']").datepicker({
-		dateFormat : "yy-mm-dd"
-	});
-	
-	form.find("input[name='enddate']").datepicker({
-		dateFormat : "yy-mm-dd"
-	});
-	
-	form.find("input[name='starttime']").timepicker({
-	});
-	
-	form.find("input[name='endtime']").timepicker({
-	});
-}
-
-function cancelModifyBoard(obj){
-	var board_body = $(obj).closest(".wall-board").find(".board-body");
-	
-	board_body.find(".board-body-modify").hide();
-	$(obj).closest(".wall-board").find(".board-footer-modify").hide();
-	
-	board_body.find(".board-body-attach").show();
-	board_body.find(".board-body-content").show();
-	board_body.find(".board-body-meta").show();
-	$(obj).closest(".wall-board").find(".board-footer").show();
-	
-	delete_board_attach_files = null;
-	$("#update-submit").attr("disabled", true);
-	board_modify_files = new Array();
-}
-
-function addDeleteAttacheFiles(boardFile_seq, obj){
-	delete_board_attach_files.push(boardFile_seq);
-	$(obj).closest("li").addClass("hide");
-}
-
-function modifyBoard(obj){
-	var updateForm = $(obj).closest(".updateBoardForm");
-	
-	var url = updateForm.attr("action");
-	var data = new FormData();
-	var formData = updateForm.serializeArray();
-	
-	$(formData).each(function(index, obj){
-		data.append(obj.name, obj.value);
-		
-	})
-	
-	if(board_modify_files.length > 0){
-		for(var i=0; i<board_modify_files.length; i++){
-			if(board_modify_files[i].name != ''){
-				data.append("attachFiles", board_modify_files[i]);
-			}
-		}
-	}
-	
-	if(delete_board_attach_files.length > 0 ){
-		for(var i=0; i<delete_board_attach_files.length; i++){
-			data.append("boardFileSeqList", delete_board_attach_files[i]);
-		}
-	} else {
-		data.append("boardFileSeqList", new Array());
-	}
-	
-	showLoading();
-	
-	$.ajax({
-		url : url,
-		type : 'PUT',
-		enctype: 'multipart/form-data',
-		data : data,
-		processData: false,
-		contentType : false,
-		dataType : 'JSON',
-		success : function(res){
-			location.reload();
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
-			hideLoading();
-		}
-	})
-}
-
-function setBoardModifyAttacheHtml(ul){
-	ul.find('li.added').remove();
-	var array = board_modify_files;
-	if(array.length > 0){
-		var html = "";
-		for(var i=0; i<array.length; i++){
-			html += '<li class="added block"><span class="file-name">' + array[i].name + ' ('+ array[i].size +')</span>';
-			html += '<span class="file-delete" onclick="removeBoardModifyAttache(' + i + ', this)"> X </span></li>';
-			
-		}
-		ul.append(html);
-	}
-	
-}
-
-function removeBoardModifyAttache(index, obj){
-	var ul = $(obj).closest(".updateBoardForm").find(".board-modify-attach-list");
-	if(board_modify_files.length > index){
-		board_modify_files.splice(index, 1);
-		setBoardModifyAttacheHtml(ul);
-	}
-}
-
-function setCommentInsertAttacheHtml(ul){
-	ul.empty();
-	var array = comment_attache_files;
-	if(array.length > 0){
-		var html = "";
-		for(var i=0; i<array.length; i++){
-			html += '<li class="block"><span class="file-name">' + array[i].name + ' ('+ array[i].size +')</span>';
-			html += '<span class="file-delete" onclick="removeCommentInsertAttache(' + i + ', this)"> X </span></li>';
-			
-		}
-		ul.append(html);
-	}
-}
-
-function removeCommentInsertAttache(index, obj){
-	var ul = $(obj).closest(".comment-input").find(".comment-insert-attach-list");
-	if(comment_attache_files.length > index){
-		comment_attache_files.splice(index, 1);
-		setCommentInsertAttacheHtml(ul);
-	}
-}
-
-function insertComment(obj){
-	var insertForm = $(obj).closest(".comment-insert-form");
-	
-	var url = insertForm.attr("action");
-	var data = new FormData();
-	var formData = insertForm.serializeArray();
-	
-	$(formData).each(function(index, obj){
-		data.append(obj.name, obj.value);
-		
-	})
-	
-	if(comment_attache_files.length > 0){
-		for(var i=0; i<comment_attache_files.length; i++){
-			if(comment_attache_files[i].name != ''){
-				data.append("attachFiles", comment_attache_files[i]);
-			}
-		}
-	}
-	
-	showLoading();
-	
-	$.ajax({
-		url : url,
-		type : 'POST',
-		enctype: 'multipart/form-data',
-		data : data,
-		processData: false,
-		contentType : false,
-		dataType : 'JSON',
-		success : function(res){
-			location.reload();
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
-			hideLoading();
-		}
-	})
-}
-
-function modifyCommentForm(obj){
-	var comment_body = $(obj).closest(".wall-comment").find(".comment-body");
-	
-	comment_body.find(".comment-body-attach").hide();
-	comment_body.find(".comment-body-content").hide();
-	$(obj).closest(".wall-comment").find(".comment-footer").hide();
-	$(obj).closest(".comment-setting-menu").toggleClass("hide");
-	
-	comment_body.find(".comment-body-modify .comment-modify-attach-list").find("li").removeClass("hide");
-	comment_body.find(".comment-body-modify").show();
-	$(obj).closest(".wall-comment").find(".comment-footer-modify").show();
-	
-	delete_comment_attach_files = new Array();
-}
-
-function deleteComment(seq){
-	if(confirm("정말 삭제하시겠습니까?")){
-		showLoading();
-		$.ajax({
-			url : '/work/comment/' + seq,
-			method : 'DELETE',
-			dataType : 'JSON',
-			success : function(res){
-				if(res.res == 1){
-					alert("삭제되었습니다.");
-					location.reload();
-				} else {
-					alert("삭제를 실패했습니다.\n본인이 작성한 글이 맞는지 확인하세요.");
-					hideLoading();
-				}
-			},
-			error : function(request, status, error){
-				alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
-				hideLoading();
-			}
-		})
-	}
-}
-
-function cancelModifyComment(obj){
-	var comment_body = $(obj).closest(".wall-comment").find(".comment-body");
-	
-	comment_body.find(".comment-body-modify").hide();
-	$(obj).closest(".wall-comment").find(".comment-footer-modify").hide();
-	
-	comment_body.find(".comment-body-attach").show();
-	comment_body.find(".comment-body-content").show();
-	$(obj).closest(".wall-comment").find(".comment-footer").show();
-	
-	delete_comment_attach_files = null;
-	$("#update-comment-submit").attr("disabled", true);
-	comment_modify_files = new Array();
-}
-
-function addCommentDeleteAttacheFiles(commentFile_seq, obj){
-	delete_comment_attach_files.push(commentFile_seq);
-	$(obj).closest("li").addClass("hide");
-}
-
-function setCommentModifyAttacheHtml(ul){
-	ul.find('li.added').remove();
-	var array = comment_modify_files;
-	if(array.length > 0){
-		var html = "";
-		for(var i=0; i<array.length; i++){
-			html += '<li class="added block"><span class="file-name">' + array[i].name + ' ('+ array[i].size +')</span>';
-			html += '<span class="file-delete" onclick="removeCommentModifyAttache(' + i + ', this)"> X </span></li>';
-			
-		}
-		ul.append(html);
-	}
-	
-}
-
-function removeCommentModifyAttache(index, obj){
-	var ul = $(obj).closest(".updateCommentForm").find(".comment-modify-attach-list");
-	if(comment_modify_files.length > index){
-		comment_modify_files.splice(index, 1);
-		setCommentModifyAttacheHtml(ul);
-	}
-}
-
-function modifyComment(obj){
-	var updateForm = $(obj).closest(".updateCommentForm");
-	
-	var url = updateForm.attr("action");
-	var data = new FormData();
-	var formData = updateForm.serializeArray();
-	
-	$(formData).each(function(index, obj){
-		data.append(obj.name, obj.value);
-		
-	})
-	
-	if(comment_modify_files.length > 0){
-		for(var i=0; i<comment_modify_files.length; i++){
-			if(comment_modify_files[i].name != ''){
-				data.append("attachFiles", comment_modify_files[i]);
-			}
-		}
-	}
-	
-	if(delete_comment_attach_files.length > 0 ){
-		for(var i=0; i<delete_comment_attach_files.length; i++){
-			data.append("commentFileSeqList", delete_comment_attach_files[i]);
-		}
-	} else {
-		data.append("commentFileSeqList", new Array());
-	}
-	
-	showLoading();
-	
-	$.ajax({
-		url : url,
-		type : 'PUT',
-		enctype: 'multipart/form-data',
-		data : data,
-		processData: false,
-		contentType : false,
-		dataType : 'JSON',
-		success : function(res){
-			if(res.res == 1){
-				location.reload();
-			}
-			else {
-				alert(res.msg);
-				hideLoading();
-			}
-		},
-		error : function(request, status, error){
-			alert("code : " + request.status + "\nresponseText : " + request.responseText + "\nerror" + error);
-			hideLoading();
-		}
-	})
-}
-
-function commentInsertAttach(obj){
-	if($.trim($(obj).closest(".comment-input").find(".comment-input-textArea").val()) != ''){
-		$(obj).closest(".comment-input").find(".comment-input-btn").attr("disabled", false);
-	} else {
-		$(obj).closest(".comment-input").find(".comment-input-btn").attr("disabled", true);
-	}
-	
-	comment_attache_files = Array.from($(obj)[0].files);
-	setCommentInsertAttacheHtml($(obj).closest(".comment-input").find(".comment-insert-attach-list"));
-}
-
-function commentModifyAttach(obj){
-	comment_modify_files = Array.from($(obj)[0].files);
-	var ul = $(obj).closest(".updateCommentForm").find(".comment-modify-attach-list");
-	
-	setCommentModifyAttacheHtml(ul);
-}
-
-function boardInsertAttach(obj){
-	board_attache_files = Array.from($(obj)[0].files);
-	setBoardInsertAttacheHtml();
-}
-
-function boardModifyAttach(obj){
-	board_modify_files = Array.from($(obj)[0].files);
-	var ul = $(obj).closest(".updateBoardForm").find(".board-modify-attach-list");
-	
-	setBoardModifyAttacheHtml(ul);
 }
 
 </script>

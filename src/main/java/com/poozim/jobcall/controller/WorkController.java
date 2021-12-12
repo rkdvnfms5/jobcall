@@ -27,6 +27,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -693,6 +694,32 @@ public class WorkController {
 		return "/work/member_modify";
 	}
 	
+	@RequestMapping(value = "/members", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String memberListPage(HttpServletRequest request, HttpServletResponse response, Model model, @ModelAttribute("Member") Member member) {
+		int work_seq = SessionUtil.getWorkInfo(request, response).getSeq();
+		
+		//get Work Members
+		member.setWork_seq(work_seq);
+		List<Member> WorkMemberList = memberService.getMemberList(member);
+		model.addAttribute("MemberList", WorkMemberList);
+		return "/work/member_list";
+	}
+	
+	@RequestMapping(value = "/groups", method = RequestMethod.GET)
+	@WorkLnbSet
+	public String groupListPage(HttpServletRequest request, HttpServletResponse response, Model model, 
+			@ModelAttribute("Group") WorkGroup workGroup) {
+		int work_seq = SessionUtil.getWorkInfo(request, response).getSeq();
+		int member_seq = LoginUtil.getLoginMember(request, response).getSeq();
+		
+		workGroup.setWork_seq(work_seq);
+		workGroup.setMember_seq(member_seq);
+		List<WorkGroup> workGroupList = workService.getWorkGroupList(workGroup);
+		model.addAttribute("WorkGroupList", workGroupList);
+		return "/work/group_list";
+	}
+	
 	@RequestMapping(value = "/group/{group_seq}/member", method = RequestMethod.GET)
 	@WorkLnbSet
 	public String groupMemberPage(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -1187,7 +1214,6 @@ public class WorkController {
 		gil.setCode(code);
 		gil = workService.getGroupInviteLogByCode(gil);
 		
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ : " + member.getSeq());
 		if(member.getSeq() != gil.getMember_seq() || gil.getGroup_seq() != group_seq) {
 			model.addAttribute("msg", "해당 그룹에 초대된 멤버가 아닙니다.");
 			return "/util/alert";

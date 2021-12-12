@@ -44,6 +44,11 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         if (param.getAuth() != null&& !param.getAuth().equals("")){
             builder.and(member.auth.eq(param.getAuth()));
         }
+        if (param.getSearch() != null&& !param.getSearch().equals("")){
+            builder.andAnyOf(member.id.like("%"+param.getSearch()+"%"), 
+            		member.name.like("%"+param.getSearch()+"%"), 
+            		member.department.like("%"+param.getSearch()+"%"));
+        }
         builder.and(member.useyn.eq("Y"));
 		
 		return queryFactory.selectFrom(member).where(builder).fetch();

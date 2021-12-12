@@ -45,14 +45,14 @@
 				</li>
 			</ul>
 		</c:if>
-		<!-- <ul class="navbar-member-buttons navbar-member-buttons-dual">
+		<ul class="navbar-member-buttons navbar-member-buttons-dual">
 			<li>
-				<a href="#">멤버 &amp; 팀</a>
+				<a href="/work/members">멤버</a>
 			</li>
 			<li>
-				<a href="javascript:alert('준비 중입니다.')">참여가능한 그룹</a>
+				<a href="/work/groups">참여가능한 그룹</a>
 			</li>
-		</ul> -->
+		</ul>
 		<div class="navbar-groups">
 			<div class="navbar-groups-new">
 				<a class="groups-new" href="/work/group/new">

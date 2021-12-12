@@ -41,4 +41,7 @@ public class Member implements Serializable{
 	
 	@Transient
 	private int inviteLog_seq;
+	
+	@Transient
+	private String search;
 }

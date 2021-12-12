@@ -3321,7 +3321,6 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
     height: 30px;
     padding: 0 10px;
 }
-}
 
 .password-modify .password-modfiy-layer .password-modfiy-content .password-modfiy-content-body .info {
 	color: #222222;
@@ -3344,3 +3343,210 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
 	border-color: rgba(88, 132, 224, 0.2);
 	background-color: rgba(88, 132, 224, 0.7);
 }
+
+.work-basic-header {
+	border-bottom: 2px solid #6c6c6c;
+}
+
+.work-basic-header-title {
+	padding-bottom: 10px;
+    font-weight: 200;
+    font-size: 24px;
+    line-height: 32px;
+    color: #333;
+    display: inline-block;
+}
+
+.work-basic-header-title .info {
+	color: #497BD8;
+}
+
+.work-basic-page .search-form {
+	float: right;
+}
+
+.work-basic-page .search-form .search-input {
+	width: 141px;
+    height: 17px;
+    padding: 6px 37px 7px 11px;
+    border: 1px solid #e3e3e4;
+    border-radius: 32px;
+    font-size: 13px;
+    line-height: 17px;
+    background-color: #fff;
+    outline: none;
+}
+
+.work-basic-page .search-form  .search-btn {
+	overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 37px;
+    height: 32px;
+}
+
+.work-basic-content {
+	margin-top: 30px;
+}
+
+.work-basic-content .work-basic-content-header {
+}
+
+.work-basic-content .work-basic-content-body .member-list-header {
+	margin-top: 22px;
+    padding: 10px 18px 10px;
+    border: 1px solid #DCDFE4;
+    background-color: #f0f2f6;
+    font-size: 13px;
+    line-height: 16px;
+}
+
+.work-basic-content .work-basic-content-body .member-list-header span {
+	font-weight: 600;
+}
+
+.member-list-body {
+	background-color: #fff;
+    font-size: 12px;
+    color: #7e7e7e;
+    line-height: 16px;
+    border: solid 1px #DCDFE4;
+    outline: none;
+    box-sizing: border-box;
+    direction: ltr;
+    height: auto;
+    position: relative;
+    width: 733px;
+    will-change: transform;
+    overflow: hidden;
+}
+
+.member-list-body ul.members-list li{
+	position: relative;
+	display: inline-block;
+	margin: 0;
+	border-bottom: solid 1px #DCDFE4;
+	
+	padding: 11px 14px;
+    min-width: 218px;
+    font-size: 13px;
+    line-height: 15px;
+    
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: #333333;
+    white-space: nowrap;
+	
+	width: 337px;
+}
+
+.member-list-body ul.members-list li:nth-child(2n-1) {
+	float: left;
+	border-right: solid 1px #DCDFE4;
+}
+
+.member-list-body ul.members-list li:nth-child(2n) {
+	float: right;
+}
+
+.member-list-body ul.members-list .member-meta{
+	padding-left: 11px;
+}
+
+.member-list-body ul.members-list .member-meta .member-id {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 22px;
+    color: #333333;
+    font-weight: 600;
+}
+
+.member-list-body ul.members-list li .member-meta .member-department {
+	max-width: 200px;
+    color: #999999;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 16px;
+}
+
+.member-list-body ul.members-list li .member-edit {
+	position: absolute;
+	right: 5px;
+	top: 15px;
+}
+
+.group-list-area .group-list li.group-item {
+    float: left;
+    width: 48.5%;
+    border-radius: 3px;
+    padding: 17px 20px 14px;
+    margin-bottom: 10px;
+    margin-left: 1.5%;
+    color: #878787;
+    border: 1px solid #dcdfe4;
+    border-radius: 3px;
+    background-color: #fff;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.group-list-area .group-list li.group-item .group-item-title {
+    overflow: hidden;
+    margin-bottom: 7px;
+    font-size: 17px;
+    line-height: 20px;
+    color: #181a1c;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.group-list-area .group-list li.group-item .group-item-info {
+    display: block;
+    display: -webkit-box;
+    overflow: hidden;
+    word-break: break-all;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    height: 32px;
+    margin-bottom: 5px;
+    line-height: 16px;
+}
+
+.group-list-area .group-list li.group-item .group-item-footer {
+	font-size: 14px;
+    line-height: 30px;
+}
+
+.group-list-area .group-list li.group-item .group-item-footer .group-members .primary {
+    color: #497BD8;
+}
+
+.group-list-area .group-list li.group-item .group-item-footer .group-exit-button {
+	border-color: #497BD8;
+    background-color: #497BD8;
+    display: inline-block;
+    padding: 7px 13px 6px;
+    border: 1px solid #fff;
+    border-radius: 100px;
+    font-weight: 500;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 15px;
+    color: #fafbfc;
+    vertical-align: top;
+    -webkit-transition: background-color .1s linear;
+    transition: background-color .1s linear;
+    float: right;
+}
+
+
+
