@@ -50,7 +50,7 @@
 				<a href="/work/members">멤버</a>
 			</li>
 			<li>
-				<a href="/work/groups">참여가능한 그룹</a>
+				<a href="/work/groups">그룹</a>
 			</li>
 		</ul>
 		<div class="navbar-groups">
