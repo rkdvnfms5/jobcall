@@ -18,6 +18,9 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 		<class>com.poozim.jobcall.model.BoardVote</class>
 		<class>com.poozim.jobcall.model.BoardVoteMember</class>
 		<class>com.poozim.jobcall.model.GroupInviteLog</class>
+		<class>com.poozim.jobcall.model.WorkChat</class>
+		<class>com.poozim.jobcall.model.WorkChatMember</class>
+		<class>com.poozim.jobcall.model.WorkChatLog</class>
 		
 		<properties>
 			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->
