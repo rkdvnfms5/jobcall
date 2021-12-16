@@ -16,11 +16,13 @@ import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoardFile;
+import com.poozim.jobcall.model.WorkChatMember;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.MemberRepository;
 import com.poozim.jobcall.repository.WorkBoardRepository;
+import com.poozim.jobcall.repository.WorkChatRepository;
 import com.poozim.jobcall.repository.WorkRepository;
 import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.OciUtil;
@@ -42,6 +44,9 @@ public class MemberService {
 	
 	@Autowired
 	private MemberMapper memberMapper;
+	
+	@Autowired
+	private WorkChatRepository workChatRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder bcryEncoder;
@@ -106,9 +111,14 @@ public class MemberService {
 		
 		member = memberRepository.save(member);
 		
-		//Board, Comment 회원 정보 수정
+		//Board, Comment, Chat 회원 정보 수정
 		workBoardRepository.updateMemberProfile(member);
 		commentRepository.updateMemberProfile(member);
+		
+		WorkChatMember wcm = new WorkChatMember();
+		wcm.setTarget_seq(member.getSeq());
+		wcm.setTarget_profile(member.getProfile());
+		workChatRepository.updateWorkChatMember(wcm);
 		
 		//회원 세션 수정
 		LoginUtil.setLoginSession(request, response, member);

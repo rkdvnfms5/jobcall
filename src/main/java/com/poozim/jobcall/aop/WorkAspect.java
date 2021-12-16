@@ -20,7 +20,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.poozim.jobcall.model.Member;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkCategory;
+import com.poozim.jobcall.model.WorkChatMember;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.service.ChatService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.RedisUtil;
@@ -32,6 +34,9 @@ public class WorkAspect {
 	
 	@Autowired
 	private WorkService workService;
+	
+	@Autowired
+	private ChatService chatService;
 	
 	@Before("@annotation(com.poozim.jobcall.aop.WorkLnbSet)")
 	//@Before("execution(* com.poozim.jobcall.controller.WorkController.*(...))")
@@ -60,6 +65,11 @@ public class WorkAspect {
 			List<WorkCategory> workCategoryList = workService.getWorkCategoryList(workCategory);
 			request.setAttribute("LnbWorkCategoryList", workCategoryList);
 			
+			//Chat List
+			WorkChatMember wcm = new WorkChatMember();
+			wcm.setWork_seq(work.getSeq());
+			wcm.setMember_seq(member.getSeq());
+			request.setAttribute("WorkChatList", chatService.getWorkChatMemberList(wcm));
 		}
 	}
 }

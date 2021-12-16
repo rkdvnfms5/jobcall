@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.Data;
 
@@ -18,4 +19,10 @@ public class WorkChatLog {
 	private String message;
 	private String confirmyn;
 	private String regdate;
+	
+	@Transient
+	private int limit = 30;
+	
+	@Transient
+	private int offset = 0;
 }

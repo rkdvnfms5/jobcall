@@ -345,4 +345,12 @@
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
+	<select id="getWorkChatMemberListMapper" parameterType="WorkChatMember" resultType="WorkChatMember">
+		SELECT wcm.*, 
+			(SELECT message FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_msg
+		FROM WorkChatMember wcm
+		WHERE wcm.member_seq = #{member_seq}
+		AND wcm.work_seq = #{work_seq}
+	</select>
+	
 </mapper>

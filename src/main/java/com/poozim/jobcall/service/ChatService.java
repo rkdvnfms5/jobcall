@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.WorkChat;
 import com.poozim.jobcall.model.WorkChatLog;
 import com.poozim.jobcall.model.WorkChatMember;
@@ -24,6 +25,9 @@ public class ChatService {
 	@Autowired
 	private WorkChatMemberRepository chatMemberRepository;
 	
+	@Autowired
+	private WorkMapper workMapper;
+	
 	public List<WorkChat> getWorkChatList(int member_seq){
 		return chatRepository.getWorkChatList(member_seq);
 	}
@@ -32,14 +36,23 @@ public class ChatService {
 		return chatRepository.getWorkChatOne(workChat);
 	}
 	
-	public int insertWorkChat(WorkChat workChat) {
+	public WorkChat insertWorkChat(WorkChat workChat) {
 		workChat = chatRepository.save(workChat);
-		return workChat.getSeq();
+		return workChat;
+	}
+	
+	public List<WorkChatLog> getWorkChatLogList(WorkChatLog workChatLog){
+		
+		return chatRepository.getWorkChatLogList(workChatLog);
 	}
 	
 	public int insertWorkChatLog(WorkChatLog workChatLog) {
 		chatLogRepository.save(workChatLog);
 		return 1;
+	}
+	
+	public List<WorkChatMember> getWorkChatMemberList(WorkChatMember workChatMember){
+		return workMapper.getWorkChatMemberListMapper(workChatMember);
 	}
 	
 	public int insertWorkChatMember(WorkChatMember workChatMember) {

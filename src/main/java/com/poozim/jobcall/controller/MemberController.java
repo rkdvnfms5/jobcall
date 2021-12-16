@@ -103,7 +103,7 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/{seq}", method = RequestMethod.GET)
-	public View getMemberList(HttpServletRequest request, HttpServletResponse response, Model model, Member member,
+	public View getMemberOne(HttpServletRequest request, HttpServletResponse response, Model model, Member member,
 			@PathVariable("seq") int seq) {
 		if(!LoginUtil.getLoginCheck(request, response)) {
 			model.addAttribute("msg", "로그인이 필요합니다.");
