@@ -10,6 +10,12 @@ import com.poozim.jobcall.model.WorkChatLog;
 import com.poozim.jobcall.model.WorkChatMember;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.dml.UpdateClause;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 
@@ -44,9 +50,22 @@ public class WorkChatRepositoryCustomImpl implements WorkChatRepositoryCustom {
 		if(param.getMember_seq() > 0 && param.getTarget_member_seq() > 0) {
 			List<Integer> myChatSeqList = 
 					queryFactory.select(wcm.chat_seq).from(wcm).where(wcm.member_seq.eq(param.getMember_seq())).fetch();
-			
-			int workChat_seq = queryFactory.select(wcm.chat_seq).from(wcm).where(wcm.chat_seq.in(myChatSeqList), wcm.member_seq.eq(param.getTarget_member_seq())).fetchOne();
-			builder.and(workChat.seq.eq(workChat_seq));
+			if(myChatSeqList == null || myChatSeqList.isEmpty()) {
+				return null;
+			}
+			JPAQuery<Integer> workChat_seq = queryFactory.select(wcm.chat_seq)
+					.from(wcm)
+					.where(wcm.chat_seq.in(myChatSeqList), 
+							wcm.member_seq.eq(param.getTarget_member_seq()));
+			if(workChat_seq == null) {
+				return null;
+			}
+			if(workChat_seq.fetchOne() == null) {
+				return null;
+			}
+			int chat_seq = workChat_seq.fetchOne();
+					
+			builder.and(workChat.seq.eq(chat_seq));
 		}
 		
 		
@@ -56,13 +75,52 @@ public class WorkChatRepositoryCustomImpl implements WorkChatRepositoryCustom {
 	@Override
 	public List<WorkChatLog> getWorkChatLogList(WorkChatLog param) {
 		QWorkChatLog wcl = QWorkChatLog.workChatLog;
-		return queryFactory.selectFrom(wcl).where(wcl.chat_seq.eq(param.getChat_seq())).orderBy(wcl.regdate.desc()).limit(param.getLimit()).offset(param.getOffset()).fetch();
+		QWorkChatLog wcl2 = QWorkChatLog.workChatLog;
+		return queryFactory.from(wcl).select(Projections.bean(WorkChatLog.class, 
+				ExpressionUtils.as(
+				new CaseBuilder()
+				.when(wcl.seq.eq(JPAExpressions.select(wcl2.seq.min()).from(wcl2).where(wcl2.regdate.gt(
+						Expressions.stringTemplate("DATE_FORMAT({0}, {1})", wcl.regdate, "%Y-%m-%d")
+						)))).then("Y")
+				.otherwise("N")
+				,"firstyn"),
+				wcl.seq, wcl.chat_seq, wcl.member_seq, wcl.message, wcl.src, wcl.file_name, wcl.object_name, wcl.confirmyn, wcl.regdate)
+				)
+				.where(wcl.chat_seq.eq(param.getChat_seq()))
+				.orderBy(wcl.regdate.desc(), wcl.seq.desc())
+				.offset(param.getOffset())
+				.limit(param.getLimit()).fetch();
 	}
 
 	@Override
 	public List<WorkChatMember> getWorkChatMemberList(WorkChatMember param) {
 		QWorkChatMember wcm = QWorkChatMember.workChatMember;
-		return queryFactory.selectFrom(wcm).where(wcm.member_seq.eq(param.getMember_seq()), wcm.work_seq.eq(param.getWork_seq())).fetch();
+		QWorkChatLog wcl = QWorkChatLog.workChatLog;
+		
+		BooleanBuilder builder = new BooleanBuilder();
+		if(param.getSeq() > 0) {
+			builder.and(wcm.seq.eq(param.getSeq()));
+		}
+		if(param.getMember_seq() > 0) {
+			builder.and(wcm.member_seq.eq(param.getMember_seq()));
+		}
+		if(param.getWork_seq() > 0) {
+			builder.and(wcm.work_seq.eq(param.getWork_seq()));
+		}
+		if(param.getChat_seq() > 0) {
+			builder.and(wcm.chat_seq.eq(param.getChat_seq()));
+		}
+		
+		return queryFactory.select(Projections.bean(WorkChatMember.class, 
+				ExpressionUtils.as(JPAExpressions.select(wcl.message)
+				.from(wcl)
+				.where(wcl.chat_seq.eq(wcm.chat_seq))
+				.orderBy(wcl.regdate.desc())
+				,"last_msg"),
+				wcm.seq, wcm.chat_seq, wcm.work_seq, wcm.title, wcm.member_seq, wcm.target_seq, wcm.target_profile, wcm.regdate)
+				)
+				.from(wcm)
+				.where(builder).fetch();
 	}
 
 	@Override

@@ -52,3 +52,13 @@ function decryptXSSHtml(html){
 	return html;
 }
 
+
+function showChatLoading(){
+	$("#chat-loading-dim").show();
+}
+
+function hideChatLoading(){
+	$("#chat-loading-dim").hide();
+}
+
+

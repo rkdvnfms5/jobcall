@@ -24,4 +24,7 @@ public class WorkChatMember {
 	
 	@Transient
 	private String last_msg;
+	
+	@Transient
+	private String last_src;
 }

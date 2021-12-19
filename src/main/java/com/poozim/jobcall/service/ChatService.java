@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.WorkChat;
@@ -37,13 +38,21 @@ public class ChatService {
 	}
 	
 	public WorkChat insertWorkChat(WorkChat workChat) {
-		workChat = chatRepository.save(workChat);
+		//workChat = chatRepository.save(workChat);
+		workChat = chatRepository.saveAndFlush(workChat);
 		return workChat;
 	}
 	
+	@Transactional
 	public List<WorkChatLog> getWorkChatLogList(WorkChatLog workChatLog){
 		
 		return chatRepository.getWorkChatLogList(workChatLog);
+	}
+	
+	@Transactional
+	public List<WorkChatLog> getWorkChatLogListMapper(WorkChatLog workChatLog){
+		
+		return workMapper.getWorkChatLogListMapper(workChatLog);
 	}
 	
 	public int insertWorkChatLog(WorkChatLog workChatLog) {
@@ -52,11 +61,17 @@ public class ChatService {
 	}
 	
 	public List<WorkChatMember> getWorkChatMemberList(WorkChatMember workChatMember){
+		return chatRepository.getWorkChatMemberList(workChatMember);
+	}
+	
+	public List<WorkChatMember> getWorkChatMemberListMapper(WorkChatMember workChatMember){
 		return workMapper.getWorkChatMemberListMapper(workChatMember);
 	}
 	
+	@Transactional
 	public int insertWorkChatMember(WorkChatMember workChatMember) {
-		chatMemberRepository.save(workChatMember);
+		//chatMemberRepository.save(workChatMember);
+		chatMemberRepository.saveAndFlush(workChatMember);
 		return 1;
 	}
 	

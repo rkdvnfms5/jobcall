@@ -10,6 +10,7 @@ import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkCategoryGroup;
+import com.poozim.jobcall.model.WorkChatLog;
 import com.poozim.jobcall.model.WorkChatMember;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupFile;
@@ -41,4 +42,6 @@ public interface WorkMapper {
 	public List<Map<String, Object>> getGroupFileList(WorkGroupFile wgf);
 	
 	public List<WorkChatMember> getWorkChatMemberListMapper(WorkChatMember wcm);
+	
+	public List<WorkChatLog> getWorkChatLogListMapper(WorkChatLog wcl);
 }

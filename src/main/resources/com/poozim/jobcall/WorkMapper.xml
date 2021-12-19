@@ -347,10 +347,20 @@
 	
 	<select id="getWorkChatMemberListMapper" parameterType="WorkChatMember" resultType="WorkChatMember">
 		SELECT wcm.*, 
-			(SELECT message FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_msg
+			(SELECT message FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_msg,
+			(SELECT wcl.src FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_src
 		FROM WorkChatMember wcm
 		WHERE wcm.member_seq = #{member_seq}
 		AND wcm.work_seq = #{work_seq}
+	</select>
+	
+	<select id="getWorkChatLogListMapper" parameterType="WorkChatLog" resultType="WorkChatLog">
+		SELECT IF(wcl.seq = (SELECT MIN(wcl2.seq) FROM WorkChatLog wcl2 WHERE wcl2.regdate &gt;= DATE_FORMAT(wcl.regdate, '%Y-%m-%d')), 'Y', 'N') as firstyn
+			,wcl.*
+		FROM WorkChatLog wcl 
+		WHERE chat_seq = #{chat_seq}
+		ORDER BY wcl.regdate desc, wcl.seq desc
+		LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
 </mapper>

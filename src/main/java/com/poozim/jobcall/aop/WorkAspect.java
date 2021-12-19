@@ -69,7 +69,7 @@ public class WorkAspect {
 			WorkChatMember wcm = new WorkChatMember();
 			wcm.setWork_seq(work.getSeq());
 			wcm.setMember_seq(member.getSeq());
-			request.setAttribute("WorkChatList", chatService.getWorkChatMemberList(wcm));
+			request.setAttribute("WorkChatList", chatService.getWorkChatMemberListMapper(wcm));
 		}
 	}
 }

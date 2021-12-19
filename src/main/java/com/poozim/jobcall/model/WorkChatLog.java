@@ -17,6 +17,9 @@ public class WorkChatLog {
 	private int chat_seq;
 	private int member_seq;
 	private String message;
+	private String src;
+	private String file_name;
+	private String object_name;
 	private String confirmyn;
 	private String regdate;
 	
@@ -25,4 +28,7 @@ public class WorkChatLog {
 	
 	@Transient
 	private int offset = 0;
+	
+	@Transient
+	private String firstyn;
 }
