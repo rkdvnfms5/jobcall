@@ -17,4 +17,6 @@ public interface WorkChatRepositoryCustom {
 	public List<WorkChatMember> getWorkChatMemberList(WorkChatMember workChatMember);
 	
 	public int updateWorkChatMember(WorkChatMember workChatMember);
+	
+	public int updateWorkChatLog(WorkChatLog workChatLog);
 }

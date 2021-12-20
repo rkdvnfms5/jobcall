@@ -3639,6 +3639,7 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
 
 .work-basic-layout-chat .chatbar .chat-list-content ul li .chat-meta {
 	padding-left: 11px;
+	position: relative;
 }
 
 .work-basic-layout-chat .chatbar .chat-list-content ul li .chat-meta .chat-member {
@@ -3660,6 +3661,20 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
     white-space: nowrap;
     text-overflow: ellipsis;
     line-height: 16px;
+}
+
+.work-basic-layout-chat .chatbar .chat-list-content ul li .chat-meta .no-confirm-count {
+	position:absolute;
+	color: #fff;
+	background-color: #e47565;
+	padding-left:5px;
+	padding-right:5px;
+	height: 17px;
+	border-radius: 50%;
+	text-align: center;
+	top: 50%;
+	transform: translate(0%, -50%);
+	right: 30px;
 }
 
 .work-basic-layout-chat .chatbar .chat-list-content ul li .chat-meta .chat-last-msg.new {

@@ -27,4 +27,8 @@ public class WorkChatMember {
 	
 	@Transient
 	private String last_src;
+	
+	@Transient
+	private int no_confirm_count;
+	
 }

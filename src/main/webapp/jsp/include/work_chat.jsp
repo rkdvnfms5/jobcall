@@ -18,9 +18,23 @@
 							<div class="chat-meta">
 								<div class="chat-member">${chat.title}</div>
 								<div class="chat-last-msg">${not empty chat.last_src? '파일':chat.last_msg}</div>
+								<c:if test="${chat.no_confirm_count gt 0}">
+									<div class="no-confirm-count">${chat.no_confirm_count}</div>
+								</c:if>
 							</div>
 						</li>
 					</c:forEach>
+					<!-- <li ondblclick="">
+						<div class="chat-profile" >
+							<span class="avatar" style="width: 36px; height: 36px; background-image:
+							 url('https://t1.daumcdn.net/agit_resources/images/empty_profile.png');"></span>
+						</div>
+						<div class="chat-meta">
+							<div class="chat-member">rkdvnfms (감감감) 저기</div>
+							<div class="chat-last-msg">마지막 메세지</div>
+							<div class="no-confirm-count">15</div>
+						</div>
+					</li> -->
 				</ul>
 			</div>
 			<div class="chat-list-add">
@@ -294,8 +308,10 @@ function openChatView(chat_seq, title){
 				//채팅내용 스크롤 맨 아래로
 				$('.chat-view-content').scrollTop($('.chat-view-content').prop('scrollHeight'));
 				
-				//반짝이던 채팅방이면 반짝임 삭제
-				$(".chat-list-content-ul input[value="+chat_seq+"]").closest("li").removeClass("notify");
+				//반짝이던 채팅방이면 반짝임, 안 읽은 메세지 수 삭제
+				var target_li = $(".chat-list-content-ul input[value="+chat_seq+"]").closest("li");
+				target_li.removeClass("notify");
+				target_li.find(".no-confirm-count").remove();
 				
 				//페이징 파라미터 설정
 				$("#chat_view_form input[name='limit']").val(res.WorkChatLog.limit);
@@ -305,6 +321,8 @@ function openChatView(chat_seq, title){
 				pagingFlag = false;
 			}
 			
+			//update confirmyn Y
+			updateChatLog(chat_seq, 0, Number(member_seq));
 		}
 	})
 }
@@ -323,6 +341,10 @@ function receiveMsg(msg) {
 		var tempHtml = target_li.prop("outerHTML");
 		target_li.remove();
 		$(".chat-list-content-ul").prepend(tempHtml);
+		
+		//update confirm Y
+		updateChatLog(msg.chat_seq, msg.seq, Number('${member.seq}'));
+		
 	}
 	else { //그렇지 않은 경우
 		var target_li = $(".chat-list-content-ul input[value="+msg.chat_seq+"]").closest("li");
@@ -331,9 +353,21 @@ function receiveMsg(msg) {
 			target_li.addClass("notify");
 			var last_msg = (msg.src == null || msg.src == undefined? msg.message:'파일');
 			target_li.find(".chat-last-msg").html(last_msg);
+			
+			//안읽은 숫자 ++
+			if(target_li.find(".no-confirm-count").length > 0){
+				var no_count = Number(target_li.find(".no-confirm-count").html());
+				target_li.find(".no-confirm-count").html((no_count+1));
+			} else {
+				var no_count_html = '<div class="no-confirm-count">1</div>';
+				target_li.find(".chat-meta").append(no_count_html);
+			}
+			
 			var tempHtml = target_li.prop("outerHTML");
 			target_li.remove();
 			$(".chat-list-content-ul").prepend(tempHtml);
+			
+			
 		} else {	//채팅방 목록에 방이 없으면
 			$.ajax({
 				url : '/chat/members',
@@ -397,6 +431,9 @@ function getChatListHtml(chatMember, classStr){
 	html += '<div class="chat-meta">';
 	html += '<div class="chat-member">' + chatMember.title + '</div>';
 	html += '<div class="chat-last-msg">' + last_msg + '</div>';
+	if(chatMember.no_confirm_count > 0){
+		html += '<div class="no-confirm-count">' + chatMember.no_confirm_count + '</div>';
+	}
 	html += '</div></li>';
 
 	return html;
@@ -466,5 +503,17 @@ function getNewDateStr(regdate){
 	var date = new Date(regdate);
 	var dayofweek = week[date.getDay()];
 	return regdateArr[0] + "년 " + regdateArr[1] + "월 " + regdateArr[2] + "일 " + dayofweek + "요일";
+}
+
+function updateChatLog(chat_seq, log_seq, member_seq){
+	$.ajax({
+		url : '/chat/log',
+		method : 'PUT',
+		data : {seq : log_seq, chat_seq : chat_seq, member_seq : member_seq},
+		dataType : 'JSON',
+		success : function(res){
+			
+		}
+	})
 }
 </script>

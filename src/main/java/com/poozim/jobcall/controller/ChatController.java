@@ -53,6 +53,7 @@ public class ChatController {
 		String regdate = TimeUtil.getDateTime();
 		message.setRegdate(regdate);
 		message.setChat_seq(chat_seq);
+		message.setConfirmyn("N");
 		chatService.insertWorkChatLog(message);
 		
 		return message;
@@ -148,7 +149,8 @@ public class ChatController {
 			wcm.setChat_seq(chat_seq);
 		}
 		
-		List<WorkChatMember> list = chatService.getWorkChatMemberList(wcm);
+		//List<WorkChatMember> list = chatService.getWorkChatMemberList(wcm);
+		List<WorkChatMember> list = chatService.getWorkChatMemberListMapper(wcm);
 		model.addAttribute("list", list);
 		return jsonView;
 	}
@@ -202,6 +204,22 @@ public class ChatController {
 			}
 		}
 		model.addAttribute("res", res);
+		return jsonView;
+	}
+	
+	@RequestMapping(value = "/chat/log", method = RequestMethod.PUT)
+	public View updateChatLog(HttpServletRequest request, HttpServletResponse response, Model model,
+			WorkChatLog wcl) {
+		if(wcl.getChat_seq() == 0) {
+			model.addAttribute("msg", "채팅정보가 없습니다.");
+			return jsonView;
+		}
+		
+		if(wcl.getMember_seq() == 0 && wcl.getSeq() == 0) {
+			model.addAttribute("msg", "채팅정보가 없습니다.");
+			return jsonView;
+		}
+		model.addAttribute("res", chatService.updateWorkChatLog(wcl));
 		return jsonView;
 	}
 }

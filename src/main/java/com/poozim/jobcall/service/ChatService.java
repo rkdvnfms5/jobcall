@@ -37,6 +37,7 @@ public class ChatService {
 		return chatRepository.getWorkChatOne(workChat);
 	}
 	
+	@Transactional
 	public WorkChat insertWorkChat(WorkChat workChat) {
 		//workChat = chatRepository.save(workChat);
 		workChat = chatRepository.saveAndFlush(workChat);
@@ -55,9 +56,15 @@ public class ChatService {
 		return workMapper.getWorkChatLogListMapper(workChatLog);
 	}
 	
+	@Transactional
 	public int insertWorkChatLog(WorkChatLog workChatLog) {
 		chatLogRepository.save(workChatLog);
 		return 1;
+	}
+	
+	@Transactional
+	public int updateWorkChatLog(WorkChatLog workChatLog) {
+		return chatRepository.updateWorkChatLog(workChatLog);
 	}
 	
 	public List<WorkChatMember> getWorkChatMemberList(WorkChatMember workChatMember){

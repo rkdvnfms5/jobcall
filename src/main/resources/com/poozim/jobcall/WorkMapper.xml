@@ -348,10 +348,17 @@
 	<select id="getWorkChatMemberListMapper" parameterType="WorkChatMember" resultType="WorkChatMember">
 		SELECT wcm.*, 
 			(SELECT message FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_msg,
-			(SELECT wcl.src FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_src
+			(SELECT wcl.src FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_src,
+			(SELECT COUNT(*) FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq AND wcl.member_seq != #{member_seq} AND wcl.confirmyn = 'N') as no_confirm_count
 		FROM WorkChatMember wcm
 		WHERE wcm.member_seq = #{member_seq}
 		AND wcm.work_seq = #{work_seq}
+		<if test="seq != null and seq != ''">
+			AND wcm.seq = #{seq}
+		</if>
+		<if test="chat_seq != null and chat_seq != ''">
+			AND wcm.chat_seq = #{chat_seq}
+		</if>
 	</select>
 	
 	<select id="getWorkChatLogListMapper" parameterType="WorkChatLog" resultType="WorkChatLog">

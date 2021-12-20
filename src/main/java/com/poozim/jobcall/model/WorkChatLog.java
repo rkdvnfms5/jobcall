@@ -24,7 +24,7 @@ public class WorkChatLog {
 	private String regdate;
 	
 	@Transient
-	private int limit = 30;
+	private int limit = 100;
 	
 	@Transient
 	private int offset = 0;

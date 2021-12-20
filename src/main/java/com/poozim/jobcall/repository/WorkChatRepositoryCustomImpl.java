@@ -2,6 +2,8 @@ package com.poozim.jobcall.repository;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.poozim.jobcall.model.QWorkChat;
 import com.poozim.jobcall.model.QWorkChatLog;
 import com.poozim.jobcall.model.QWorkChatMember;
@@ -135,6 +137,29 @@ public class WorkChatRepositoryCustomImpl implements WorkChatRepositoryCustom {
 			builder.and(wcm.target_seq.eq(param.getTarget_seq()));
 		}
 		return (int) queryFactory.update(wcm).set(wcm.target_profile, param.getTarget_profile()).where(builder).execute();
+	}
+
+	@Override
+	@Transactional
+	public int updateWorkChatLog(WorkChatLog param) {
+		QWorkChatLog wcl = QWorkChatLog.workChatLog;
+		
+		if(param.getChat_seq() == 0) {
+			return 0;
+		}
+		
+		BooleanBuilder builder = new BooleanBuilder();
+		if(param.getSeq() > 0) {
+			builder.and(wcl.seq.eq(param.getSeq()));
+		}
+		if(param.getMember_seq() > 0) {
+			//지가 보낸게 아닌 것만
+			builder.and(wcl.member_seq.ne(param.getMember_seq()));
+		}
+		builder.and(wcl.chat_seq.eq(param.getChat_seq()));
+		builder.and(wcl.confirmyn.eq("N"));
+		int res = (int)queryFactory.update(wcl).set(wcl.confirmyn, "Y").where(builder).execute();
+		return res;
 	}
 	
 	
