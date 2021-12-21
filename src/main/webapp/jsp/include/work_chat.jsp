@@ -199,6 +199,7 @@ function closeChatView(){
 	$("#chat_view_form input[name='chat_seq']").val(0);
 	$("#chat_view_form input[name='limit']").val(0);
 	$("#chat_view_form input[name='offset']").val(0);
+	$(".chat-view-content").empty();
 	pagingFlag = true;
 	scroll_date = null;
 }
@@ -311,6 +312,10 @@ function receiveMsg(msg) {
 	
 	var current_chat_seq = $("#chat_view_form input[name='chat_seq']").val();
 	if(msg.chat_seq == current_chat_seq){ //받은 메세지의 채팅창이 열려있을 경우
+		//그날 첫 메세지 확인
+		if($(".chat-view-content .chat-date-block." + msg.regdate.split(" ")[0]).length == 0) {
+			msg.firstyn = 'Y';
+		}
 		var msgHtml = getMsgHtml(msg);
 		$(".chat-view-content").append(msgHtml);
 		$('.chat-view-content').scrollTop($('.chat-view-content').prop('scrollHeight'));
@@ -370,7 +375,7 @@ function getMsgHtml(chatMsg) {
 	var html = "";
 	console.log(chatMsg.firstyn);
 	if(chatMsg.firstyn == "Y"){
-		html += '<div class="chat-date-block"><div class="chat-date-frame"> ';
+		html += '<div class="chat-date-block ' + chatMsg.regdate.split(' ')[0] + '"><div class="chat-date-frame"> ';
 		html += getNewDateStr(chatMsg.regdate);
 		html += ' </div></div>';
 	}

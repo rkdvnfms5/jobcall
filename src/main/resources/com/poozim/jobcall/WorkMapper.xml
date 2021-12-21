@@ -349,6 +349,7 @@
 		SELECT wcm.*, 
 			(SELECT message FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_msg,
 			(SELECT wcl.src FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_src,
+			(SELECT wcl.regdate FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq ORDER BY wcl.regdate DESC LIMIT 1) as last_date,
 			(SELECT COUNT(*) FROM WorkChatLog wcl WHERE wcl.chat_seq = wcm.chat_seq AND wcl.member_seq != #{member_seq} AND wcl.confirmyn = 'N') as no_confirm_count
 		FROM WorkChatMember wcm
 		WHERE wcm.member_seq = #{member_seq}
@@ -359,13 +360,17 @@
 		<if test="chat_seq != null and chat_seq != ''">
 			AND wcm.chat_seq = #{chat_seq}
 		</if>
+		ORDER BY last_date DESC
 	</select>
 	
 	<select id="getWorkChatLogListMapper" parameterType="WorkChatLog" resultType="WorkChatLog">
-		SELECT IF(wcl.seq = (SELECT MIN(wcl2.seq) FROM WorkChatLog wcl2 WHERE wcl2.regdate &gt;= DATE_FORMAT(wcl.regdate, '%Y-%m-%d')), 'Y', 'N') as firstyn
+		SELECT IF(wcl.seq = (SELECT MIN(wcl2.seq) FROM WorkChatLog wcl2 WHERE wcl2.chat_seq = wcl.chat_seq AND wcl2.regdate &gt;= DATE_FORMAT(wcl.regdate, '%Y-%m-%d')), 'Y', 'N') as firstyn
 			,wcl.*
 		FROM WorkChatLog wcl 
 		WHERE chat_seq = #{chat_seq}
+		<if test="seq != null and seq != ''">
+			wcl.seq = {seq}
+		</if>
 		ORDER BY wcl.regdate desc, wcl.seq desc
 		LIMIT #{limit} OFFSET #{offset}
 	</select>

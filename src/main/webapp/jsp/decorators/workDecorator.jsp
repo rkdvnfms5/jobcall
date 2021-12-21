@@ -71,7 +71,7 @@
 <script>
 function getPageAjax(url){
 	//$("#work-deco-body").load(url + " #work-deco-body");
-	
+	showLoading();
 	$.ajax({
 		url : url,
 		method : 'GET',
@@ -82,9 +82,12 @@ function getPageAjax(url){
 			
 			$("#work-deco-body").html(body_temp.html());
 			$("header.work-header").html(header_temp.html());
+			
+			hideLoading();
 		},
 		error : function(request, status, error){
 			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			hideLoading();
 		}
 	})
 	

@@ -199,14 +199,16 @@ public class WorkController {
 		
 		WorkGroupMember wgm = workService.getWorkGroupMemberOne(groupseq, member.getSeq());
 		
-		if(wgm == null) {
+		if(wgm == null && workGroup.getAccess().equals("private")) {
 			model.addAttribute("msg", "그룹에 참여된 멤버가 아닙니다.");
 			return "/util/alert";
 		}
 		
 		//get group member list
-		List<Member> groupMemberList = memberService.getGroupMemberList(wgm);
-		model.addAttribute("GroupMemberList", groupMemberList);
+		if(wgm != null) {
+			List<Member> groupMemberList = memberService.getGroupMemberList(wgm);
+			model.addAttribute("GroupMemberList", groupMemberList);
+		}
 		
 		//get Work Boards
 		WorkBoard workBoard = new WorkBoard();

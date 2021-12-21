@@ -1373,7 +1373,7 @@ function showMemberProfile(member_seq, obj){
 				setMemberMiniProfile(res.member);
 				var profile = $(".member-mini-profile");
 				profile.css("top", $(obj).offset().top-100);
-				profile.css("left", $(obj).offset().left-200);
+				profile.css("left", $(obj).offset().left-400);
 				profile.show();
 			} else {
 				alert(res.msg);

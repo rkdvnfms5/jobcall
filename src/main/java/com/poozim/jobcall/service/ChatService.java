@@ -57,9 +57,9 @@ public class ChatService {
 	}
 	
 	@Transactional
-	public int insertWorkChatLog(WorkChatLog workChatLog) {
-		chatLogRepository.save(workChatLog);
-		return 1;
+	public WorkChatLog insertWorkChatLog(WorkChatLog workChatLog) {
+		workChatLog = chatLogRepository.save(workChatLog);
+		return workChatLog;
 	}
 	
 	@Transactional
