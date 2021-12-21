@@ -77,7 +77,7 @@
 							<c:forEach items="${LnbWorkGroupList}" var="group">
 								<c:if test="${group.category_seq eq category.seq}">
 									<li class="category-item">
-									<a class="" href="/work/group/${group.seq}">
+									<a class="" href="javascript:getPageAjax('/work/group/${group.seq}')">
 											<span class="category-item-title">
 												<span class="text-name">${group.name}</span>
 												<c:if test="${group.access eq 'private'}">

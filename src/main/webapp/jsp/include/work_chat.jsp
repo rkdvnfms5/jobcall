@@ -24,17 +24,6 @@
 							</div>
 						</li>
 					</c:forEach>
-					<!-- <li ondblclick="">
-						<div class="chat-profile" >
-							<span class="avatar" style="width: 36px; height: 36px; background-image:
-							 url('https://t1.daumcdn.net/agit_resources/images/empty_profile.png');"></span>
-						</div>
-						<div class="chat-meta">
-							<div class="chat-member">rkdvnfms (감감감) 저기</div>
-							<div class="chat-last-msg">마지막 메세지</div>
-							<div class="no-confirm-count">15</div>
-						</div>
-					</li> -->
 				</ul>
 			</div>
 			<div class="chat-list-add">
@@ -62,21 +51,6 @@
 				<span class="chat-view-header-title"></span>
 			</div>
 			<div class="chat-view-content">
-				<!-- <div class="chat-msg-block me">
-					<div class="chat-msg-frame">
-						<span class="msg-meta"> 2021-12-17 14:14:48 </span>
-						<div class="text-msg">
-							<a href="/work/file_down?object_name=캡처_20211116202647.PNG" target="_blank">
-								<img class="file_icon" src="/images/icon_etc.png"> 캡처아아아.PNG
-							</a>
-						</div>
-					</div>
-				</div> -->
-				<!-- <div class="chat-date-block">
-					<div class="chat-date-frame">
-						2021년 12월 17일 월요일
-					</div>
-				</div> -->
 			</div>
 			<div class="chat-view-footer">
 				<div class="chat-input-area">
@@ -112,6 +86,8 @@ var stompClient = null;
 
 var pagingFlag = true;
 var week = ['일', '월', '화', '수', '목', '금', '토'];
+
+var scroll_date;
 
 $(document).ready(function(){
 	connect();
@@ -224,6 +200,7 @@ function closeChatView(){
 	$("#chat_view_form input[name='limit']").val(0);
 	$("#chat_view_form input[name='offset']").val(0);
 	pagingFlag = true;
+	scroll_date = null;
 }
 
 function searchChatMember(){
@@ -317,6 +294,9 @@ function openChatView(chat_seq, title){
 				$("#chat_view_form input[name='limit']").val(res.WorkChatLog.limit);
 				var temp_offset = (res.list.length < res.WorkChatLog.limit? res.WorkChatLog.offset + res.list.length : res.WorkChatLog.offset + res.WorkChatLog.limit);
 				$("#chat_view_form input[name='offset']").val(temp_offset);
+				
+				//스크롤시 노출 날짜 설정
+				scroll_date = getScrollDateForm(res.list[res.list.length-1].regdate);
 			} else {
 				pagingFlag = false;
 			}
@@ -503,6 +483,14 @@ function getNewDateStr(regdate){
 	var date = new Date(regdate);
 	var dayofweek = week[date.getDay()];
 	return regdateArr[0] + "년 " + regdateArr[1] + "월 " + regdateArr[2] + "일 " + dayofweek + "요일";
+}
+
+function getScrollDateForm(regdate){
+	regdate = regdate.split(" ")[0];
+	var regdateArr = regdate.split("-");
+	var date = new Date(regdate);
+	var dayofweek = week[date.getDay()];
+	return regdateArr[1] + ". " + regdateArr[2] + ". " + dayofweek;
 }
 
 function updateChatLog(chat_seq, log_seq, member_seq){

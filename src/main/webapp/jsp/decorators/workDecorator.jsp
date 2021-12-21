@@ -58,7 +58,9 @@
 	<div class="work-contents">
 		<main class="work-basic-layout">
 			<%@ include file="/jsp/include/work_lnb.jsp"%>
-			<sitemesh:write property='body' />
+			<div id="work-deco-body">
+				<sitemesh:write property='body' />
+			</div>
 		</main>
 		<%@ include file="/jsp/include/work_chat.jsp"%>
 	</div>
@@ -66,5 +68,27 @@
 <div class="lodingDim hide">
 	<div class="loading"></div>
 </div>
+<script>
+function getPageAjax(url){
+	//$("#work-deco-body").load(url + " #work-deco-body");
+	
+	$.ajax({
+		url : url,
+		method : 'GET',
+		dataType : 'html',
+		success : function(data) {
+			var body_temp = $("#work-deco-body").html(data).find("#work-deco-body");
+			var header_temp = $("#work-deco-body").html(data).find("header.work-header");
+			
+			$("#work-deco-body").html(body_temp.html());
+			$("header.work-header").html(header_temp.html());
+		},
+		error : function(request, status, error){
+			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+	})
+	
+}
+</script>
 </body>
 </html>
