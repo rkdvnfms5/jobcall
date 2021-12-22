@@ -91,6 +91,8 @@ var scroll_date;
 
 $(document).ready(function(){
 	connect();
+	setChatViewInfo();
+	setChatNotifies();
 })
 
 function connect() {
@@ -202,6 +204,7 @@ function closeChatView(){
 	$(".chat-view-content").empty();
 	pagingFlag = true;
 	scroll_date = null;
+	sessionStorage.removeItem("chat_view_info");
 }
 
 function searchChatMember(){
@@ -259,10 +262,19 @@ function startChat(member_seq, title){
 }
 
 function openChatView(chat_seq, title){
+	//저장된 메세지 개수가 있으면 
+	
+	if(sessionStorage.chat_view_info != null){
+		var data = {chat_seq : chat_seq, limit : JSON.parse(sessionStorage.chat_view_info).limit};
+	} else {
+		var data = {chat_seq : chat_seq};
+	}
+	
+	//var data = {chat_seq : chat_seq};
 	$.ajax({
 		url : '/chat/logs',
 		method : 'GET',
-		data : {chat_seq : chat_seq},
+		data : data,
 		dataType : 'JSON',
 		success : function(res) {
 			var member_seq = '${member.seq}';
@@ -304,6 +316,9 @@ function openChatView(chat_seq, title){
 			
 			//update confirmyn Y
 			updateChatLog(chat_seq, 0, Number(member_seq));
+			
+			//save chat_view_info
+			saveChatViewInfo();
 		}
 	})
 }
@@ -367,6 +382,7 @@ function receiveMsg(msg) {
 				}
 			})
 		}
+		saveChatNotifies();
 	}
 }
 
@@ -396,8 +412,10 @@ function sendMsg(){
 	var chat_seq = $("#chat_view_form input[name='chat_seq']").val();
 	var member_seq = '${member.seq}';
 	var msg = $("#chat-input-text").val();
-	var data = JSON.stringify({'chat_seq' : chat_seq, 'member_seq' : member_seq, 'message' : msg});
-	stompClient.send("/chat/send/"+chat_seq, {}, data);
+	if(msg != ''){
+		var data = JSON.stringify({'chat_seq' : chat_seq, 'member_seq' : member_seq, 'message' : msg});
+		stompClient.send("/chat/send/"+chat_seq, {}, data);
+	}
 	$("#chat-input-text").val("");
 }
 
@@ -509,4 +527,43 @@ function updateChatLog(chat_seq, log_seq, member_seq){
 		}
 	})
 }
+
+function saveChatViewInfo(){
+	var sessionData = 
+	{
+		chat_seq : $("#chat_view_form input[name='chat_seq']").val(),
+		limit : $(".chat-view-content div.chat-msg-block").length
+	};
+	sessionStorage.setItem("chat_view_info", JSON.stringify(sessionData));
+}
+
+function setChatViewInfo(){
+	if(sessionStorage.chat_view_info != null){
+		var data = JSON.parse(sessionStorage.chat_view_info);
+		$(".chat-list-content ul input[value="+data.chat_seq+"]").closest("li").dblclick();
+	}
+}
+
+function saveChatNotifies(){
+	var notifies = new Array();
+	$(".chat-list-content-ul li.notify").each(function(index, item){
+		notifies.push($(item).find("input[name='chat_seq']").val());
+	})
+	
+	var sessionData = 
+	{
+		notifies : notifies
+	};
+	sessionStorage.setItem("chat_notifies", JSON.stringify(sessionData));
+}
+
+function setChatNotifies(){
+	if(sessionStorage.chat_notifies != null){
+		var notifies = JSON.parse(sessionStorage.chat_notifies).notifies;
+		for(var i=0; i<notifies.length; i++){
+			$(".chat-list-content-ul li input[value="+ notifies[i] +"]").closest("li").addClass("notify");
+		}
+	}
+}
+
 </script>

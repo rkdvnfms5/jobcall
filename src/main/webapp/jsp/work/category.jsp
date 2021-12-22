@@ -12,7 +12,7 @@
 	<section class="category-page">
 		<header class="page-header">
 			<div class="tab">
-				<a class="tab__item tab__item--active" href="#">그룹 카테고리 설정</a>
+				<a class="tab__item tab__item--active">그룹 카테고리 설정</a>
 				<!-- <a class="tab__item" href="#">웹 푸시 설정</a>
 				<a class="tab__item" href="#">모바일 푸시 설정</a>
 				<a class="tab__item" href="#">구독 및 피드 설정</a> -->

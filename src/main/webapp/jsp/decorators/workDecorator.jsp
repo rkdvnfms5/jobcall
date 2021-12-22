@@ -71,6 +71,7 @@
 <script>
 function getPageAjax(url){
 	//$("#work-deco-body").load(url + " #work-deco-body");
+	/*
 	showLoading();
 	$.ajax({
 		url : url,
@@ -79,7 +80,7 @@ function getPageAjax(url){
 		success : function(data) {
 			var body_temp = $("#work-deco-body").html(data).find("#work-deco-body");
 			var header_temp = $("#work-deco-body").html(data).find("header.work-header");
-			
+			//console.log(body_temp.html());
 			$("#work-deco-body").html(body_temp.html());
 			$("header.work-header").html(header_temp.html());
 			
@@ -91,6 +92,8 @@ function getPageAjax(url){
 		}
 	})
 	
+	history.pushState(null, '', url);
+	*/
 }
 </script>
 </body>
