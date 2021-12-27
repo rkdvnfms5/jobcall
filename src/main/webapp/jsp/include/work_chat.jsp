@@ -278,6 +278,14 @@ function openChatView(chat_seq, title){
 		dataType : 'JSON',
 		success : function(res) {
 			var member_seq = '${member.seq}';
+			
+			//채팅방 제목 설정
+			$(".chat-view .chat-view-header-title").html(title.split(" ")[0] + "님과 대화");
+			
+			//채팅창 보이기
+			$("#chat-view-layer").show();
+			$("#chat_view_form input[name='chat_seq']").val(chat_seq);
+			
 			if(res.list.length > 0){
 				var html = "";
 				for(var i=res.list.length-1; i>-1; i--){
@@ -287,13 +295,6 @@ function openChatView(chat_seq, title){
 				//채팅 내용 붙이기
 				$(".chat-view-content").empty();
 				$(".chat-view-content").append(html);
-				
-				//채팅방 제목 설정
-				$(".chat-view .chat-view-header-title").html(title.split(" ")[0] + "님과 대화");
-				
-				//채팅창 보이기
-				$("#chat-view-layer").show();
-				$("#chat_view_form input[name='chat_seq']").val(chat_seq);
 				
 				//채팅내용 스크롤 맨 아래로
 				$('.chat-view-content').scrollTop($('.chat-view-content').prop('scrollHeight'));
