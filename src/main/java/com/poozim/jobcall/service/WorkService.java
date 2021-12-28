@@ -389,6 +389,7 @@ public class WorkService {
 			comment.setMember_seq(workBoard.getMember_seq());
 			comment.setMember_id(workBoard.getMember_id());
 			comment.setMember_name(workBoard.getMember_name());
+			comment.setMember_profile(workBoard.getMember_profile());
 			
 			switch (workBoard.getStatus()) {
 			case "request":
@@ -415,6 +416,8 @@ public class WorkService {
 			comment.setMember_seq(workBoard.getMember_seq());
 			comment.setMember_id(workBoard.getMember_id());
 			comment.setMember_name(workBoard.getMember_name());
+			comment.setMember_profile(workBoard.getMember_profile());
+			
 			comment.setContent("투표를 마감했습니다. 자세한 투표 결과는 본문을 참고해주세요.");
 			
 			comment.setRegdate(workBoard.getModdate());

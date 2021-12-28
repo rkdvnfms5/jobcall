@@ -602,15 +602,19 @@ function getBoardHtml(board, coverFlag, coverClass){
 	html += '<span class="float-right"><button type="button" class="link-copy-btn" aria-label="링크 복사">';
 	html += '<i class="ico ico-linkcopy" aria-hidden="true"><svg width="16px" height="7px" viewBox="0 0 16 7" version="1.1"><g id="linkcopy" stroke="none" stroke-width="1" fill="#7A858D" fill-rule="evenodd" transform="translate(8.000000, 3.500000) scale(1, -1) translate(-8.000000, -3.500000)"><path d="M9,1 L12.5,1 C13.8704373,1 15,2.12608684 15,3.5 C15,4.87364425 13.870712,6 12.5,6 L9,6 L9,7 L12.5,7 C14.4224156,7 16,5.42651184 16,3.5 C16,1.573111 14.4220333,0 12.5,0 L9,0 L9,1 Z M7,1 L3.5,1 C2.12956271,1 1,2.12608684 1,3.5 C1,4.87364425 2.12928797,6 3.5,6 L7,6 L7,7 L3.5,7 C1.57758439,7 0,5.42651184 0,3.5 C0,1.573111 1.5779667,0 3.5,0 L7,0 L7,1 Z M5,3 L11,3 L11,4 L5,4 L5,3 Z"></path></g></svg></i>';
 	html += '</button> ';
-	html += '<button type="button" id="" class="board-setting-btn" onclick="$(this).parent().next().toggleClass(\'hide\');">';
-	html += '<i class="ico ico-more_vert" aria-hidden="true"><svg width="13px" height="3px" viewBox="0 0 13 3" version="1.1"><g id="more_vert" stroke="none" stroke-width="1" fill="#7A858D" fill-rule="evenodd"><path d="M1.5,3 C2.32842712,3 3,2.32842712 3,1.5 C3,0.671572875 2.32842712,0 1.5,0 C0.671572875,0 0,0.671572875 0,1.5 C0,2.32842712 0.671572875,3 1.5,3 Z M6.5,3 C7.32842712,3 8,2.32842712 8,1.5 C8,0.671572875 7.32842712,0 6.5,0 C5.67157288,0 5,0.671572875 5,1.5 C5,2.32842712 5.67157288,3 6.5,3 Z M11.5,3 C12.3284271,3 13,2.32842712 13,1.5 C13,0.671572875 12.3284271,0 11.5,0 C10.6715729,0 10,0.671572875 10,1.5 C10,2.32842712 10.6715729,3 11.5,3 Z"></path></g></svg></i>';
-	html += '</button></span>';
-	html += '<ul class="board-setting-menu hide">';
 	if(board.member_seq == memberseq){
-		html += '<li><button type="button" onclick="modifyBoardForm(this)">수정하기</button></li>';
-		html += '<li><button type="button" onclick="deleteBoard(this)">삭제하기</button></li>';
+		html += '<button type="button" id="" class="board-setting-btn" onclick="$(this).parent().next().toggleClass(\'hide\');">';
+		html += '<i class="ico ico-more_vert" aria-hidden="true"><svg width="13px" height="3px" viewBox="0 0 13 3" version="1.1"><g id="more_vert" stroke="none" stroke-width="1" fill="#7A858D" fill-rule="evenodd"><path d="M1.5,3 C2.32842712,3 3,2.32842712 3,1.5 C3,0.671572875 2.32842712,0 1.5,0 C0.671572875,0 0,0.671572875 0,1.5 C0,2.32842712 0.671572875,3 1.5,3 Z M6.5,3 C7.32842712,3 8,2.32842712 8,1.5 C8,0.671572875 7.32842712,0 6.5,0 C5.67157288,0 5,0.671572875 5,1.5 C5,2.32842712 5.67157288,3 6.5,3 Z M11.5,3 C12.3284271,3 13,2.32842712 13,1.5 C13,0.671572875 12.3284271,0 11.5,0 C10.6715729,0 10,0.671572875 10,1.5 C10,2.32842712 10.6715729,3 11.5,3 Z"></path></g></svg></i>';
+		html += '</button>';
 	}
-	html += '</ul></div>';
+	html += '</span>';
+	if(board.member_seq == memberseq){
+		html += '<ul class="board-setting-menu hide">';
+			html += '<li><button type="button" onclick="modifyBoardForm(this)">수정하기</button></li>';
+			html += '<li><button type="button" onclick="deleteBoard(this)">삭제하기</button></li>';
+		html += '</ul>';
+	}
+	html += '</div>';
 	html += '<div class="board-footer-modify message-form__footer hide">';
 	html += '<div class="message-form__footer-leftalign">';
 	html += '<span class="message-form__attach-file" onclick="$(this).closest(\'.updateBoardForm\').find(\'.board-modify-attach\').click();" style="border: 1px solid #e3e3e3; cursor: pointer; padding: 2px 10px 3px 7px; border-radius: 3px;">';
@@ -846,7 +850,7 @@ function getInsertPlainBoardHtml(){
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
 	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
-	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkBoard(this);" onclick="checkBoard(this);"></div>';
 	html += '<input type="hidden" name="content" value="">';
 	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
@@ -903,7 +907,7 @@ function getInsertScheduleBoardHtml(){
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
 	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
-	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkBoard(this);"></div>';
 	html += '<input type="hidden" name="content" value="">';
 	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
@@ -930,7 +934,7 @@ function getInsertRequestBoardHtml(){
 	html += '<div class="message-form message-form--editing message-form--mode-wysiwyg" aria-disabled="false">';
 	html += '<div class="message-form__header">';
 		html += '<div class="board-input-title">';
-	html += '<input type="text" maxlength="30" name="input-worker" id="board-insert-worker" oninput="checkWorker(this)" placeholder="담당자 ID 입력">';
+	html += '<input type="text" maxlength="30" name="input-worker" id="board-insert-worker" oninput="checkWorker(this);checkBoard(this);" placeholder="담당자 ID 입력">';
 	html += '</div>';
 	html += '<div class="mention-list hide">';
 	html += '<ul></ul>';
@@ -943,7 +947,7 @@ function getInsertRequestBoardHtml(){
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
 	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
-	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkBoard(this);" onclick="checkBoard(this);"></div>';
 	html += '<input type="hidden" name="content" value="">';
 	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
@@ -997,7 +1001,7 @@ function getInsertVoteBoardHtml(){
 	html += '<div class="message-form__text-wrap">';
 	html += '<div class="react-measure-wrap">';
 	//html += '<textarea rows="8" cols="" name="content" id="contentTextArea" oninput="checkBoard(this)"></textarea>';
-	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);"></div>';
+	html += '<div class="textarea" contenteditable="true" id="contentTextArea" oninput="$(this).siblings(\'input[name=content]\').val($(this).html());checkMention(this);checkBoard(this);"></div>';
 	html += '<input type="hidden" name="content" value="">';
 	html += '<div class="textarea-mention-list hide"><ul></ul></div>';
 	html += '</div></div>';
@@ -1019,7 +1023,7 @@ function getInsertVoteBoardHtml(){
 	html += '</div></div></div>';
 	
 	html += '<input id="attachFiles" onchange="boardInsertAttach(this)" name="attachFiles" type="file" multiple="multiple" class="hide">';
-	html += '<input type="hidden" name="status" value="request" />';
+	html += '<input type="hidden" name="status" value="process" />';
 	html += '</div></div>';
 
 	return html;

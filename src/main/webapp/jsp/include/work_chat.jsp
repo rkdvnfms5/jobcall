@@ -303,6 +303,7 @@ function openChatView(chat_seq, title){
 				var target_li = $(".chat-list-content-ul input[value="+chat_seq+"]").closest("li");
 				target_li.removeClass("notify");
 				target_li.find(".no-confirm-count").remove();
+				saveChatNotifies();
 				
 				//페이징 파라미터 설정
 				$("#chat_view_form input[name='limit']").val(res.WorkChatLog.limit);
@@ -329,9 +330,11 @@ function receiveMsg(msg) {
 	var current_chat_seq = $("#chat_view_form input[name='chat_seq']").val();
 	if(msg.chat_seq == current_chat_seq){ //받은 메세지의 채팅창이 열려있을 경우
 		//그날 첫 메세지 확인
+		/*
 		if($(".chat-view-content .chat-date-block." + msg.regdate.split(" ")[0]).length == 0) {
 			msg.firstyn = 'Y';
 		}
+		*/
 		var msgHtml = getMsgHtml(msg);
 		$(".chat-view-content").append(msgHtml);
 		$('.chat-view-content').scrollTop($('.chat-view-content').prop('scrollHeight'));
@@ -346,6 +349,8 @@ function receiveMsg(msg) {
 		//update confirm Y
 		updateChatLog(msg.chat_seq, msg.seq, Number('${member.seq}'));
 		
+		//update chat view info
+		saveChatViewInfo();
 	}
 	else { //그렇지 않은 경우
 		var target_li = $(".chat-list-content-ul input[value="+msg.chat_seq+"]").closest("li");
@@ -390,7 +395,6 @@ function receiveMsg(msg) {
 function getMsgHtml(chatMsg) {
 	var member_seq = '${member.seq}';
 	var html = "";
-	console.log(chatMsg.firstyn);
 	if(chatMsg.firstyn == "Y"){
 		html += '<div class="chat-date-block ' + chatMsg.regdate.split(' ')[0] + '"><div class="chat-date-frame"> ';
 		html += getNewDateStr(chatMsg.regdate);
@@ -498,7 +502,7 @@ function getMsgDateForm(regdate){
 	var date = new Date(regdate);
 	var ampm = (date.getHours() >= 12? 'PM':'AM');
 	var hour = (date.getHours() > 12? date.getHours()-12:date.getHours());
-	return hour + ":" + date.getMinutes() + ":" + date.getSeconds() + " " + ampm;
+	return hour + ":" + (date.getMinutes() < 10? "0"+date.getMinutes():date.getMinutes()) + " " + ampm;
 }
 
 function getNewDateStr(regdate){
@@ -546,6 +550,11 @@ function setChatViewInfo(){
 }
 
 function saveChatNotifies(){
+	//기존 정보 삭제
+	if(sessionStorage.chat_notifies != null){
+		sessionStorage.removeItem("chat_notifies");
+	}
+	
 	var notifies = new Array();
 	$(".chat-list-content-ul li.notify").each(function(index, item){
 		notifies.push($(item).find("input[name='chat_seq']").val());

@@ -55,8 +55,7 @@ public class ChatController {
 		message.setChat_seq(chat_seq);
 		message.setConfirmyn("N");
 		chatService.insertWorkChatLog(message);
-		
-		return message;
+		return chatService.getWorkChatLogListMapper(message).get(0);
 	}
 	
 	@MessageMapping("/start/{member_seq}")	//  /chat/sendMessage
