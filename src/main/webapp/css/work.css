@@ -3918,4 +3918,10 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
 }
 
 
-
+.ra-button.small {
+	min-width: 50px;
+    width: 65px;
+    font-size: 12px;
+    padding: 3px 6px 3px;
+    height: 27px;
+}

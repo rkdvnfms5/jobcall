@@ -25,7 +25,7 @@
 								style="width: 160px; height: 160px; background-image: url('${empty member.profile? 'https://t1.daumcdn.net/agit_resources/images/empty_profile_large.png':member.profile}');"></span>
 							</th>
 							<td>
-								<input type="file" id="profileUpload" accept="image/png, image/jpg, image/gif" class="user-edit-form__file-input">
+								<input type="file" id="profileUpload" accept="image/*" class="user-edit-form__file-input">
 							</td>
 						</tr>
 						<tr class="group-new-page__title-row">
