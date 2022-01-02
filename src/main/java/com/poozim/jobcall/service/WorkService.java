@@ -23,6 +23,7 @@ import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.CommentFile;
 import com.poozim.jobcall.model.GroupInviteLog;
 import com.poozim.jobcall.model.Member;
+import com.poozim.jobcall.model.Notification;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkBoardFile;
@@ -38,6 +39,7 @@ import com.poozim.jobcall.repository.CommentFileRepository;
 import com.poozim.jobcall.repository.CommentRepository;
 import com.poozim.jobcall.repository.GroupInviteLogRepository;
 import com.poozim.jobcall.repository.MemberRepository;
+import com.poozim.jobcall.repository.NotificationRepository;
 import com.poozim.jobcall.repository.WorkBoardFileRepository;
 import com.poozim.jobcall.repository.WorkBoardRepository;
 import com.poozim.jobcall.repository.WorkCategoryGroupRepository;
@@ -97,6 +99,9 @@ public class WorkService {
 	
 	@Autowired
 	private GroupInviteLogRepository groupInviteLogRepository;
+	
+	@Autowired
+	private NotificationRepository notificationRepository;
 	
 	//Mybatis Mappers
 	@Autowired
@@ -297,6 +302,30 @@ public class WorkService {
 				boardVote.setRegdate(workBoard.getRegdate());
 				boardVoteRepository.save(boardVote);
 			}
+		}
+		
+		//add notification
+		List<String> mentionList = getMentions(workBoard.getContent());
+		if(mentionList != null && !mentionList.isEmpty()) {
+			Notification noti;
+			
+			for(int i=0; i<mentionList.size(); i++) {
+				Member member = new Member();
+				noti = new Notification();
+				
+				member.setId(mentionList.get(i));
+				member = memberRepository.getMemberOne(member);
+				
+				noti.setGroup_seq(workBoard.getGroup_seq());
+				noti.setBoard_seq(workBoard.getSeq());
+				noti.setMember_profile(workBoard.getMember_profile());
+				noti.setMember_seq(member.getSeq());
+				noti.setContent(workBoard.getMember_id() + "의 멘션: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+				noti.setConfirmyn("N");
+				noti.setRegdate(workBoard.getRegdate());
+				notificationRepository.save(noti);
+			}
+			
 		}
 		
 		return 1;
@@ -638,5 +667,30 @@ public class WorkService {
 	public int deleteWorkGroupMember(WorkGroupMember wgm) {
 		workGroupMemberRepository.deleteById(wgm.getSeq());
 		return 1;
+	}
+	
+	public List<String> getMentions(String content) {
+		List<String> res = new ArrayList<String>();
+		//&lt;span class="mention" contenteditable="false"&gt;@rkdvnfms5&lt;/span&gt;
+		if(content.contains("&lt;span class=\"mention\" contenteditable=\"false\"&gt;")) {
+			
+			while(content.contains("&lt;span class=\"mention\" contenteditable=\"false\"&gt;")) {
+				String spanTag = content.substring(content.indexOf("&lt;span class=\"mention\" contenteditable=\"false\"&gt;"), content.indexOf("&lt;/span&gt;"));
+				String mention = spanTag.substring(spanTag.indexOf("@") + 1);
+				
+				if(!res.contains(mention)) {
+					res.add(mention);
+				}
+				content = content.substring(content.indexOf("&lt;/span&gt;") + "&lt;/span&gt;".length()+1);
+			}
+		}
+		
+		if(res.size() > 0) {
+			return res;
+		}
+		else {
+			res = null;
+			return null;
+		}
 	}
 }

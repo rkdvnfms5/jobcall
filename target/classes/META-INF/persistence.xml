@@ -21,6 +21,7 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 		<class>com.poozim.jobcall.model.WorkChat</class>
 		<class>com.poozim.jobcall.model.WorkChatMember</class>
 		<class>com.poozim.jobcall.model.WorkChatLog</class>
+		<class>com.poozim.jobcall.model.Notification</class>
 		
 		<properties>
 			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->

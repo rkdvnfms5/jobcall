@@ -57,6 +57,12 @@ public class ChatService {
 	}
 	
 	@Transactional
+	public WorkChatLog getWorkChatLogOneMapper(WorkChatLog workChatLog){
+		
+		return workMapper.getWorkChatLogOneMapper(workChatLog);
+	}
+	
+	@Transactional
 	public WorkChatLog insertWorkChatLog(WorkChatLog workChatLog) {
 		workChatLog = chatLogRepository.save(workChatLog);
 		return workChatLog;

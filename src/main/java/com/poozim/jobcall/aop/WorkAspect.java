@@ -18,10 +18,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.poozim.jobcall.model.Member;
+import com.poozim.jobcall.model.Notification;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkCategory;
 import com.poozim.jobcall.model.WorkChatMember;
 import com.poozim.jobcall.model.WorkGroup;
+import com.poozim.jobcall.repository.NotificationRepository;
 import com.poozim.jobcall.service.ChatService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
@@ -70,6 +72,7 @@ public class WorkAspect {
 			wcm.setWork_seq(work.getSeq());
 			wcm.setMember_seq(member.getSeq());
 			request.setAttribute("WorkChatList", chatService.getWorkChatMemberListMapper(wcm));
+			
 		}
 	}
 }

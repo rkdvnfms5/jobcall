@@ -46,8 +46,12 @@ button {border: 0 none; border-radius: 0; background-color: transparent; cursor:
 .work-header .work-header-contents .work-header-nav {
 	display: block;
     position: absolute;
-    top: 25px;
-    right: 280px;
+    top: 20px;
+    right: 230px;
+}
+
+.work-header .work-header-contents .work-header-nav ul li {
+	margin-left: 20px;
 }
 
 .work-header .work-header-contents .work-header-nav a{
@@ -70,4 +74,123 @@ button {border: 0 none; border-radius: 0; background-color: transparent; cursor:
 	line-height: 17px; 
 	font-weight: 600; 
 	color: #5491f5; 
+}
+
+
+.work-header .work-header-contents .work-header-nav .btn-notice {
+	width: 36px;
+	height: 36px;
+}
+
+.work-header .work-header-contents .work-header-nav .btn-notice:hover g{
+	fill:#5A86DD
+}
+
+.work-header .work-header-contents .work-header-nav .btn-notice.on g{
+	fill:#5A86DD
+}
+
+
+
+.notify-layer {
+	display:none;
+	position: fixed;
+	top: 60px;
+	right: 170px;
+	width: 380px;
+	height: 590px;
+	background-color: #fff;
+	border: 1px solid #d7d7d7;
+	z-index: 999;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.notify-layer.on{
+	display: block;
+}
+
+.notify-layer ul li {
+	height: 64px;
+	width: 92%;
+	border-bottom: 1px solid #ededed;
+	cursor: pointer;
+	padding: 15px;
+	position: relative;
+	overflow: hidden;
+}
+
+.notify-layer ul li.new {
+	background-color: #fffbe1;
+}
+
+.notify-layer ul li:hover {
+	background-color: #ededed;
+}
+
+.notify-layer ul li .notify-profile {
+	height: 100%;
+	width: 50px;
+	margin-right: 15px;
+	float: left;
+}
+
+.notify-layer ul li .notify-content {
+	height: 100%;
+	width: 60%;
+  	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+}
+
+.notify-layer ul li .notify-date {
+	position:absolute;
+	top:15px;
+	right:15px;
+	font-size:13px;
+	height: 100%;
+	color: #979797;
+	font-weight: 600;
+}
+
+.notify-layer .empty-notify {
+	width: 100%;
+	text-align: center;
+	position: relative;
+	padding-top: 45%;
+}
+
+.notify-layer .empty-notify i, .notify-layer .empty-notify i svg {
+	width: 66px;
+	height: 72px;
+}
+
+.notify-layer .empty-notify i svg g{
+	fill:#eff0f0;
+}
+
+.notify-layer .empty-notify p {
+	padding-top: 12px;
+    font-weight: 500;
+    font-size: 16px;
+    color: #bfbfbf;
+}
+
+.notify-layer .notify-loading {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.2);
+}
+
+.notify-layer .notify-loading .loading {
+	position: absolute;
+	top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%);
 }

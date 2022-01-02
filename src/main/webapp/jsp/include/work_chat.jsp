@@ -104,6 +104,13 @@ function connect() {
 			stompClient.subscribe('/topic/send/' + chat_seq, function(msg){
 				receiveMsg(JSON.parse(msg.body));
 			}, {id : "chat"+chat_seq});
+			
+			stompClient.subscribe('/topic/read/' + chat_seq, function(result){
+				if(JSON.parse(result.body) != '${member.seq}'){
+					updateConfirm(chat_seq);
+				}
+				
+			});
 		})
 		
 		stompClient.subscribe('/topic/start/${member.seq}', function(msg){
@@ -113,6 +120,11 @@ function connect() {
 			stompClient.subscribe('/topic/send/' + res.chat_seq, function(msg){
 				receiveMsg(JSON.parse(msg.body));
 			}, {id : "chat"+res.chat_seq});
+			stompClient.subscribe('/topic/read/' + res.chat_seq, function(result){
+				if(JSON.parse(result.body) != '${member.seq}'){
+					updateConfirm(res.chat_seq);
+				}
+			});
 		});
 	});
 	
@@ -253,6 +265,11 @@ function startChat(member_seq, title){
 				stompClient.subscribe('/topic/send/' + res.WorkChat.seq, function(msg){
 					receiveMsg(JSON.parse(msg.body));
 				}, {id : "chat"+res.WorkChat.seq});
+				stompClient.subscribe('/topic/read/' + res.WorkChat.seq, function(result){
+					if(JSON.parse(result.body) != my_member_seq){
+						updateConfirm(res.WorkChat.seq);
+					}
+				});
 				
 				openChatView(res.WorkChat.seq, title);
 			}
@@ -321,6 +338,9 @@ function openChatView(chat_seq, title){
 			
 			//save chat_view_info
 			saveChatViewInfo();
+			
+			//읽었다
+			stompClient.send("/chat/read/" + chat_seq, {}, Number(member_seq));
 		}
 	})
 }
@@ -351,6 +371,9 @@ function receiveMsg(msg) {
 		
 		//update chat view info
 		saveChatViewInfo();
+		
+		//읽었다
+		stompClient.send("/chat/read/"+msg.chat_seq, {}, Number('${member.seq}'));
 	}
 	else { //그렇지 않은 경우
 		var target_li = $(".chat-list-content-ul input[value="+msg.chat_seq+"]").closest("li");
@@ -402,7 +425,7 @@ function getMsgHtml(chatMsg) {
 	}
 	if(chatMsg.member_seq == member_seq){
 		html += '<div class="chat-msg-block me"><div class="chat-msg-frame">';
-		html += '<span class="msg-meta"> ' + getMsgDateForm(chatMsg.regdate) + ' </span>';
+		html += '<span class="msg-meta ' + (chatMsg.confirmyn == 'Y'? 'confirm-yes':'confirm-no') + '"> ' + (chatMsg.confirmyn == 'Y'? '읽음 ':'') + getMsgDateForm(chatMsg.regdate) + ' </span>';
 		html += '<div class="text-msg"> ' + chatMsg.message + ' </div></div></div>';
 	} else {
 		html += '<div class="chat-msg-block"><div class="chat-msg-frame">';
@@ -574,6 +597,19 @@ function setChatNotifies(){
 			$(".chat-list-content-ul li input[value="+ notifies[i] +"]").closest("li").addClass("notify");
 		}
 	}
+}
+
+function updateConfirm(chat_seq){
+	var on_chat_seq = $("#chat_view_form input[name='chat_seq']").val();
+	
+	if(on_chat_seq == chat_seq){
+		$(".chat-view-content span.msg-meta.confirm-no").each(function(index, item){
+			$(item).html(" 읽음 " + $(item).html());
+			$(item).removeClass("confirm-no");
+			$(item).addClass("confirm-yes");
+		});
+	}
+	
 }
 
 </script>

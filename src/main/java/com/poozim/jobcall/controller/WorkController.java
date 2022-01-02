@@ -44,6 +44,7 @@ import com.poozim.jobcall.model.BoardVoteMember;
 import com.poozim.jobcall.model.Comment;
 import com.poozim.jobcall.model.GroupInviteLog;
 import com.poozim.jobcall.model.Member;
+import com.poozim.jobcall.model.Notification;
 import com.poozim.jobcall.model.Work;
 import com.poozim.jobcall.model.WorkBoard;
 import com.poozim.jobcall.model.WorkCategory;
@@ -52,6 +53,7 @@ import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.model.WorkGroupFile;
 import com.poozim.jobcall.model.WorkGroupMember;
 import com.poozim.jobcall.service.MemberService;
+import com.poozim.jobcall.service.NotificationService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.MailUtil;
@@ -68,6 +70,9 @@ public class WorkController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	@Autowired
 	private View jsonView;
@@ -1225,5 +1230,12 @@ public class WorkController {
 		workService.attendGroup(gil);
 		
 		return "redirect:/work/group/" + group_seq;
+	}
+	
+	@RequestMapping(value = "/notify", method = RequestMethod.GET)
+	public View getNotifyList(HttpServletRequest request, HttpServletResponse response, Model model, Notification notification) {
+		notification.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		model.addAttribute("list", notificationService.getNotificationList(notification));
+		return jsonView;
 	}
 }

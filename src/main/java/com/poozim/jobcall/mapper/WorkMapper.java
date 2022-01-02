@@ -44,4 +44,6 @@ public interface WorkMapper {
 	public List<WorkChatMember> getWorkChatMemberListMapper(WorkChatMember wcm);
 	
 	public List<WorkChatLog> getWorkChatLogListMapper(WorkChatLog wcl);
+	
+	public WorkChatLog getWorkChatLogOneMapper(WorkChatLog wcl);
 }

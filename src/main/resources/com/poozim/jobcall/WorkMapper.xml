@@ -369,10 +369,17 @@
 		FROM WorkChatLog wcl 
 		WHERE chat_seq = #{chat_seq}
 		<if test="seq != null and seq != ''">
-			wcl.seq = {seq}
+			AND wcl.seq = #{seq}
 		</if>
 		ORDER BY wcl.regdate desc, wcl.seq desc
 		LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+	<select id="getWorkChatLogOneMapper" parameterType="WorkChatLog" resultType="WorkChatLog">
+		SELECT IF(wcl.seq = (SELECT MIN(wcl2.seq) FROM WorkChatLog wcl2 WHERE wcl2.chat_seq = wcl.chat_seq AND wcl2.regdate &gt;= DATE_FORMAT(wcl.regdate, '%Y-%m-%d')), 'Y', 'N') as firstyn
+			,wcl.*
+		FROM WorkChatLog wcl 
+		WHERE wcl.seq = #{seq}
 	</select>
 	
 </mapper>
