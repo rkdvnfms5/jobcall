@@ -37,4 +37,8 @@ public class NotificationService {
 		int res = notificationRepository.confirmNotification(notification);
 		return res;
 	}
+	
+	public int getNotificationCount(Notification notification) {
+		return notificationRepository.getNotificationCount(notification);
+	}
 }

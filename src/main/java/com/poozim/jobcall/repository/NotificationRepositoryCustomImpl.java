@@ -60,6 +60,24 @@ private JPAQueryFactory queryFactory;
 		
 		return (int)queryFactory.update(notification).set(notification.confirmyn, "Y").where(builder).execute();
 	}
+
+	@Override
+	public int getNotificationCount(Notification param) {
+		
+		QNotification notification = QNotification.notification;
+		BooleanBuilder builder = new BooleanBuilder();
+		
+		if(param.getMember_seq() > 0){
+            builder.and(notification.member_seq.eq(param.getMember_seq()));
+        }
+		
+		if(param.getConfirmyn() != null && !param.getConfirmyn().equals("")) {
+			builder.and(notification.confirmyn.eq(param.getConfirmyn()));
+		}
+		
+		return (int) queryFactory.selectFrom(notification).where(builder).fetchCount();
+	}
+	
 	
 	
 }

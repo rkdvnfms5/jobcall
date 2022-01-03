@@ -25,6 +25,7 @@ import com.poozim.jobcall.model.WorkChatMember;
 import com.poozim.jobcall.model.WorkGroup;
 import com.poozim.jobcall.repository.NotificationRepository;
 import com.poozim.jobcall.service.ChatService;
+import com.poozim.jobcall.service.NotificationService;
 import com.poozim.jobcall.service.WorkService;
 import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.RedisUtil;
@@ -39,6 +40,9 @@ public class WorkAspect {
 	
 	@Autowired
 	private ChatService chatService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	@Before("@annotation(com.poozim.jobcall.aop.WorkLnbSet)")
 	//@Before("execution(* com.poozim.jobcall.controller.WorkController.*(...))")
@@ -73,6 +77,12 @@ public class WorkAspect {
 			wcm.setMember_seq(member.getSeq());
 			request.setAttribute("WorkChatList", chatService.getWorkChatMemberListMapper(wcm));
 			
+			//notify confirmyn
+			Notification notification = new Notification();
+			notification.setConfirmyn("N");
+			notification.setMember_seq(member.getSeq());
+			int notiNewCount = notificationService.getNotificationCount(notification);
+			request.setAttribute("notiNewCount", notiNewCount);
 		}
 	}
 }

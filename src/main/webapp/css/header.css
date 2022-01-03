@@ -78,6 +78,7 @@ button {border: 0 none; border-radius: 0; background-color: transparent; cursor:
 
 
 .work-header .work-header-contents .work-header-nav .btn-notice {
+	position:relative;
 	width: 36px;
 	height: 36px;
 }
@@ -91,6 +92,24 @@ button {border: 0 none; border-radius: 0; background-color: transparent; cursor:
 }
 
 
+.work-header .work-header-contents .work-header-nav .btn-notice .btn-notice-count {
+	position: absolute;
+    top: 0;
+    right: 4px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 3px;
+    border-radius: 17px;
+    background-color: #5A86DD;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 18px;
+    color: #fff;
+    font-family: Roboto, Arial, sans-serif;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 
 .notify-layer {
 	display:none;
@@ -194,3 +213,4 @@ button {border: 0 none; border-radius: 0; background-color: transparent; cursor:
     height: 100px;
     transform: translate(-50%, -50%);
 }
+
