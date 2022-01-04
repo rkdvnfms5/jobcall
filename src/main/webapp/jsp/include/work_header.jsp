@@ -78,6 +78,17 @@
 <script>
 var paging = true;
 
+$("#notify-layer").scroll(function(){
+	var current_scroll = $(this).scrollTop();
+	var last_notify = $(this).find("ul.notify-list li").last();
+	
+	var event_scroll = Number(last_notify.offset().top) + (Number(last_notify.outerHeight())*7) - Number($(document).scrollTop());
+	if(current_scroll > event_scroll && paging){
+		paging = false;
+		getNotify();
+	}
+})
+
 function openNotify(){
 	if(!$("#notify-layer").hasClass("on")){
 		if($("#notify-layer ul.notify-list li").length == 0){
@@ -91,7 +102,7 @@ function openNotify(){
 }
 
 function getNotify(){
-	$("#notify-loading").show();
+	showNotifyLoading();
 	//show 로딩
 	
 	$.ajax({
@@ -105,6 +116,9 @@ function getNotify(){
 				for(var i=0; i<res.list.length; i++){
 					html += htmlNotify(res.list[i]);
 				}
+				paging = true;
+			} else {
+				paging = false;
 			}
 			$("#notify-layer ul.notify-list").append(html);
 			
@@ -119,10 +133,10 @@ function getNotify(){
 				$("#notify-layer .empty-notify").hide();
 			}
 			
-			$("#notify-loading").hide();
+			hideNotifyLoading();
 		},
 		error : function(error) {
-			$("#notify-loading").hide();
+			hideNotifyLoading();
 		}
 		//hide 로딩
 	})
@@ -144,6 +158,16 @@ function htmlNotify(notify){
 	html += '<div class="notify-date"> ' + notify.regdate.split(' ')[0] + ' </div></li>';
 		
 	return html;
+}
+
+function showNotifyLoading(){
+	$("#notify-loading").show();
+	//$("#notify-layer").css("overflow-y", "hidden");
+}
+
+function hideNotifyLoading(){
+	$("#notify-loading").hide();
+	//$("#notify-layer").css("overflow-y", "auto");
 }
 
 </script>
