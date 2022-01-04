@@ -328,6 +328,31 @@ public class WorkService {
 			
 		}
 		
+		//add notification when request board
+		if(workBoard.getType().equals("request")) {
+			String[] workerArr = workBoard.getWorker().split(",");
+			if(workerArr.length > 0) {
+				Notification noti;
+				for(int i=0; i<workerArr.length; i++) {
+					Member member = new Member();
+					noti = new Notification();
+					
+					member.setId(workerArr[i]);
+					member = memberRepository.getMemberOne(member);
+					
+					noti.setGroup_seq(workBoard.getGroup_seq());
+					noti.setBoard_seq(workBoard.getSeq());
+					noti.setMember_profile(workBoard.getMember_profile());
+					noti.setMember_seq(member.getSeq());
+					noti.setContent(workBoard.getMember_id() + "의 업무 요청: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+					noti.setConfirmyn("N");
+					noti.setRegdate(workBoard.getRegdate());
+					notificationRepository.save(noti);
+				}
+			}
+			
+		}
+		
 		return 1;
 	}
 	
@@ -403,6 +428,60 @@ public class WorkService {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+			}
+		}
+		
+		//notification
+		WorkBoard org_board = workBoardRepository.findById(workBoard.getSeq()).get();
+		String org_content = org_board.getContent();
+		List<String> mentionList = getMentions(workBoard.getContent());
+		if(mentionList != null && !mentionList.isEmpty()) {
+			Notification noti;
+			
+			for(int i=0; i<mentionList.size(); i++) {
+				if(!org_content.contains("@"+mentionList.get(i))) {	//기존에 없던 멘션이면
+					Member member = new Member();
+					noti = new Notification();
+					
+					member.setId(mentionList.get(i));
+					member = memberRepository.getMemberOne(member);
+					
+					noti.setGroup_seq(workBoard.getGroup_seq());
+					noti.setBoard_seq(workBoard.getSeq());
+					noti.setMember_profile(workBoard.getMember_profile());
+					noti.setMember_seq(member.getSeq());
+					noti.setContent(workBoard.getMember_id() + "의 멘션: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+					noti.setConfirmyn("N");
+					noti.setRegdate(TimeUtil.getDateTime());
+					notificationRepository.save(noti);
+				}
+			}
+		}
+		
+		//notification when modify request worker
+		String org_worker = org_board.getWorker();
+		if(workBoard.getNoticeyn().equals("N") && workBoard.getType().equals("request")) {
+			String[] workerArr = workBoard.getWorker().split(",");
+			if(workerArr.length > 0) {
+				Notification noti;
+				for(int i=0; i<workerArr.length; i++) {
+					if(!org_worker.contains(workerArr[i])) {
+						Member member = new Member();
+						noti = new Notification();
+						
+						member.setId(workerArr[i]);
+						member = memberRepository.getMemberOne(member);
+						
+						noti.setGroup_seq(workBoard.getGroup_seq());
+						noti.setBoard_seq(workBoard.getSeq());
+						noti.setMember_profile(workBoard.getMember_profile());
+						noti.setMember_seq(member.getSeq());
+						noti.setContent(workBoard.getMember_id() + "의 업무 요청: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+						noti.setConfirmyn("N");
+						noti.setRegdate(workBoard.getRegdate());
+						notificationRepository.save(noti);
+					}
 				}
 			}
 		}
@@ -488,6 +567,30 @@ public class WorkService {
 			}
 		}
 		
+		//add notification
+		List<String> mentionList = getMentions(comment.getContent());
+		if(mentionList != null && !mentionList.isEmpty()) {
+			Notification noti;
+			int group_seq = workBoardRepository.getOne(comment.getBoard_seq()).getGroup_seq();
+			for(int i=0; i<mentionList.size(); i++) {
+				Member member = new Member();
+				noti = new Notification();
+				
+				member.setId(mentionList.get(i));
+				member = memberRepository.getMemberOne(member);
+				
+				noti.setGroup_seq(group_seq);
+				noti.setBoard_seq(comment.getBoard_seq());
+				noti.setMember_profile(comment.getMember_profile());
+				noti.setMember_seq(member.getSeq());
+				noti.setContent(comment.getMember_id() + "의 멘션: " + comment.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+				noti.setConfirmyn("N");
+				noti.setRegdate(comment.getRegdate());
+				notificationRepository.save(noti);
+			}
+			
+		}
+		
 		return 1;
 	}
 	
@@ -528,6 +631,32 @@ public class WorkService {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+			}
+		}
+		
+		//add notification
+		String org_content = commentRepository.findById(comment.getSeq()).get().getContent();
+		List<String> mentionList = getMentions(comment.getContent());
+		if(mentionList != null && !mentionList.isEmpty()) {
+			Notification noti;
+			int group_seq = workBoardRepository.getOne(comment.getBoard_seq()).getGroup_seq();
+			for(int i=0; i<mentionList.size(); i++) {
+				if(!org_content.contains("@"+mentionList.get(i))) {
+					Member member = new Member();
+					noti = new Notification();
+					
+					member.setId(mentionList.get(i));
+					member = memberRepository.getMemberOne(member);
+					
+					noti.setGroup_seq(group_seq);
+					noti.setBoard_seq(comment.getBoard_seq());
+					noti.setMember_profile(comment.getMember_profile());
+					noti.setMember_seq(member.getSeq());
+					noti.setContent(comment.getMember_id() + "의 멘션: " + comment.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+					noti.setConfirmyn("N");
+					noti.setRegdate(comment.getRegdate());
+					notificationRepository.save(noti);
 				}
 			}
 		}
