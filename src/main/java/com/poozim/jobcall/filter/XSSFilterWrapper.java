@@ -14,15 +14,29 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
 public class XSSFilterWrapper extends HttpServletRequestWrapper{
 
 	private byte[] rawData;
+	private final String[] badWords = {".git", ".svn", "git", "svn", ".php", "modules", "static",
+            "admin", "cms", "robots", "source", "config", "setup", "console",
+			"formLogin", "json", "system", "env", "asp", "about", "action", "app", "application", 
+			"remote", "lang", "jenkins", "manager"};
 	
-	public XSSFilterWrapper(HttpServletRequest request) {
+	public XSSFilterWrapper(HttpServletRequest request, HttpServletResponse response) {
 		super(request);
+		
+		if(!checkBadWord(request)) {
+			try {
+				response.sendError(403, "Access Denied");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		try {
 			if(request.getMethod().equalsIgnoreCase("post") && (request.getContentType().equals("application/json") || request.getContentType().equals("multipart/form-data"))) {
 				InputStream is = request.getInputStream();
@@ -111,6 +125,13 @@ public class XSSFilterWrapper extends HttpServletRequestWrapper{
 		return new BufferedReader(new InputStreamReader(this.getInputStream(), "UTF_8"));
 	}
 
+	
+	// add Bad Request Topic Filtering
+	public boolean checkBadWord(HttpServletRequest request) {
+		int badMatchs = Arrays.stream(badWords).filter(word -> request.getRequestURI().contains(word)).toArray().length;
+		
+		return (badMatchs > 0? false : true);
+	}
 	
 	
 }

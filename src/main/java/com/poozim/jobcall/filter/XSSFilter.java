@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 
 public class XSSFilter implements Filter{
 	private FilterConfig filterConfig;
@@ -22,7 +23,7 @@ public class XSSFilter implements Filter{
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		HttpServletRequestWrapper requestWrapper = new XSSFilterWrapper((HttpServletRequest)request);
+		HttpServletRequestWrapper requestWrapper = new XSSFilterWrapper((HttpServletRequest)request, (HttpServletResponse)response);
 		chain.doFilter(requestWrapper, response);
 	}
 

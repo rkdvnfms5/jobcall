@@ -168,6 +168,7 @@ public class ChatController {
 			model.addAttribute("msg", "채팅정보가 없습니다.");
 			return jsonView;
 		}
+		wcl.setLimit(100);
 		List<WorkChatLog> list = chatService.getWorkChatLogListMapper(wcl);
 		model.addAttribute("list", list);
 		return jsonView;

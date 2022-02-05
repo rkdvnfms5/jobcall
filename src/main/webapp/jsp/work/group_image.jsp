@@ -185,7 +185,7 @@ function scrollPaging(obj){
 			hideLoading();
 		},
 		error : function(request, status, error){
-			alert(request);
+			//alert(request);
 			hideLoading();
 		}
 	});

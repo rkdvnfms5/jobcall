@@ -65,6 +65,13 @@ import com.poozim.jobcall.util.TimeUtil;
 @RequestMapping("/work")
 public class WorkController {
 	
+	private final int limit_file = 10;
+	private final int limit_board = 10;
+	private final int limit_image = 20;
+	private final int limit_comment = 5;
+	private final int limit_notify = 20;
+	
+	
 	@Autowired
 	private WorkService workService;
 	
@@ -282,6 +289,7 @@ public class WorkController {
 	
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
 	public View getBoardList(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard) {
+		workBoard.setLimit(limit_board);
 		List<WorkBoard> workBoardList = workService.getWorkBoardList(workBoard);
 		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
 		model.addAttribute("workBoardList", workBoardList);
@@ -425,6 +433,7 @@ public class WorkController {
 	@RequestMapping(value = "/comment", method = RequestMethod.GET)
 	public View getCommentList(HttpServletRequest request, HttpServletResponse response, Model model,
 			Comment comment) {
+		comment.setLimit(limit_comment);
 		comment.setSearch_member_seq(LoginUtil.getLoginMember(request, response).getSeq());
 		List<Comment> commentList = workService.getCommentList(comment);
 		model.addAttribute("commentList", commentList);
@@ -916,13 +925,12 @@ public class WorkController {
 	@RequestMapping(value = "/group/{group_seq}/fileList", method = RequestMethod.GET)
 	public View getGroupFile(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("group_seq") int group_seq) {
-		int limit = ServletRequestUtils.getIntParameter(request, "limit", 10);
 		int offset = ServletRequestUtils.getIntParameter(request, "offset", 0);
 		String file_type = ServletRequestUtils.getStringParameter(request, "file_type", "");
 		
 		WorkGroupFile wgf = new WorkGroupFile();
 		wgf.setGroup_seq(group_seq);
-		wgf.setLimit(limit);
+		wgf.setLimit(limit_file);
 		wgf.setOffset(offset);
 		if(file_type != null && !file_type.equals("")) {
 			wgf.setFile_type(file_type);
@@ -1116,7 +1124,7 @@ public class WorkController {
 		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
 		model.addAttribute("WorkGroup", workGroup);
 		
-		int limit = ServletRequestUtils.getIntParameter(request, "limit", 20);
+		int limit = limit_image;
 		int offset = ServletRequestUtils.getIntParameter(request, "offset", 0);
 		model.addAttribute("limit", limit);
 		model.addAttribute("offset", offset);
@@ -1234,6 +1242,7 @@ public class WorkController {
 	
 	@RequestMapping(value = "/notify", method = RequestMethod.GET)
 	public View getNotifyList(HttpServletRequest request, HttpServletResponse response, Model model, Notification notification) {
+		notification.setLimit(limit_notify);
 		notification.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
 		model.addAttribute("list", notificationService.getNotificationList(notification));
 		return jsonView;
