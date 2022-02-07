@@ -100,6 +100,9 @@ var groupArray = new Array();
 	json.name="${group.name}";
 	json.access="${group.access}";
 	json.useyn="${group.useyn}";
+	json.master_seq="${group.master_seq}";
+	json.master_id="${group.master_id}";
+	json.master_name="${group.master_name}";
 	groupArray.push(json);
 </c:forEach>
 

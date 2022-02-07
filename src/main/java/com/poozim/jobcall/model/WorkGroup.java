@@ -23,6 +23,9 @@ public class WorkGroup {
 	private String access;
 	private String defaultyn = "N";
 	private String useyn;
+	private int master_seq;
+	private String master_name;
+	private String master_id;
 	private String register;
 	private String regdate;
 	

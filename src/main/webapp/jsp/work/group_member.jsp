@@ -14,7 +14,7 @@
 	
 		<div class="group-members-page">
 			<div class="group-members-page-header">
-				<c:if test="${member.seq eq WorkGroup.member_seq}">
+				<c:if test="${member.seq eq WorkGroup.master_seq}">
 					<a class="ra-button" href="/work/group/${WorkGroup.seq}/invite">
 						멤버 초대
 					</a>
@@ -33,7 +33,7 @@
 								<div class="group-member-department">${memberOne.department}</div>
 							</div>
 							<c:if test="${member.seq ne memberOne.seq}">
-								<c:if test="${member.seq eq WorkGroup.member_seq}">
+								<c:if test="${member.seq eq WorkGroup.master_seq}">
 									<div class="group-member-edit">
 										<button type="button" class="ra-button" onclick="deleteGroupMember(${memberOne.seq})">내보내기</button>
 									</div>

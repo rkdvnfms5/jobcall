@@ -30,6 +30,14 @@ public class WorkGroupRepositoryCustomImpl extends QuerydslRepositorySupport imp
 		
 		return list;
 	}
+	
+	@Override
+	public List<WorkGroupMember> getWorkGroupMemberList(WorkGroup param) {
+		QWorkGroupMember wgm = QWorkGroupMember.workGroupMember;
+		BooleanBuilder builder = new BooleanBuilder();
+		builder.and(wgm.group_seq.eq(param.getSeq()));
+		return queryFactory.selectFrom(wgm).where(builder).fetch();
+	}
 
 	@Override
 	public int getWorkGroupMemberCnt(WorkGroup param) {

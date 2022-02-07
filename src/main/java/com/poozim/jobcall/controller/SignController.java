@@ -312,4 +312,31 @@ public class SignController {
 		
 		return jsonView;
 	}
+	
+	
+	// for testing
+	@RequestMapping(value = "/9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08", method = RequestMethod.GET)
+	public String doTestLogin(HttpServletRequest request, HttpServletResponse response, Model model) {
+		Member member = new Member();
+		member.setId("tester1");
+		String password = "gkdlfn123!A";
+		
+		member = memberService.getMemberById(member);
+		
+		if(member == null || member.getSeq() == 0 || member.getUseyn().equals("N")) {
+			model.addAttribute("msg", "테스트 계정 정보 오류");
+			return "/util/alert";
+		}
+		
+		boolean passwordYN = bcryEncoder.matches(password, member.getPassword());
+		
+		if(!passwordYN) {
+			model.addAttribute("msg", "아이디 또는 비밀번호가 틀립니다.");
+			return "/util/alert";
+		} 
+		
+		LoginUtil.setLoginSession(request, response, member);
+		
+		return "redirect:/work/" + member.getWork_seq() + "/home";
+	}
 }

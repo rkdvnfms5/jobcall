@@ -8,6 +8,8 @@ import com.poozim.jobcall.model.WorkGroupMember;
 public interface WorkGroupRepositoryCustom{
 	public List<WorkGroup> getWorkGroupList(int workseq, int memberseq);
 	
+	public List<WorkGroupMember> getWorkGroupMemberList(WorkGroup workGroup);
+	
 	public int getWorkGroupMemberCnt(WorkGroup workGroup);
 	
 	public WorkGroupMember getWorkGroupMemberOne(int groupseq, int memberseq);

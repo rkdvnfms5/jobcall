@@ -193,6 +193,10 @@ public class WorkService {
 		return 1;
 	}
 	
+	public List<WorkGroupMember> getWorkGroupMemberList(WorkGroup workGroup){
+		return workGroupRepository.getWorkGroupMemberList(workGroup);
+	}
+	
 	public WorkGroupMember getWorkGroupMemberOne(int groupseq, int memberseq) {
 		return workGroupRepository.getWorkGroupMemberOne(groupseq, memberseq);
 	}
@@ -750,7 +754,7 @@ public class WorkService {
 				groupInviteLogRepository.save(log);
 				
 				//send mail
-				String title = "잡콜센터 그룹 : " + workGroup.getName() + "로 초대합니다.";
+				String title = "잡콜이야 : " + workGroup.getName() + "업무그룹으로 초대합니다.";
 				String from = "rkdvnfms5@naver.com";
 				String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
 				String to = member.getEmail();

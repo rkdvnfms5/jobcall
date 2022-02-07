@@ -7,6 +7,7 @@ import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.model.Notification;
 import com.poozim.jobcall.repository.NotificationRepository;
@@ -17,7 +18,7 @@ public class NotificationService {
 	@Autowired
 	private NotificationRepository notificationRepository;
 	
-	@Transient
+	@Transactional
 	public List<Notification> getNotificationList(Notification notification){
 		List<Notification> list = notificationRepository.getNotificationList(notification);
 		
@@ -32,7 +33,7 @@ public class NotificationService {
 		return list;
 	}
 	
-	@Transient
+	@Transactional
 	public int updateNotificationList(Notification notification) {
 		int res = notificationRepository.confirmNotification(notification);
 		return res;
@@ -40,5 +41,10 @@ public class NotificationService {
 	
 	public int getNotificationCount(Notification notification) {
 		return notificationRepository.getNotificationCount(notification);
+	}
+	
+	public int insertNotification(Notification notification) {
+		notificationRepository.save(notification);
+		return 1;
 	}
 }

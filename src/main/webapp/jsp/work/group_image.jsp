@@ -23,30 +23,36 @@
 <article class="work-basic-layout-body">
 	<section class="wall-page">
 		<%@include file="/jsp/include/group_header.jsp" %>	
-	
-		<div class="group-image-page">
-			<div class="group-image-page-header">
-			
-			</div>
-			<div class="group-image-page-body">
-				<div class="group-image-list">
-					<c:forEach items="${FileList}" var="image" varStatus="status">
-						<div class="group-image-item ${status.last? 'observed':''}" 
-							onclick="openImageViewer(${status.index})">
-							<img src="${image.src}">
-							<input type="hidden" name="src" value="${image.src}">
-							<input type="hidden" name="name" value="${image.name}">
-							<input type="hidden" name="member_id" value="${image.member_id}">
-							<input type="hidden" name="member_name" value="${image.member_name}">
-							<input type="hidden" name="object_name" value="${image.object_name}">
-							<input type="hidden" name="board_seq" value="${image.board_seq}">
-							<input type="hidden" name="regdate" value="${image.regdate}">
-						</div>
-					</c:forEach>
+		<c:choose>
+			<c:when test="${empty FileList}">
+				<jsp:include page="/jsp/include/empty_content.jsp" />
+			</c:when>
+			<c:otherwise>
+				<div class="group-image-page">
+					<div class="group-image-page-header">
 					
+					</div>
+					<div class="group-image-page-body">
+						<div class="group-image-list">
+							<c:forEach items="${FileList}" var="image" varStatus="status">
+								<div class="group-image-item ${status.last? 'observed':''}" 
+									onclick="openImageViewer(${status.index})">
+									<img src="${image.src}">
+									<input type="hidden" name="src" value="${image.src}">
+									<input type="hidden" name="name" value="${image.name}">
+									<input type="hidden" name="member_id" value="${image.member_id}">
+									<input type="hidden" name="member_name" value="${image.member_name}">
+									<input type="hidden" name="object_name" value="${image.object_name}">
+									<input type="hidden" name="board_seq" value="${image.board_seq}">
+									<input type="hidden" name="regdate" value="${image.regdate}">
+								</div>
+							</c:forEach>
+							
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
+			</c:otherwise>
+		</c:choose>
 	</section>
 </article>
 <div class="dim imageViewer hide">

@@ -36,7 +36,7 @@
 								<div class="group-item-footer">
 									<span class="group-members">멤버 <span class="primary">${group.member_count}</span></span>
 									<c:if test="${group.attendyn eq 'Y'}">
-										<button type="button" class="group-exit-button" onclick="alert('d')">나가기</button>
+										<button type="button" class="group-exit-button" onclick="exitGroup(${group.seq})">나가기</button>
 									</c:if>
 								</div>
 							</li>
@@ -54,6 +54,24 @@ $(document).ready(function(){
 	})
 })
 
+function exitGroup(group_seq){
+	showLoading();
+	
+	$.ajax({
+		url : '/work/groups',
+		method : 'DELETE',
+		data : {group_seq : group_seq},
+		dataType : 'JSON',
+		success : function(res){
+			if(res.res == 1){
+				location.reload();
+			} else {
+				alret(res.msg);
+			}
+			hideLoading();
+		},
+	})
+}
 
 </script>
 </body>

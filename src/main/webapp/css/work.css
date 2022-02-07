@@ -3926,3 +3926,34 @@ div.textarea span.mention, .board-body-content span.mention, .comment-body-conte
     padding: 3px 6px 3px;
     height: 27px;
 }
+
+
+.empty-content {
+	width: 100%;
+	height: 300px;
+	text-align: center;
+    position: relative;
+}
+
+.empty-content .empty-content-box {
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.empty-content img {
+	width: 100px;
+	height: 100px;
+	opacity: 0.3;
+	display: block;
+	margin: 0 auto 20px;
+}
+
+.empty-content span {
+	font-weight: bold;
+	color: rgba(0, 0, 0, 0.3);
+	font-size: 25px;
+}
+

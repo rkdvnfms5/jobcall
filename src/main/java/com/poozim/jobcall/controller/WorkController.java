@@ -243,7 +243,7 @@ public class WorkController {
 		int res = 0;
 		WorkGroup group = workService.getWorkGroupOne(groupseq);
 		
-		if(group.getMember_seq() == LoginUtil.getLoginMember(request, response).getSeq()) {
+		if(group.getMaster_seq() == LoginUtil.getLoginMember(request, response).getSeq()) {
 			group.setAccess(workGroup.getAccess());
 			group.setContent(workGroup.getContent());
 			res = workService.updateWorkGroup(group);
@@ -251,7 +251,7 @@ public class WorkController {
 		}
 		
 		model.addAttribute("res", res);
-		model.addAttribute("msg", "그룹 마스터만 수정이 가능합니다.");
+		model.addAttribute("msg", "그룹 마스터만 가능합니다.");
 		return jsonView;
 	}
 	
@@ -612,7 +612,6 @@ public class WorkController {
 		Member member = new Member();
 		member.setEmail(email);
 		member.setWork_seq(work.getSeq());
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ : " + work.getSeq());
 		System.out.println(memberService.getMemberOneCustom(member));
 		if(memberService.getMemberOneCustom(member) != null) {
 			model.addAttribute("res", res);
@@ -621,7 +620,7 @@ public class WorkController {
 		}
 		
 		//메일 보내기
-		String title = "잡콜이야 " + work.getTitle() + "로 초대합니다.";
+		String title = "잡콜이야 " + work.getTitle() + " 업무방으로 초대합니다.";
 		String from = "rkdvnfms5@naver.com";
 		String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/sign/attend/" + work.getSeq();
 		text += "\n참여 코드 : " + work.getCode();
@@ -629,6 +628,7 @@ public class WorkController {
 		String cc = "";
 		
 		res = MailUtil.mailSend(title, from, text, to, cc);
+		
 		model.addAttribute("res", res);
 		
 		return jsonView;
@@ -736,6 +736,80 @@ public class WorkController {
 		return "/work/group_list";
 	}
 	
+	@RequestMapping(value = "/groups", method = RequestMethod.DELETE)
+	public View exitGroup(HttpServletRequest request, HttpServletResponse response, Model model) {
+		int group_seq = ServletRequestUtils.getIntParameter(request, "group_seq", 0);
+		Member member = LoginUtil.getLoginMember(request, response);
+		
+		int res = 0;
+		
+		//get group info, workgroupmember
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		WorkGroupMember wgm = workService.getWorkGroupMemberOne(group_seq, member.getSeq());
+		
+		/* 예외 처리들
+		 * 그룹 정보가 없는 (존재하지 않는 경우)
+		 * 참여중인 그룹이 아닌 경우
+		 * 그룹에 혼자인 경우 -> 그룹 삭제
+		 * 그룹 마스터인 경우 -> 그룹 마스터 정보 수정
+		*/
+		
+		if(workGroup == null || workGroup.getSeq() == 0) {
+			model.addAttribute("msg", "해당 그룹 정보가 없습니다.");
+			return jsonView;
+		}
+		
+		if(wgm == null || wgm.getSeq() == 0) {
+			model.addAttribute("msg", "해당 그룹에 참여 정보가 없습니다.");
+			return jsonView;
+		}
+		
+		if(workGroup.getMaster_seq() == member.getSeq()) {
+			//혼자면
+			if(workService.getWorkGroupMemberCnt(workGroup) < 2) {
+				//그룹 미사용
+				workGroup.setUseyn("N");
+				workService.updateWorkGroup(workGroup);
+			}//아니면
+			else {
+				//마스터 위임
+				int next_master_seq = 0;
+				List<WorkGroupMember> wgmList = workService.getWorkGroupMemberList(workGroup);
+				
+				//위임할 member_seq
+				if(wgmList != null && !wgmList.isEmpty()) {
+					for(int i=0; i<wgmList.size(); i++) {
+						if(wgmList.get(i).getMember_seq() != member.getSeq()) {
+							next_master_seq = wgmList.get(i).getMember_seq();
+							break;
+						}
+					}
+				}
+				
+				Member next_master = memberService.getMemberOne(next_master_seq);
+				//위임
+				workGroup.setMaster_id(next_master.getId());
+				workGroup.setMaster_name(next_master.getName());
+				workGroup.setMaster_seq(next_master.getSeq());
+				workService.updateWorkGroup(workGroup);
+			}
+			
+			res = workService.deleteWorkGroupMember(wgm);
+		} 
+		else {
+			//마스터가 아닌데 혼자인 경우
+			workGroup.setUseyn("N");
+			workService.updateWorkGroup(workGroup);
+			res = workService.deleteWorkGroupMember(wgm);
+		}
+		
+		
+		
+		model.addAttribute("res", res);
+		
+		return jsonView;
+	}
+	
 	@RequestMapping(value = "/group/{group_seq}/member", method = RequestMethod.GET)
 	@WorkLnbSet
 	public String groupMemberPage(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -756,13 +830,13 @@ public class WorkController {
 	public View groupMemberDelete(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("group_seq") int group_seq) {
 		Member member = LoginUtil.getLoginMember(request, response);
-		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
-			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
-			return jsonView;
-		}
-		
 		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
 		model.addAttribute("WorkGroup", workGroup);
+		
+		if(workGroup.getMaster_seq() != member.getSeq()) {
+			model.addAttribute("msg", "마스터만 가능합니다.");
+			return jsonView;
+		}
 		
 		if(workGroup == null || workGroup.getSeq() == 0 || workGroup.getUseyn().equals("N")) {
 			model.addAttribute("msg", "해당 그룹이 존재하지 않습니다.");
@@ -793,11 +867,13 @@ public class WorkController {
 	public String groupMemberInvitePage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@PathVariable("group_seq") int group_seq) {
 		Member member = LoginUtil.getLoginMember(request, response);
-		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
-			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		
+		if(workGroup.getMaster_seq() != member.getSeq()) {
+			model.addAttribute("msg", "마스터만 가능합니다.");
 			return "/util/alert";
 		}
-		WorkGroup workGroup = workService.getWorkGroupOne(group_seq);
+		
 		workGroup.setMember_count(workService.getWorkGroupMemberCnt(workGroup));
 		model.addAttribute("WorkGroup", workGroup);
 		
@@ -831,8 +907,8 @@ public class WorkController {
 			return jsonView;
 		}
 		
-		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
-			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+		if(workGroup.getMaster_seq() != member.getSeq()) {
+			model.addAttribute("msg", "마스터만 가능합니다.");
 			return jsonView;
 		}
 		
@@ -862,8 +938,8 @@ public class WorkController {
 			return jsonView;
 		}
 		
-		if(!member.getAuth().equals("master") && !member.getAuth().equals("manager")) {
-			model.addAttribute("msg", "마스터 혹은 운영자만 초대 가능합니다.");
+		if(workGroup.getMaster_seq() != member.getSeq()) {
+			model.addAttribute("msg", "마스터만 가능합니다.");
 			return jsonView;
 		}
 		
@@ -877,7 +953,7 @@ public class WorkController {
 		if(res == 1) {
 			
 			//send mail
-			String title = "잡콜센터 그룹 : " + workGroup.getName() + "로 초대합니다.";
+			String title = "잡콜이야 : " + workGroup.getName() + " 업무그룹으로 초대합니다.";
 			String from = "rkdvnfms5@naver.com";
 			String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
 			String to = memberService.getMemberOne(gil.getMember_seq()).getEmail();
