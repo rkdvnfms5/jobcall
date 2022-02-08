@@ -23,7 +23,7 @@ public class XSSFilterWrapper extends HttpServletRequestWrapper{
 	private byte[] rawData;
 	private final String[] badWords = {".git", ".svn", "git", "svn", ".php", "modules", "static",
             "admin", "cms", "robots", "source", "config", "setup", "console",
-			"formLogin", "json", "system", "env", "asp", "about", "action", "app", "application", 
+			"formLogin", "json", "system", "env", "asp", "about", "app", "application", 
 			"remote", "lang", "jenkins", "manager"};
 	
 	public XSSFilterWrapper(HttpServletRequest request, HttpServletResponse response) {

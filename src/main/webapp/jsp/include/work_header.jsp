@@ -151,7 +151,7 @@ function htmlNotify(notify){
 	if(notify.confirmyn == 'N'){
 		html += 'new';
 	}
-	html += '" onclick="location.href=\'/work/group/' + notify.group_seq + '/' + notify.board_seq + '\'">';
+	html += '" onclick="location.href=\'' + notify.link + '\'">';
 	html += '<div class="notify-profile">';
 	html += '<span class="avatar" style="width: 50px; height: 50px; background-image: url(\'' + profile + '\');"></span></div>';
 	html += '<div class="notify-content">' + notify.content + '</div>';

@@ -22,6 +22,8 @@ public class Notification {
 	private int member_seq;
 	private String member_profile;
 	private String content;
+	private String link;
+	private String target;
 	private String confirmyn;
 	private String regdate;
 	

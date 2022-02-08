@@ -912,7 +912,7 @@ public class WorkController {
 			return jsonView;
 		}
 		
-		res = workService.inviteGroupMembers(memberSeqList, workGroup, request);
+		res = workService.inviteGroupMembers(memberSeqList, workGroup, request, member);
 		model.addAttribute("res", res);
 		return jsonView;
 	}
@@ -951,14 +951,27 @@ public class WorkController {
 		res = workService.updateGroupInviteLog(gil);
 		
 		if(res == 1) {
+			//send notification
+			Notification noti = new Notification();
+			noti.setGroup_seq(workGroup.getSeq());
+			if(member.getProfile() != null) {
+				noti.setMember_profile(member.getProfile());
+			}
+			noti.setMember_seq(gil.getMember_seq());
+			noti.setContent(member.getId() + "님이 " + workGroup.getName() + " 업무그룹으로 초대합니다.");
+			noti.setLink(request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code);
+			noti.setTarget("self");
+			noti.setConfirmyn("N");
+			noti.setRegdate(gil.getRegdate());
+			notificationService.insertNotification(noti);
 			
 			//send mail
-			String title = "잡콜이야 : " + workGroup.getName() + " 업무그룹으로 초대합니다.";
-			String from = "rkdvnfms5@naver.com";
-			String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
-			String to = memberService.getMemberOne(gil.getMember_seq()).getEmail();
-			String cc = "";
-			res = MailUtil.mailSend(title, from, text, to, cc);
+//			String title = "잡콜이야 : " + workGroup.getName() + " 업무그룹으로 초대합니다.";
+//			String from = "rkdvnfms5@naver.com";
+//			String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
+//			String to = memberService.getMemberOne(gil.getMember_seq()).getEmail();
+//			String cc = "";
+//			res = MailUtil.mailSend(title, from, text, to, cc);
 		}
 		model.addAttribute("res", res);
 		return jsonView;

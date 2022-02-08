@@ -325,6 +325,8 @@ public class WorkService {
 				noti.setMember_profile(workBoard.getMember_profile());
 				noti.setMember_seq(member.getSeq());
 				noti.setContent(workBoard.getMember_id() + "의 멘션: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+				noti.setLink("/work/group/" + workBoard.getGroup_seq() + "/" + workBoard.getSeq());
+				noti.setTarget("self");
 				noti.setConfirmyn("N");
 				noti.setRegdate(workBoard.getRegdate());
 				notificationRepository.save(noti);
@@ -349,6 +351,8 @@ public class WorkService {
 					noti.setMember_profile(workBoard.getMember_profile());
 					noti.setMember_seq(member.getSeq());
 					noti.setContent(workBoard.getMember_id() + "의 업무 요청: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+					noti.setLink("/work/group/" + workBoard.getGroup_seq() + "/" + workBoard.getSeq());
+					noti.setTarget("self");
 					noti.setConfirmyn("N");
 					noti.setRegdate(workBoard.getRegdate());
 					notificationRepository.save(noti);
@@ -456,6 +460,8 @@ public class WorkService {
 					noti.setMember_profile(workBoard.getMember_profile());
 					noti.setMember_seq(member.getSeq());
 					noti.setContent(workBoard.getMember_id() + "의 멘션: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+					noti.setLink("/work/group/" + workBoard.getGroup_seq() + "/" + workBoard.getSeq());
+					noti.setTarget("self");
 					noti.setConfirmyn("N");
 					noti.setRegdate(TimeUtil.getDateTime());
 					notificationRepository.save(noti);
@@ -482,6 +488,8 @@ public class WorkService {
 						noti.setMember_profile(workBoard.getMember_profile());
 						noti.setMember_seq(member.getSeq());
 						noti.setContent(workBoard.getMember_id() + "의 업무 요청: " + workBoard.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+						noti.setLink("/work/group/" + workBoard.getGroup_seq() + "/" + workBoard.getSeq());
+						noti.setTarget("self");
 						noti.setConfirmyn("N");
 						noti.setRegdate(workBoard.getRegdate());
 						notificationRepository.save(noti);
@@ -588,6 +596,8 @@ public class WorkService {
 				noti.setMember_profile(comment.getMember_profile());
 				noti.setMember_seq(member.getSeq());
 				noti.setContent(comment.getMember_id() + "의 멘션: " + comment.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+				noti.setLink("/work/group/" + group_seq + "/" + comment.getBoard_seq());
+				noti.setTarget("self");
 				noti.setConfirmyn("N");
 				noti.setRegdate(comment.getRegdate());
 				notificationRepository.save(noti);
@@ -658,6 +668,8 @@ public class WorkService {
 					noti.setMember_profile(comment.getMember_profile());
 					noti.setMember_seq(member.getSeq());
 					noti.setContent(comment.getMember_id() + "의 멘션: " + comment.getContent().replaceAll("&lt;span class=\"mention\" contenteditable=\"false\"&gt;", "").replaceAll("&lt;/span&gt;", ""));
+					noti.setLink("/work/group/" + group_seq + "/" + comment.getBoard_seq());
+					noti.setTarget("self");
 					noti.setConfirmyn("N");
 					noti.setRegdate(comment.getRegdate());
 					notificationRepository.save(noti);
@@ -740,9 +752,10 @@ public class WorkService {
 	}
 	
 	@Transactional
-	public int inviteGroupMembers(List<Integer> memberSeqList, WorkGroup workGroup, HttpServletRequest request) {
+	public int inviteGroupMembers(List<Integer> memberSeqList, WorkGroup workGroup, HttpServletRequest request, Member requester) {
 		String regdate = TimeUtil.getDateTime();
 		if(memberSeqList != null && !memberSeqList.isEmpty()) {
+			Notification noti;
 			for(int i=0; i<memberSeqList.size(); i++) {
 				Member member = memberRepository.findById(memberSeqList.get(i)).get();
 				GroupInviteLog log = new GroupInviteLog();
@@ -753,13 +766,29 @@ public class WorkService {
 				log.setCode(code);
 				groupInviteLogRepository.save(log);
 				
+				String link = request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
+				
+				//send notification
+				noti = new Notification();
+				noti.setGroup_seq(workGroup.getSeq());
+				if(requester.getProfile() != null) {
+					noti.setMember_profile(requester.getProfile());
+				}
+				noti.setMember_seq(member.getSeq());
+				noti.setContent(requester.getId() + "님이 " + workGroup.getName() + " 업무그룹으로 초대합니다.");
+				noti.setLink(link);
+				noti.setTarget("self");
+				noti.setConfirmyn("N");
+				noti.setRegdate(regdate);
+				notificationRepository.save(noti);
+				
 				//send mail
-				String title = "잡콜이야 : " + workGroup.getName() + "업무그룹으로 초대합니다.";
-				String from = "rkdvnfms5@naver.com";
-				String text = "URL : " + request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/work/group/" + workGroup.getSeq() + "/attend/" + code;
-				String to = member.getEmail();
-				String cc = "";
-				MailUtil.mailSend(title, from, text, to, cc);
+//				String title = "잡콜이야 : " + workGroup.getName() + "업무그룹으로 초대합니다.";
+//				String from = "rkdvnfms5@naver.com";
+//				String text = "URL : " + link;
+//				String to = member.getEmail();
+//				String cc = "";
+//				MailUtil.mailSend(title, from, text, to, cc);
 			}
 		}
 		return 1;
