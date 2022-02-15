@@ -53,6 +53,8 @@
     
     <bean id="bcryEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
     
+    <bean id="stopWatch" class="org.springframework.util.StopWatch"></bean>
+    
     <!-- redis -->
     <bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" p:host-name="${REDIS_HOST}" p:port="${REDIS_PORT}" p:password="${REDIS_PASSWORD}" />
 

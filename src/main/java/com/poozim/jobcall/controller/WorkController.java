@@ -182,12 +182,20 @@ public class WorkController {
 	@RequestMapping(value="/category_move", method = RequestMethod.POST)
 	public View moveGroupCategory(HttpServletRequest request, HttpServletResponse response, Model model, 
 			@RequestParam("groupSeqList[]") List<Integer> groupSeqList, @RequestParam("category_seq") int category_seq) {
+		Member member = LoginUtil.getLoginMember(request, response);
+		
 		WorkCategoryGroup wcg = new WorkCategoryGroup();
 		wcg.setGroupSeqList(groupSeqList);
 		wcg.setCategory_seq(category_seq);
-		wcg.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		wcg.setMember_seq(member.getSeq());
 		
 		int res = workService.moveWorkGroupList(wcg);
+		
+		if(res > 0) {
+			//clear cache
+			workService.clearGroupListCache(member.getWork_seq(), member.getSeq());
+		}
+		
 		model.addAttribute("res", res);
 		
 		return jsonView;
@@ -282,7 +290,12 @@ public class WorkController {
 		workGroup.setRegdate(TimeUtil.getDateTime());
 		workGroup.setUseyn("Y");
 		
-		workService.insertWorkGroup(workGroup);
+		int res = workService.insertWorkGroup(workGroup);
+		
+		if(res > 0) {
+			//clear cache
+			workService.clearGroupListCache(member.getWork_seq(), member.getSeq());
+		}
 		
 		return "redirect:/work/group/" + workGroup.getSeq();
 	}
@@ -803,6 +816,10 @@ public class WorkController {
 			res = workService.deleteWorkGroupMember(wgm);
 		}
 		
+		if(res > 0) {
+			//clear cache
+			workService.clearGroupListCache(member.getWork_seq(), member.getSeq());
+		}
 		
 		
 		model.addAttribute("res", res);
@@ -856,6 +873,11 @@ public class WorkController {
 		} else {
 			model.addAttribute("msg", "삭제할 회원 번호 정보가 없습니다.");
 			return jsonView;
+		}
+		
+		if(res > 0) {
+			//clear cache
+			workService.clearGroupListCache(member.getWork_seq(), delete_member_seq);
 		}
 		
 		model.addAttribute("res", res);
@@ -1324,7 +1346,12 @@ public class WorkController {
 		}
 		
 		//attend group
-		workService.attendGroup(gil);
+		int res = workService.attendGroup(gil);
+		
+		if(res > 0) {
+			//reset cache
+			workService.clearGroupListCache(member.getWork_seq(), member.getSeq());
+		}
 		
 		return "redirect:/work/group/" + group_seq;
 	}

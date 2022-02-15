@@ -9,12 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.poozim.jobcall.aop.Timer;
 import com.poozim.jobcall.mapper.WorkMapper;
 import com.poozim.jobcall.model.ActionLog;
 import com.poozim.jobcall.model.BoardVote;
@@ -54,6 +58,7 @@ import com.poozim.jobcall.util.SessionUtil;
 import com.poozim.jobcall.util.StringUtil;
 import com.poozim.jobcall.util.TimeUtil;
 
+@EnableCaching
 @Service
 public class WorkService {
 
@@ -119,6 +124,10 @@ public class WorkService {
 	}
 	
 	//WorkGroup CRUD and Logics
+	@Timer
+	@Cacheable(value = "groupList", 
+			   key = "#workGroup.work_seq.toString().concat('|').concat(#workGroup.member_seq.toString())", 
+			   condition = "#workGroup.search == null or #workGroup.search == ''")
 	public List<WorkGroup> getWorkGroupList(WorkGroup workGroup) {
 		return workMapper.getWorkGroupList(workGroup);
 	}
@@ -854,5 +863,11 @@ public class WorkService {
 			res = null;
 			return null;
 		}
+	}
+	
+	@CacheEvict(value = "groupList", 
+			    key = "#work_seq.toString().concat('|').concat(#member_seq.toString())")
+	public void clearGroupListCache(int work_seq, int member_seq) {
+		
 	}
 }
