@@ -116,6 +116,7 @@ public class MemberService {
 		commentRepository.updateMemberProfile(member);
 		
 		WorkChatMember wcm = new WorkChatMember();
+		wcm.setTitle(member.getId() + " (" + member.getName() + ") " + member.getDepartment());
 		wcm.setTarget_seq(member.getSeq());
 		wcm.setTarget_profile(member.getProfile());
 		workChatRepository.updateWorkChatMember(wcm);

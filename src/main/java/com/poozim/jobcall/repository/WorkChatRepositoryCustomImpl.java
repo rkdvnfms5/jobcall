@@ -136,7 +136,10 @@ public class WorkChatRepositoryCustomImpl implements WorkChatRepositoryCustom {
 		if(param.getTarget_seq() > 0) {
 			builder.and(wcm.target_seq.eq(param.getTarget_seq()));
 		}
-		return (int) queryFactory.update(wcm).set(wcm.target_profile, param.getTarget_profile()).where(builder).execute();
+		return (int) queryFactory.update(wcm)
+				.set(wcm.target_profile, param.getTarget_profile())
+				.set(wcm.title, param.getTitle())
+				.where(builder).execute();
 	}
 
 	@Override

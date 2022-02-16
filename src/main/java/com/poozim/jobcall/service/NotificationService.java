@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +36,22 @@ public class NotificationService {
 	}
 	
 	@Transactional
+	@CacheEvict(value = "notiCount", 
+    			key = "#notification.member_seq")
 	public int updateNotificationList(Notification notification) {
 		int res = notificationRepository.confirmNotification(notification);
 		return res;
 	}
 	
+	@Cacheable(value = "notiCount", 
+			   key = "#notification.member_seq", 
+			   condition = "#notification.confirmyn == 'N'")
 	public int getNotificationCount(Notification notification) {
 		return notificationRepository.getNotificationCount(notification);
 	}
 	
+	@CacheEvict(value = "notiCount", 
+				key = "#notification.member_seq")
 	public int insertNotification(Notification notification) {
 		notificationRepository.save(notification);
 		return 1;

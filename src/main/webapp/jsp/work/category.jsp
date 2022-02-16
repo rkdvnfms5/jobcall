@@ -114,7 +114,9 @@ $(document).ready(function(){
 	});
 	
 	$(".tmp-cate-editor-cates__item").not(".input").mouseout(function(){
-		$(this).find(".icon-button").hide();
+		if(!$(this).hasClass("input")){
+			$(this).find(".icon-button").hide();
+		}
 	});
 	
 	//set group list
@@ -151,16 +153,16 @@ function modifyCatrgoryInput(seq, title){
 		categoryDiv.html("");
 		
 		var inputHtml = "";
-		inputHtml += '<div class="tmp-cate-editor-cates__item input">';
+		inputHtml += '';
 		inputHtml += '<input class="tmp-cate-editor-cates__item-input" type="text" value="' + title + '">';
 		inputHtml += '<button type="button" onclick="updateCategory(' + seq + ')" class="icon-button tmp-cate-editor-cates__item-button-submit">';
 		inputHtml += '<i class="ico ico-check" aria-hidden="true"><svg width="12px" height="8px" viewBox="0 0 12 8" version="1.1"><g id="check" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.99685372,5.64132619 L1.61869009,2.25464234 C1.259796,1.89484307 0.651211121,1.88667968 0.280403287,2.25748751 C-0.0929897504,2.63088055 -0.0924314174,3.2282198 0.275876144,3.59745629 L4.08495948,7.4161467 C4.13085975,7.51742555 4.19562932,7.61248776 4.27936567,7.69622411 C4.44997063,7.86682907 4.66946164,7.95907209 4.89305305,7.97277496 C5.18344924,8.01973365 5.49472442,7.93409508 5.71900915,7.70981034 C5.8131187,7.61570079 5.88347352,7.50736538 5.93017291,7.39204159 L11.7236352,1.62112119 C12.0958712,1.25033354 12.0996142,0.651736824 11.7262211,0.278343786 C11.3554133,-0.0924640472 10.7536654,-0.0930861494 10.3808213,0.278307242 L4.99685372,5.64132619 L4.99685372,5.64132619 Z"></path></g></svg></i>';
 		inputHtml += '</button>';
 		inputHtml += '<button type="button" onclick="cancelModifyCategoryInput(' + seq + ')" class="icon-button tmp-cate-editor-cates__item-button-cancel"><i class="ico ico-x_clear" aria-hidden="true"><svg width="9px" height="9px" viewBox="0 0 9 9" version="1.1"><g id="x_clear" stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd"><path d="M4.49994883,3.64908503 L7.97209478,0.176939075 C8.20424418,-0.055210324 8.59190552,-0.0615821696 8.82707773,0.173590043 C9.05537218,0.401884487 9.06075054,0.791551162 8.8237287,1.02857299 L5.35158275,4.50071895 L8.8237287,7.97286491 C9.06075054,8.20988674 9.05537218,8.59955342 8.82707773,8.82784786 C8.59190552,9.06302007 8.20424418,9.05664823 7.97209478,8.82449883 L4.49994883,5.35235287 L1.02780287,8.82449883 C0.795653469,9.05664823 0.40799213,9.06302007 0.172819918,8.82784786 C-0.0554745266,8.59955342 -0.060852883,8.20988674 0.176168949,7.97286491 L3.64831491,4.50071895 L0.176168949,1.02857299 C-0.060852883,0.791551162 -0.0554745266,0.401884487 0.172819918,0.173590043 C0.40799213,-0.0615821696 0.795653469,-0.055210324 1.02780287,0.176939075 L4.49994883,3.64908503 L4.49994883,3.64908503 Z"></path></g></svg></i>';
-		inputHtml += '</button></div>';
+		inputHtml += '</button>';
 
 		categoryDiv.append(inputHtml);
-		
+		categoryDiv.addClass("input");
 		$("#category_add_btn").hide();
 	}
 }
@@ -170,6 +172,7 @@ function cancelModifyCategoryInput(seq) {
 		var categoryDiv = $("#category-"+seq);
 		categoryDiv.html("");
 		categoryDiv.append(tempHtml);
+		categoryDiv.removeClass("input");
 	}
 }
 

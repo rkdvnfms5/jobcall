@@ -115,6 +115,7 @@ public class WorkService {
 	@Autowired
 	private BCryptPasswordEncoder bcryEncoder;
 	
+	@Cacheable(value = "work", key = "#seq")
 	public Work getWorkOne(int seq) {
 		return workRepository.findById(seq).get();
 	}
@@ -124,7 +125,6 @@ public class WorkService {
 	}
 	
 	//WorkGroup CRUD and Logics
-	@Timer
 	@Cacheable(value = "groupList", 
 			   key = "#workGroup.work_seq.toString().concat('|').concat(#workGroup.member_seq.toString())", 
 			   condition = "#workGroup.search == null or #workGroup.search == ''")
@@ -215,6 +215,8 @@ public class WorkService {
 	}
 	
 	//WorkCategory CRUD and Logics
+	@Cacheable(value = "categoryList", 
+			   key = "#workCategory.work_seq.toString().concat('|').concat(#workCategory.member_seq.toString())")
 	public List<WorkCategory> getWorkCategoryList(WorkCategory workCategory){
 		return workMapper.getWorkCategoryList(workCategory);
 	}
@@ -223,12 +225,16 @@ public class WorkService {
 		return workCategoryRepository.findById(seq).get();
 	}
 	
+	@CacheEvict(value = "categoryList", 
+		    key = "#workCategory.work_seq.toString().concat('|').concat(#workCategory.member_seq.toString())")
 	public int insertWorkCategory(WorkCategory workCategory) {
 		workCategory.setDefaultyn("N");
 		workCategoryRepository.save(workCategory);
 		return 1;
 	}
 	
+	@CacheEvict(value = "categoryList", 
+		    key = "#workCategory.work_seq.toString().concat('|').concat(#workCategory.member_seq.toString())")
 	public int updateWorkCategory(WorkCategory workCategory) {
 		if(workCategory.getSeq() == 0) {
 			return 0;
@@ -238,6 +244,8 @@ public class WorkService {
 	}
 	
 	@Transactional
+	@CacheEvict(value = "categoryList", 
+    key = "#workCategory.work_seq.toString().concat('|').concat(#workCategory.member_seq.toString())")
 	public int deleteWorkCategory(WorkCategory workCategory) {
 		if(workCategory.getSeq() == 0) {
 			return 0;
@@ -338,7 +346,9 @@ public class WorkService {
 				noti.setTarget("self");
 				noti.setConfirmyn("N");
 				noti.setRegdate(workBoard.getRegdate());
+				clearNotiCount(member.getSeq());
 				notificationRepository.save(noti);
+				
 			}
 			
 		}
@@ -365,6 +375,7 @@ public class WorkService {
 					noti.setConfirmyn("N");
 					noti.setRegdate(workBoard.getRegdate());
 					notificationRepository.save(noti);
+					clearNotiCount(member.getSeq());
 				}
 			}
 			
@@ -474,6 +485,7 @@ public class WorkService {
 					noti.setConfirmyn("N");
 					noti.setRegdate(TimeUtil.getDateTime());
 					notificationRepository.save(noti);
+					clearNotiCount(member.getSeq());
 				}
 			}
 		}
@@ -502,6 +514,7 @@ public class WorkService {
 						noti.setConfirmyn("N");
 						noti.setRegdate(workBoard.getRegdate());
 						notificationRepository.save(noti);
+						clearNotiCount(member.getSeq());
 					}
 				}
 			}
@@ -610,6 +623,7 @@ public class WorkService {
 				noti.setConfirmyn("N");
 				noti.setRegdate(comment.getRegdate());
 				notificationRepository.save(noti);
+				clearNotiCount(member.getSeq());
 			}
 			
 		}
@@ -682,6 +696,7 @@ public class WorkService {
 					noti.setConfirmyn("N");
 					noti.setRegdate(comment.getRegdate());
 					notificationRepository.save(noti);
+					clearNotiCount(member.getSeq());
 				}
 			}
 		}
@@ -790,6 +805,7 @@ public class WorkService {
 				noti.setConfirmyn("N");
 				noti.setRegdate(regdate);
 				notificationRepository.save(noti);
+				clearNotiCount(member.getSeq());
 				
 				//send mail
 //				String title = "잡콜이야 : " + workGroup.getName() + "업무그룹으로 초대합니다.";
@@ -869,5 +885,17 @@ public class WorkService {
 			    key = "#work_seq.toString().concat('|').concat(#member_seq.toString())")
 	public void clearGroupListCache(int work_seq, int member_seq) {
 		
+	}
+	
+	@CacheEvict(value = "categoryList", 
+		    	key = "#work_seq.toString().concat('|').concat(#member_seq.toString())")
+	public void clearCategoryListCache(int work_seq, int member_seq) {
+		
+	}
+	
+	@CacheEvict(value = "notiCount", 
+				key = "#member_seq")
+	public void clearNotiCount(int member_seq) {
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ clear noti");
 	}
 }
