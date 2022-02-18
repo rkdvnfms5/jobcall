@@ -8,12 +8,14 @@ import javax.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.poozim.jobcall.model.Notification;
 import com.poozim.jobcall.repository.NotificationRepository;
 
+@EnableCaching
 @Service
 public class NotificationService {
 
@@ -21,6 +23,8 @@ public class NotificationService {
 	private NotificationRepository notificationRepository;
 	
 	@Transactional
+	@CacheEvict(value = "notiCount", 
+				key = "#notification.member_seq")
 	public List<Notification> getNotificationList(Notification notification){
 		List<Notification> list = notificationRepository.getNotificationList(notification);
 		
@@ -36,8 +40,6 @@ public class NotificationService {
 	}
 	
 	@Transactional
-	@CacheEvict(value = "notiCount", 
-    			key = "#notification.member_seq")
 	public int updateNotificationList(Notification notification) {
 		int res = notificationRepository.confirmNotification(notification);
 		return res;
