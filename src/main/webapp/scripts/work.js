@@ -321,20 +321,21 @@ function reloadBoard(board_seq, parent, commentPagingBool){
 		
 		var comment_offset = (Number(offset) > 5? Number(offset)-5 : 0);
 		var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + 5;
-		var data = {comment_offset : comment_offset, comment_limit : comment_limit, seq : board_seq, coverFlag : false};
+		var data = {comment_offset : comment_offset, comment_limit : comment_limit};
 	}
 	else {
 		var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + 5;
-		var data = {comment_offset : offset, comment_limit : comment_limit, seq : board_seq, coverFlag : false};
+		var data = {comment_offset : offset, comment_limit : comment_limit};
 	}
 	
 	$.ajax({
 		url : '/work/board/' + board_seq,
 		method : 'GET',
 		data : data,
-		dataType : 'HTML',
-		success : function(data) {
-			parent.html(data);
+		dataType : 'JSON',
+		success : function(res) {
+			var html = getBoardHtml(res.Board, false, '');
+			parent.html(html);
 		},
 		error : function(request, status, error){
 			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);

@@ -311,28 +311,29 @@ public class WorkController {
 		return jsonView;
 	}
 	
+	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
+	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
+			WorkBoard workBoard) {
+		workBoard.setSeq(board_seq);
+		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+		workBoard = workService.getWorkBoardOneMapper(workBoard);
+		
+		model.addAttribute("Board", workBoard);
+		return jsonView;
+	}
+	
 //	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
-//	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
+//	public String getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
 //			WorkBoard workBoard) {
 //		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
 //		workBoard = workService.getWorkBoardOneMapper(workBoard);
 //		
 //		model.addAttribute("Board", workBoard);
-//		return jsonView;
+//		model.addAttribute("coverFlag", ServletRequestUtils.getBooleanParameter(request, "coverFlag", true));
+//		model.addAttribute("coverClass", ServletRequestUtils.getStringParameter(request, "coverClass", ""));
+//		model.addAttribute("search", ServletRequestUtils.getStringParameter(request, "search", ""));
+//		return "/work/board";
 //	}
-	
-	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
-	public String getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
-			WorkBoard workBoard) {
-		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
-		workBoard = workService.getWorkBoardOneMapper(workBoard);
-		
-		model.addAttribute("Board", workBoard);
-		model.addAttribute("coverFlag", ServletRequestUtils.getBooleanParameter(request, "coverFlag", true));
-		model.addAttribute("coverClass", ServletRequestUtils.getStringParameter(request, "coverClass", ""));
-		model.addAttribute("search", ServletRequestUtils.getStringParameter(request, "search", ""));
-		return "/work/board";
-	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)
 	public View InsertBoard(HttpServletRequest request, HttpServletResponse response, Model model, WorkBoard workBoard,
