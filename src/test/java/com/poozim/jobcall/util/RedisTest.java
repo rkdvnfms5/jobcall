@@ -26,10 +26,10 @@ public class RedisTest {
 	   
 	    // String result = stringStringValueOperations.get("testKey"); // redis get
 	    
-	   // stringStringValueOperations.getOperations().delete("sabarada"); // redis delete
+	    stringStringValueOperations.getOperations().delete("notiCount::1"); // redis delete
 	    
 	   // stringStringValueOperations.getOperations().rename("testKey", "testKey2"); //key명 변경
 	   
-	   stringStringValueOperations.set("testKey2", "testValue2"); // redis 덮어쓰기
+	   //stringStringValueOperations.set("testKey2", "testValue2"); // redis 덮어쓰기
 	}
 }

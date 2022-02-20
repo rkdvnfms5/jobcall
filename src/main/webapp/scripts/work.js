@@ -321,24 +321,23 @@ function reloadBoard(board_seq, parent, commentPagingBool){
 		
 		var comment_offset = (Number(offset) > 5? Number(offset)-5 : 0);
 		var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + 5;
-		var data = {comment_offset : comment_offset, comment_limit : comment_limit, seq : board_seq};
+		var data = {comment_offset : comment_offset, comment_limit : comment_limit, seq : board_seq, coverFlag : false};
 	}
 	else {
 		var comment_limit = Number(prev_comment.siblings(".wall-comment-list").children().length) + 5;
-		var data = {comment_offset : offset, comment_limit : comment_limit, seq : board_seq};
+		var data = {comment_offset : offset, comment_limit : comment_limit, seq : board_seq, coverFlag : false};
 	}
 	
 	$.ajax({
 		url : '/work/board/' + board_seq,
 		method : 'GET',
 		data : data,
-		dataType : 'JSON',
-		success : function(res) {
-			var html = getBoardHtml(res.Board, false, "");
-			parent.html(html);
+		dataType : 'HTML',
+		success : function(data) {
+			parent.html(data);
 		},
 		error : function(request, status, error){
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 		}
 	})
 }
@@ -1112,15 +1111,20 @@ function checkMention(obj){
 	//var cursorIdx = $(obj)[0].selectionStart;	//커서 인덱스
 	//console.log(window.getSelection());
 	//var cursorIdx = window.getSelection().anchorOffset;	//커서 인덱스
+	
+	//공백이 " "이아니라 \u00A0로 넘어올때가잇음
+	
 	var text = $(obj).text();
+	text = replaceAll(text, "\u00A0", " ");
 	var cursorIdx = getCaretIndex(obj);
-	var startIdx = (text.substring(0, cursorIdx).lastIndexOf(" ") == -1? 0 : text.substring(0, cursorIdx).lastIndexOf(" ")+1);
+	var startIdx = (text.substring(0, cursorIdx).indexOf(" ") == -1? 0 : text.substring(0, cursorIdx).lastIndexOf(" ")+1);
 	//커서 이전에 공백 위치, 없으면 인덱스 0
 	
 	var endIdx = (text.substring(cursorIdx).indexOf(" ") == -1? text.length : text.substring(cursorIdx).indexOf(" "));
 	//커서 이후에 공백 위치, 없으면 문장의 끝
 	
 	var word = $.trim(text.substring(startIdx, endIdx));
+	
 	//커서가 있는 단어
 	var mentionReg = /^@{1}[a-zA-Z0-9]/;
 	var mention_list = $(obj).siblings(".textarea-mention-list");

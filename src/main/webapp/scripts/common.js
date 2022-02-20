@@ -61,4 +61,16 @@ function hideChatLoading(){
 	$("#chat-loading-dim").hide();
 }
 
-
+function getIdx(str, ch){
+	var idx = -1;
+	var arr = str.split("");
+	
+	for(var i=0; i<arr.length; i++){
+		if(arr[i] == ch){
+			idx = i;
+			break;
+		}
+	}
+		
+	return idx;
+}

@@ -896,6 +896,6 @@ public class WorkService {
 	@CacheEvict(value = "notiCount", 
 				key = "#member_seq")
 	public void clearNotiCount(int member_seq) {
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ clear noti");
+		RedisUtil.deleteByKey("notiCount::" + member_seq);
 	}
 }

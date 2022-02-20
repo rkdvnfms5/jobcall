@@ -26,7 +26,7 @@
 						<i class="ico ico-plus" aria-hidden="true"><svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1"><g id="plus" stroke="none" stroke-width="1" fill="#FAFBFC" fill-rule="evenodd"><path d="M7,5 L7,1.00247329 C7,0.455760956 6.55228475,0 6,0 C5.44386482,0 5,0.448822582 5,1.00247329 L5,5 L1.00247329,5 C0.455760956,5 0,5.44771525 0,6 C0,6.55613518 0.448822582,7 1.00247329,7 L5,7 L5,10.9975267 C5,11.544239 5.44771525,12 6,12 C6.55613518,12 7,11.5511774 7,10.9975267 L7,7 L10.9975267,7 C11.544239,7 12,6.55228475 12,6 C12,5.44386482 11.5511774,5 10.9975267,5 L7,5 Z"></path></g></svg></i>
 					</button>
 				</div>
-				<div class="tmp-cate-editor-cates_content">
+				<div class="tmp-cate-editor-cates_content" id="sortable">
 					<c:forEach items="${LnbWorkCategoryList}" var="category" varStatus="status">
 						<div class="tmp-cate-editor-cates__item ${status.index == 0? 'tmp-cate-editor-cates__item--selected':''}" id="category-${category.seq}" onclick="setCatrgoryGroupList(this)">
 							<input type="hidden" name="seq" value="${category.seq}" />
@@ -106,6 +106,8 @@ var groupArray = new Array();
 	groupArray.push(json);
 </c:forEach>
 
+var prev_idx;
+
 $(document).ready(function(){
 	$(".tmp-cate-editor-cates__item").not(".input").mouseover(function(){
 		if($(".tmp-cate-editor-cates__item.input").length == 0){
@@ -122,6 +124,19 @@ $(document).ready(function(){
 	//set group list
 	var defaultCategory = document.getElementsByClassName('tmp-cate-editor-cates__item--selected')[0];
 	setCatrgoryGroupList(defaultCategory);
+	
+	//sortable
+	/*
+	$("#sortable").sortable({
+		start : function(event, ui) {
+			prev_idx = Number(ui.item.index()) + 1;
+		},
+		update : function(event, ui) {
+			console.log(prev_idx);
+			console.log(Number(ui.item.index()) + 1);
+		}
+	});
+	*/
 })
 
 function addCategoryInput(){

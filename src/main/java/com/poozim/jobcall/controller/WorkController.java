@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.View;
 
+import com.poozim.jobcall.aop.Timer;
 import com.poozim.jobcall.aop.WorkLnbSet;
 import com.poozim.jobcall.model.ActionLog;
 import com.poozim.jobcall.model.BoardVoteMember;
@@ -135,6 +136,7 @@ public class WorkController {
 	
 	@RequestMapping(value = "/category", method = RequestMethod.GET)
 	@WorkLnbSet
+	@Timer
 	public String categoryPage(HttpServletRequest request, HttpServletResponse response, Model model) {
 		return "/work/category";
 	}
@@ -309,14 +311,27 @@ public class WorkController {
 		return jsonView;
 	}
 	
+//	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
+//	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
+//			WorkBoard workBoard) {
+//		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
+//		workBoard = workService.getWorkBoardOneMapper(workBoard);
+//		
+//		model.addAttribute("Board", workBoard);
+//		return jsonView;
+//	}
+	
 	@RequestMapping(value = "/board/{board_seq}", method = RequestMethod.GET)
-	public View getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
+	public String getBoardOne(HttpServletRequest request, HttpServletResponse response, Model model, @PathVariable("board_seq") int board_seq,
 			WorkBoard workBoard) {
 		workBoard.setMember_seq(LoginUtil.getLoginMember(request, response).getSeq());
 		workBoard = workService.getWorkBoardOneMapper(workBoard);
 		
 		model.addAttribute("Board", workBoard);
-		return jsonView;
+		model.addAttribute("coverFlag", ServletRequestUtils.getBooleanParameter(request, "coverFlag", true));
+		model.addAttribute("coverClass", ServletRequestUtils.getStringParameter(request, "coverClass", ""));
+		model.addAttribute("search", ServletRequestUtils.getStringParameter(request, "search", ""));
+		return "/work/board";
 	}
 	
 	@RequestMapping(value = "/board", method = RequestMethod.POST)

@@ -11,5 +11,5 @@
 	<mapping path="/sign/*" decorator="/jsp/decorators/mainDecorator.jsp" />
 	
     <!-- 제외 -->
-    <!-- <mapping path="/unitstudy/view.donga" exclude="true" /> -->
+    <mapping path="/work/board/*" exclude="true" />
 </sitemesh>

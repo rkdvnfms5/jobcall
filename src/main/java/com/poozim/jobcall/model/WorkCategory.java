@@ -18,6 +18,7 @@ public class WorkCategory {
 	private int member_seq;
 	private String title;
 	private String defaultyn;
+	private int sort;
 	private String regdate;
 	
 	@Transient

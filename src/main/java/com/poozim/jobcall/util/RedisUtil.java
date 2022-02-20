@@ -14,13 +14,13 @@ public class RedisUtil {
 	private static RedisTemplate<String, Work> workRedisTemplate;
 	private static ValueOperations<String, Work> workValueOps;
 	
-	@Autowired
 	private static StringRedisTemplate stringRedisTemplate;
 	
 	@Autowired
-	public RedisUtil(RedisTemplate<String, Work> workRedisTemplate) {
+	public RedisUtil(RedisTemplate<String, Work> workRedisTemplate, StringRedisTemplate stringRedisTemplate) {
 		this.workRedisTemplate = workRedisTemplate;
 		workValueOps = workRedisTemplate.opsForValue();
+		this.stringRedisTemplate = stringRedisTemplate;
 	}
 	
 	public static int insertWorkRedis(Work work) {
