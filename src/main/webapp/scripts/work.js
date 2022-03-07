@@ -840,6 +840,11 @@ function setInsertBoardForm(type){
 	
 	$("#insertBoardForm input[name='endtime']").timepicker({
 	});
+	
+	// block Enter
+	blockEnter();
+	
+	
 }
 
 function getInsertPlainBoardHtml(){
@@ -1557,6 +1562,9 @@ function modifyBoardForm(obj) {
 	
 	form.find("input[name='endtime']").timepicker({
 	});
+	
+	// block enter
+	blockEnter();
 }
 
 function cancelModifyBoard(obj){
@@ -1901,3 +1909,42 @@ function downLoadFile(object_name){
 
 } 
 
+function blockEnter(){
+	$("#board-insert-title").on("keyup keydown keypress input", function(e){
+		if(e.keyCode==13) {
+			e.preventDefault();
+	    }
+	});
+	
+	$("#board-insert-worker").on("keyup keydown keypress input", function(e){
+		if(e.keyCode==13) {
+			e.preventDefault();
+	    }
+	});
+	
+	$("input.board-insert-vote").on("keyup keydown keypress input", function(e){
+		if(e.keyCode==13) {
+			e.preventDefault();
+	    }
+	});
+	
+	$("input.board-modify-title").on("keyup keydown keypress input", function(e){
+		if(e.keyCode==13) {
+			e.preventDefault();
+	    }
+	});
+	
+	$("input.board-modify-worker").on("keyup keydown keypress input", function(e){
+		if(e.keyCode==13) {
+			e.preventDefault();
+	    }
+	});
+	
+	$("input.board-modify-vote").on("keyup keydown keypress input", function(e){
+		if(e.keyCode==13) {
+			e.preventDefault();
+	    }
+	});
+	
+	
+}
