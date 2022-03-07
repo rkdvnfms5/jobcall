@@ -292,6 +292,10 @@ public class WorkController {
 		workGroup.setRegdate(TimeUtil.getDateTime());
 		workGroup.setUseyn("Y");
 		
+		workGroup.setMaster_seq(member.getSeq());
+		workGroup.setMaster_id(member.getId());
+		workGroup.setMaster_name(member.getName());
+		
 		int res = workService.insertWorkGroup(workGroup);
 		
 		if(res > 0) {
@@ -405,7 +409,8 @@ public class WorkController {
 		String status = ServletRequestUtils.getStringParameter(request, "status", "");
 		String worker = ServletRequestUtils.getStringParameter(request, "worker", "");
 		
-		if(workBoard.getMember_seq() == member.getSeq()) {
+		if(workBoard.getMember_seq() == member.getSeq() ||
+		   (workBoard.getType().equals("request") && workBoard.getWorker().contains(member.getId()))) {
 			if(attachFiles != null && !attachFiles.isEmpty()) {
 				workBoard.setAttachFileList(attachFiles);
 			}
@@ -1170,18 +1175,18 @@ public class WorkController {
 		model.addAttribute("endBlank", endBlank);
 		
 		date = LocalDate.of(year, month, day);
-		model.addAttribute("cur_monthYear", date.getYear() + "-" + date.getMonthValue());
+		model.addAttribute("cur_monthYear", date.getYear() + "-" + (date.getMonthValue() < 10? "0":"") + date.getMonthValue());
 		
 		//search date
 		LocalDate prev = date.minusMonths(1);
 		int prev_startdate = prev.lengthOfMonth()-(startBlank-1);
-		String startdate = prev.getYear() + "-" + prev.getMonthValue() + "-" + prev_startdate;
-		model.addAttribute("prev_monthYear", prev.getYear() + "-" + prev.getMonthValue());
+		String startdate = prev.getYear() + "-" + (prev.getMonthValue() < 10? "0":"") + prev.getMonthValue() + "-" + prev_startdate;
+		model.addAttribute("prev_monthYear", prev.getYear() + "-" + (prev.getMonthValue() < 10? "0":"") + prev.getMonthValue());
 		model.addAttribute("pre_lastDay", prev.lengthOfMonth());
 		
 		LocalDate next = date.plusMonths(1);
-		String enddate = next.getYear() + "-" + next.getMonthValue() + "-" + (endBlank < 10? "0":"") + endBlank;
-		model.addAttribute("next_monthYear", next.getYear() + "-" + next.getMonthValue());
+		String enddate = next.getYear() + "-" + (next.getMonthValue() < 10? "0":"") + next.getMonthValue() + "-" + (endBlank < 10? "0":"") + endBlank;
+		model.addAttribute("next_monthYear", next.getYear() + "-" + (next.getMonthValue() < 10? "0":"") + next.getMonthValue());
 		
 		//get schedule list
 		WorkBoard workBoard = new WorkBoard();

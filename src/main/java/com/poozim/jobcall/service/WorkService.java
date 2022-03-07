@@ -51,6 +51,7 @@ import com.poozim.jobcall.repository.WorkCategoryRepository;
 import com.poozim.jobcall.repository.WorkGroupMemberRepository;
 import com.poozim.jobcall.repository.WorkGroupRepository;
 import com.poozim.jobcall.repository.WorkRepository;
+import com.poozim.jobcall.util.LoginUtil;
 import com.poozim.jobcall.util.MailUtil;
 import com.poozim.jobcall.util.OciUtil;
 import com.poozim.jobcall.util.RedisUtil;
@@ -144,6 +145,8 @@ public class WorkService {
 		WorkGroupMember workGroupMember = new WorkGroupMember();
 		workGroupMember.setGroup_seq(workGroup.getSeq());
 		workGroupMember.setRegdate(workGroup.getRegdate());
+		
+		/*
 		//접근권한이 공개면
 		if(workGroup.getAccess().equals("public")) {
 			//그룹 만든 멤버 그룹에 참여
@@ -160,6 +163,10 @@ public class WorkService {
 			
 			workMapper.insertWorkGroupMemberList(workGroupMember);
 		}
+		*/
+		//그룹 만든 멤버 그룹에 참여
+		workGroupMember.setMember_seq(workGroup.getMember_seq());
+		workGroupMemberRepository.save(workGroupMember);
 		
 		//디폴트 카테고리에 그룹 추가
 		WorkCategory defaultCategory = workCategoryRepository.getDefaultCategory(workGroup.getWork_seq());
@@ -525,12 +532,14 @@ public class WorkService {
 		
 		//if Request Board is updated status, then add Comment
 		if(workBoard.getNoticeyn().equals("Y") && workBoard.getType().equals("request")) {
+			Member member = LoginUtil.getLoginMember(request, response);
+			
 			Comment comment = new Comment();
 			comment.setNoticeyn("Y");
 			comment.setBoard_seq(workBoard.getSeq());
-			comment.setMember_seq(workBoard.getMember_seq());
-			comment.setMember_id(workBoard.getMember_id());
-			comment.setMember_name(workBoard.getMember_name());
+			comment.setMember_seq(member.getSeq());
+			comment.setMember_id(member.getId());
+			comment.setMember_name(member.getName());
 			comment.setMember_profile(workBoard.getMember_profile());
 			
 			switch (workBoard.getStatus()) {
